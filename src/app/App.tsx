@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GameScreen, type SeatConfig } from '../ui/components/GameScreen';
-import { buildSevenHopChainScenario } from './debugScenarios';
+import { buildSevenHopChainScenario, buildAlmostWonScenario } from './debugScenarios';
 import type { GameState, PlayerCount } from '../engine/state';
 
 interface GameConfig {
@@ -18,6 +18,15 @@ function debugScenarioFromUrl(): GameConfig | null {
       playerCount: 6,
       seats: ['human', 'human', 'human', 'human', 'human', 'human'],
       initialGameState: buildSevenHopChainScenario(),
+    };
+  }
+  if (scenario === 'almostWon') {
+    // Rigel, not Nova: Nova's 35% noise means it doesn't reliably choose the winning move even
+    // when available (measured: ~65% win rate here vs Rigel/Sirius's 100% — see DECISIONS.md).
+    return {
+      playerCount: 2,
+      seats: ['human', 'Rigel'],
+      initialGameState: buildAlmostWonScenario(),
     };
   }
   return null;

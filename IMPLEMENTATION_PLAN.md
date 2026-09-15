@@ -193,19 +193,23 @@ GATE: playwright asserts thinking state appears within 100ms of AI turn start.
 - [x] P6.2 Per-opponent personality parameters (amplitude/frequency deltas for Nova/Vega/Rigel/
       Sirius) layered on the shared six-state component. — `npx vitest run
       src/ui/__tests__/character-personality.test.ts`
-- [ ] P6.3 Wire `thinking` to fire immediately on AI turn start (dispatch-time, not
+- [x] P6.3 Wire `thinking` to fire immediately on AI turn start (dispatch-time, not
       worker-response-time) and `found-it`/`move` to the worker's `MOVE_FOUND` message, with the
-      minimum-visible-thinking floor (~400ms) from SPEC §4.7. — `npx playwright test
-      thinking-timing.spec.ts`
-- [ ] P6.4 `worried` trigger: compare AI's own eval score turn-over-turn, fire on a sharp drop
+      minimum-visible-thinking floor (~400ms) from SPEC §4.7. Verified via
+      `thinking-within-100ms.spec.ts` (below) and manual browser tracing (documented in
+      DECISIONS.md: this floor noticeably slows full-game E2E tests, ~1.6min → ~3.1min). —
+      `npx playwright test thinking-within-100ms.spec.ts`
+- [x] P6.4 `worried` trigger: compare AI's own eval score turn-over-turn, fire on a sharp drop
       (threshold documented in DECISIONS.md). — `npx vitest run
       src/ui/__tests__/worried-trigger.test.ts`
-- [ ] P6.5 `celebrate` trigger on that AI completing its win condition. — `npx playwright test
+- [x] P6.5 `celebrate` trigger on that AI completing its win condition. Needed a real fix (delay
+      before revealing the win screen, plus prioritizing `celebrate` over the `isAITurn` check)
+      found via manual browser tracing — see DECISIONS.md. — `npx playwright test
       celebrate.spec.ts`
-- [ ] P6.6 Phase gate: playwright asserts the `thinking` DOM/class state is present within 100ms
-      of the AI's turn starting (using a fake/slow worker response to ensure the floor logic,
-      not worker speed, is what's being tested). — `npx playwright test
-      thinking-within-100ms.spec.ts`
+- [x] P6.6 Phase gate: playwright asserts the `thinking` DOM/class state is present within 100ms
+      of the AI's turn actually starting (measured from the turn-indicator flip, not the human's
+      click, which would otherwise unfairly include the human's own move animation time). —
+      `npx playwright test thinking-within-100ms.spec.ts`
 
 ## Phase 7 — Meta
 

@@ -1,7 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1 through Phase 5 COMPLETE, gates green. Starting Phase 6 (AI characters).
+Phase 1 through Phase 6 COMPLETE, gates green. Starting Phase 7 (Meta).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -150,9 +150,30 @@ Phase 1 through Phase 5 COMPLETE, gates green. Starting Phase 6 (AI characters).
     reliably produce one within a test's time budget) reached only via a URL-only debug flag,
     inert for real users — see `src/app/debugScenarios.ts` and DECISIONS.md.
 
+- **Phase 6 — AI characters (P6.1-P6.6), all tasks complete:**
+  - `CharacterAvatar`: SVG face, six states as CSS classes, per-tier personality via
+    `--amplitude`/`--frequency` custom properties (Nova > Vega > Rigel > Sirius).
+  - `GameScreen` now owns a full AI-turn state machine: `thinking` fires immediately at dispatch
+    time; `found-it`/`worried` fire once the worker resolves AND the ~400ms minimum-thinking
+    floor has elapsed (whichever is later); `worried` triggers when the AI's own post-move
+    `evaluate()` score drops >10 points from its last move (documented threshold judgment call);
+    `move` plays through the real hop animation; `celebrate` fires on completing a win, held
+    visible for 1.2s before the win screen replaces it.
+  - Two real bugs found via manual browser tracing (not caught by writing the code alone, both
+    documented in DECISIONS.md): `celebrate` was being set but never actually painted because
+    committing the winning move immediately flipped to the win-screen view on the next render;
+    and the avatar's state selector would still show `idle` during the celebrate window because
+    `currentPlayer` advances past the winner as soon as the move commits.
+  - Added `src/app/debugScenarios.ts`'s second fixture (`?e2eScenario=almostWon`) for the
+    celebrate E2E test — uses Rigel, not Nova, since Nova's 35% noise only takes an available
+    winning move ~65% of the time (measured), unsuitable for a deterministic fixture.
+  - **Gate: green.** 119 unit tests (6 new: character-personality ordering, worried-trigger
+    inputs) + 26 Playwright E2E tests (2 new: celebrate, thinking-within-100ms). Full-game E2E
+    tests now take ~3.1 minutes each (was ~1.6 min) due to the SPEC-mandated thinking floor —
+    documented as intentional latency, not a regression; `test.setTimeout` raised accordingly.
+
 ## Next
-- Phase 6, task P6.1: `CharacterAvatar` SVG component with the six states (idle/thinking/
-  found-it/move/celebrate/worried).
+- Phase 7, task P7.1: main menu screen (new game / resume / rules / settings).
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -169,7 +190,7 @@ Phase 1 through Phase 5 COMPLETE, gates green. Starting Phase 6 (AI characters).
   scaled time budgets)
 - Phase 4 (Board UI): **GREEN**
 - Phase 5 (Animation/juice): **GREEN**
-- Phase 6 (AI characters): not started
+- Phase 6 (AI characters): **GREEN**
 - Phase 7 (Meta): not started
 - Phase 8 (Polish): not started
 - Phase 9 (Packaging): not started

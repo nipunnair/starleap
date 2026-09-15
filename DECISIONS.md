@@ -238,3 +238,26 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   gate is meant to catch. The collector also records absolute timestamps from page load (via
   `addInitScript`) rather than starting right before the click, specifically to avoid a
   Playwright command round-trip gap masquerading as a slow "frame."
+- **The min-visible-thinking floor (P6.3) noticeably slows full-game E2E tests** — from ~1.6
+  minutes (Phase 5) to ~3.1 minutes, since every AI move now waits at least 400ms (thinking
+  floor) + 200ms (found-it display) beyond whatever the search itself took, and a full game has
+  ~40 AI moves. Verified via manual browser tracing that the state machine itself is correct
+  (thinking → found-it → move → idle, each transition firing right on schedule) — this is
+  intentional SPEC-mandated latency, not a bug. Increased `test.setTimeout` to 240s on the three
+  affected specs (`full-game-vs-nova`, `win-screen`, `screenshots`'s win-screen case). No attempt
+  made to add a "fast test mode" (e.g. scaled-down time budgets for E2E) — would help iteration
+  speed but adds real complexity; revisit if a future phase needs even more full-game E2E gates.
+- **`celebrate` needed an explicit delay before revealing the win screen, found via manual
+  browser tracing (not caught by writing the code alone).** Committing the winning AI move
+  flips `engine.gameOver` true on the very next render, which immediately switched to the
+  win-screen branch — `celebrate` was set but never actually painted before being replaced.
+  Fixed with a `celebratingWin` flag that holds the normal game-screen view (with the avatar in
+  `celebrate`) for 1.2s before the win screen is allowed to render. A second, related bug: once
+  the winning move commits, `currentPlayer` advances past the winner, so `isAITurn` flips false
+  and the avatar's state selector would show `idle` even during the celebrate window — fixed by
+  having the avatar prioritize an active `celebrate` state over the `isAITurn` check.
+- **P6.5's celebrate E2E test uses Rigel, not Nova, for the `?e2eScenario=almostWon` fixture.**
+  Measured directly: given a position one step from winning, Nova (35% noise) only takes the
+  winning move ~65% of the time (20-trial sample), while Rigel and Sirius (no noise) took it
+  100% of the time. Nova's randomness is intentional (SPEC §3.3), but makes it unsuitable for a
+  deterministic single-move E2E fixture.

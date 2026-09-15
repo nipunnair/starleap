@@ -65,7 +65,7 @@ test.describe('Screenshot gate (IMPLEMENTATION_PLAN.md P5.8)', () => {
   });
 
   test('7. win-screen', async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(240_000);
     await page.goto('/');
     await page.getByRole('button', { name: 'Play vs Nova' }).click();
     await playUntilGameOver(page);

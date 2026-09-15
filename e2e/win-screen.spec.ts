@@ -3,7 +3,7 @@ import { playUntilGameOver } from './helpers';
 
 test.describe('Win screen (IMPLEMENTATION_PLAN.md P4.8)', () => {
   test('shows a ranking for both players once the game ends', async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(240_000);
 
     await page.goto('/');
     await page.getByRole('button', { name: 'Play vs Nova' }).click();

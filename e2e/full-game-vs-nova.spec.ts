@@ -3,7 +3,7 @@ import { playUntilGameOver } from './helpers';
 
 test.describe('Full phase gate (IMPLEMENTATION_PLAN.md P4.9)', () => {
   test('a human-vs-Nova game plays start to a terminal state with no console errors', async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(240_000);
 
     const consoleErrors: string[] = [];
     page.on('console', (msg) => {

@@ -2,17 +2,20 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameEngine } from '../hooks/useGameEngine';
 import { useAIWorker } from '../hooks/useAIWorker';
 import { useReducedMotion } from '../hooks/useReducedMotion';
-import { rank } from '../../engine/terminal';
+import { rank, hasWon } from '../../engine/terminal';
 import { cornerOf } from '../../engine/board';
 import { key, project, type Cube } from '../../engine/coords';
 import { seatOf } from '../../engine/state';
 import type { PlayerCount } from '../../engine/state';
+import { applyMove } from '../../engine/apply';
 import type { Move } from '../../engine/moves';
 import type { TierName } from '../../ai/tiers';
+import { evaluate } from '../../ai/eval';
 import { createWebAudioToneSequencer, SILENT_TONE_SEQUENCER } from '../audio/tones';
 import { shouldShakeForMove } from '../animation/chainAnimation';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
+import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
 import { CELL_SPACING } from './boardGeometry';
 
 export type SeatConfig = 'human' | TierName;
@@ -26,6 +29,17 @@ export interface GameScreenProps {
 }
 
 const SHAKE_DURATION_MS = 300;
+/** SPEC.md §4.7: a floor of ~400ms of visible thinking even if the worker answers faster. */
+const MIN_THINKING_MS = 400;
+const FOUND_IT_DISPLAY_MS = 200;
+/** How much an AI's own post-move eval must drop from its last move to trigger `worried`.
+ * Not spec-mandated (SPEC only says "drops sharply") — a documented judgment call. */
+const WORRIED_EVAL_DROP_THRESHOLD = 10;
+/** How long the `celebrate` state is visible before actually revealing the win screen — without
+ * this, committing the winning move flips `gameOver` true on the very next render and the win
+ * screen replaces the avatar before `celebrate` is ever shown. Not spec-mandated (SPEC just says
+ * "fires when the AI completes its win condition"); a documented judgment call. */
+const CELEBRATE_BEFORE_WIN_SCREEN_MS = 1200;
 
 export function GameScreen({ playerCount, seats, onExit, initialGameState }: GameScreenProps) {
   const engine = useGameEngine(playerCount, initialGameState);
@@ -35,6 +49,9 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
   const particlesRef = useRef<ParticleCanvasHandle>(null);
   const [previewMove, setPreviewMove] = useState<Move | null>(null);
   const [shaking, setShaking] = useState(false);
+  const [celebratingWin, setCelebratingWin] = useState(false);
+  const [characterState, setCharacterState] = useState<CharacterState>('idle');
+  const lastOwnEvalRef = useRef<Map<number, number>>(new Map());
   // The player who configured the game already holds the device for their own first turn — no
   // pass prompt needed until the active seat actually changes to someone else.
   const [dismissedPassScreenFor, setDismissedPassScreenFor] = useState<number | null>(engine.game.currentPlayer);
@@ -49,19 +66,48 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
     !pendingMove &&
     humanSeatCount > 1 &&
     dismissedPassScreenFor !== engine.game.currentPlayer;
+  const opponentTier = seats.find((s): s is TierName => s !== 'human') ?? null;
 
-  // Trigger AI moves.
+  // Trigger AI moves: thinking fires immediately at dispatch time; found-it/move only after the
+  // worker resolves AND the minimum visible-thinking floor has elapsed (SPEC §4.7).
   useEffect(() => {
     if (engine.gameOver || !isAITurn || pendingMove) return;
     const tier = currentSeat as TierName;
+    const mover = engine.game.currentPlayer;
+    const state = engine.game;
     let cancelled = false;
+    const timeouts: number[] = [];
+    const thinkingStartedAt = performance.now();
+    setCharacterState('thinking');
 
-    ai.findMove(engine.game, engine.game.currentPlayer, playerCount, tier).then((result) => {
-      if (!cancelled) setPendingMove({ move: result.move, owner: engine.game.currentPlayer });
+    ai.findMove(state, mover, playerCount, tier).then((result) => {
+      if (cancelled) return;
+      const remaining = Math.max(0, MIN_THINKING_MS - (performance.now() - thinkingStartedAt));
+
+      timeouts.push(
+        window.setTimeout(() => {
+          if (cancelled) return;
+
+          const previewState = applyMove(state, result.move);
+          const newEval = evaluate(previewState, mover);
+          const prevEval = lastOwnEvalRef.current.get(mover);
+          lastOwnEvalRef.current.set(mover, newEval);
+          setCharacterState(prevEval !== undefined && newEval < prevEval - WORRIED_EVAL_DROP_THRESHOLD ? 'worried' : 'found-it');
+
+          timeouts.push(
+            window.setTimeout(() => {
+              if (cancelled) return;
+              setCharacterState('move');
+              setPendingMove({ move: result.move, owner: mover });
+            }, FOUND_IT_DISPLAY_MS),
+          );
+        }, remaining),
+      );
     });
 
     return () => {
       cancelled = true;
+      timeouts.forEach(clearTimeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [engine.game, isAITurn, pendingMove]);
@@ -101,7 +147,23 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
     }
   }
 
-  if (engine.gameOver) {
+  function handleMoveAnimationComplete(move: Move, owner: number) {
+    const nextState = applyMove(engine.game, move);
+    engine.applyMove(move);
+    setPendingMove(null);
+
+    const aiWon = seats[owner] !== 'human' && hasWon(nextState, owner);
+    setCharacterState(aiWon ? 'celebrate' : 'idle');
+    if (aiWon) {
+      // Committing the move above already flips engine.gameOver true — without this delay the
+      // win screen would replace the avatar on the very next render and `celebrate` would never
+      // actually be visible (found via manual browser verification, see DECISIONS.md).
+      setCelebratingWin(true);
+      setTimeout(() => setCelebratingWin(false), CELEBRATE_BEFORE_WIN_SCREEN_MS);
+    }
+  }
+
+  if (engine.gameOver && !celebratingWin) {
     const ranking = rank(engine.game);
     return (
       <div data-testid="win-screen">
@@ -129,9 +191,18 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
 
   return (
     <div data-testid="game-screen">
+      {opponentTier && (
+        <CharacterAvatar
+          tier={opponentTier}
+          // `celebrate` must survive even after currentPlayer advances past the winner (which
+          // happens the instant the winning move commits) — otherwise isAITurn flips false and
+          // the avatar would snap back to idle before celebrate is ever visible.
+          state={characterState === 'celebrate' ? 'celebrate' : isAITurn ? characterState : 'idle'}
+        />
+      )}
       <p data-testid="turn-indicator">
         {isAITurn
-          ? ai.thinking
+          ? characterState === 'thinking'
             ? `${currentSeat} is thinking...`
             : `${currentSeat}'s turn`
           : `Player ${engine.game.currentPlayer}'s turn`}
@@ -159,10 +230,7 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
                   reducedMotion,
                   toneSequencer,
                   onHopLanding: (cell) => handleHopLanding(cell, pendingMove.owner),
-                  onComplete: () => {
-                    engine.applyMove(pendingMove.move);
-                    setPendingMove(null);
-                  },
+                  onComplete: () => handleMoveAnimationComplete(pendingMove.move, pendingMove.owner),
                 }
               : null
           }
