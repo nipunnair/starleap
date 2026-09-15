@@ -34,8 +34,10 @@ baseline AI).
   `lateralDeviation` uses 2D screen-projected perpendicular distance from the start→target axis;
   `jumpReadyAlignments` reuses `legalHopsFrom` counting hops whose pivot is the player's own peg.
 
+- P2.2: `chooseGreedyMove` — evaluates every legal move's resulting position and picks the max.
+
 ## Next
-- Phase 2, task P2.2: greedy baseline AI (1-ply eval-delta move selection).
+- Phase 2, task P2.3: `src/ai/selfplay.ts` headless game runner.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**

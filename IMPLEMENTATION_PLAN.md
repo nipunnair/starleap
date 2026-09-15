@@ -66,7 +66,7 @@ move generation under 5ms.
 
 - [x] P2.1 `src/ai/eval.ts`: implement the weighted evaluation function (SPEC §3.1) with the
       initial weights table. — `npm run typecheck`
-- [ ] P2.2 Greedy baseline AI: pick the legal move maximizing 1-ply eval delta (no search tree).
+- [x] P2.2 Greedy baseline AI: pick the legal move maximizing 1-ply eval delta (no search tree).
       — `npx vitest run src/ai/__tests__/greedy.test.ts`
 - [ ] P2.3 `src/ai/selfplay.ts`: headless game runner — seats N greedy AIs, plays to completion
       or 150-round stalemate, records illegal-move attempts (should be structurally impossible
