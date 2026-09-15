@@ -91,3 +91,11 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   IDs defensively (skips posting a response if the ID was cancelled by the time computation
   finishes) but ARCHITECTURE.md's documented real mechanism is simpler: the main thread tears
   down and recreates the worker on a new game or tier change rather than relying on CANCEL.
+- **Sirius's opening book is one heuristic entry, not researched opening theory.** The brief
+  asks for "a short hardcoded table of strong first-few-move formations," not a solved opening
+  tree — deriving genuinely optimal STARLEAP openings would need real game data this project
+  doesn't have yet. Implemented: on a player's literal first move (their corner still fully
+  intact), advance a base-row peg (closest to the hexagon) one step in, per classic
+  Chinese-Checkers opening theory of developing toward the center before committing to a jump
+  lane, rather than moving an apex peg first. Applies once per game per player, then defers to
+  normal search. Worth revisiting with real self-play data once the full ladder exists.

@@ -102,7 +102,7 @@ GATE: round-robin, 200 games per pairing, each tier beats the tier below at ≥6
       FIND_MOVE/CANCEL/THINKING/MOVE_FOUND/ERROR protocol from ARCHITECTURE.md. Tested via the
       pure `computeFindMoveResponse` function rather than a live Worker — see DECISIONS.md. —
       `npx vitest run src/ai/__tests__/worker.test.ts`
-- [ ] P3.6 Sirius opening ladder book: short hardcoded table of strong first-few-move formations
+- [x] P3.6 Sirius opening ladder book: short hardcoded table of strong first-few-move formations
       per seating, consulted before search when the position matches. — `npx vitest run
       src/ai/__tests__/opening-book.test.ts`
 - [ ] P3.7 `npm run tournament` CLI: round-robin N games per ordered pairing across all four

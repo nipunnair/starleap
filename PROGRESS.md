@@ -75,8 +75,13 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   gated to only activate in an actual worker global scope. See DECISIONS.md for why CANCEL can't
   truly interrupt an in-progress synchronous search.
 
+- P3.6: `src/ai/opening-book.ts` — Sirius-only, advances a base-row peg one step into the
+  hexagon on a player's literal first move, then defers to search. Wired into
+  `chooseTieredMove` (checked before search, only for the Sirius tier). Heuristic, not
+  researched opening theory — see DECISIONS.md.
+
 ## Next
-- Phase 3, task P3.6: Sirius opening ladder book.
+- Phase 3, task P3.7: `npm run tournament` CLI — round-robin across all four tiers.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**

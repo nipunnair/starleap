@@ -7,6 +7,7 @@ import type { GameState, PlayerCount } from '../engine/state';
 import { generateLegalMoves, type Move } from '../engine/moves';
 import { searchBestMoveAlphaBeta, searchBestMoveMaxN } from './search';
 import { DEFAULT_WEIGHTS, type EvalWeights } from './eval';
+import { openingBookMove } from './opening-book';
 
 export type TierName = 'Nova' | 'Vega' | 'Rigel' | 'Sirius';
 
@@ -57,6 +58,13 @@ export function chooseTieredMove(
   const legalMoves = generateLegalMoves(state, player);
   if (legalMoves.length === 0) {
     throw new Error('chooseTieredMove called with no legal moves for the given player');
+  }
+
+  if (tier.name === 'Sirius') {
+    const bookMove = openingBookMove(state, player);
+    if (bookMove) {
+      return { move: bookMove, usedNoise: false, evalScore: NaN, depthReached: 0 };
+    }
   }
 
   const candidates =
