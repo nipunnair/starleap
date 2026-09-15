@@ -292,10 +292,10 @@ network requests.
 
 ## Phase 10 — Final sweep
 
-- [ ] P10.1 Re-run every phase gate (P1-P9) in sequence, record pass/fail for each in
+- [x] P10.1 Re-run every phase gate (P1-P9) in sequence, record pass/fail for each in
       PROGRESS.md. — `npm test && npm run lint && npm run typecheck && npm run build && npx
       playwright test`
-- [ ] P10.2 Self-review the full diff for dead code, leftover TODOs/console.logs, and unused
+- [x] P10.2 Self-review the full diff for dead code, leftover TODOs/console.logs, and unused
       exports. — `npx knip` (or manual grep for `TODO`/`console.log` if knip isn't set up)
-- [ ] P10.3 Write `HANDOFF.md`: what's built, what's deferred (see BLOCKED.md), and how to
+- [x] P10.3 Write `HANDOFF.md`: what's built, what's deferred (see BLOCKED.md), and how to
       extend it (where to add a new AI tier, a new board theme, a new phase). — manual

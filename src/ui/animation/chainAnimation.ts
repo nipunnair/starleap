@@ -57,7 +57,7 @@ export function buildChainSegments(move: Move, spacing: number): HopSegment[] {
 }
 
 /** SPEC.md §4.6: 3px screen shake on chains of 5+ hops. */
-export const SHAKE_HOP_THRESHOLD = 5;
+const SHAKE_HOP_THRESHOLD = 5;
 
 export function shouldShakeForMove(move: Move): boolean {
   return move.type === 'jump' && move.hops.length >= SHAKE_HOP_THRESHOLD;

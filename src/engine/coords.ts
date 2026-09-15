@@ -9,10 +9,6 @@ export interface Cube {
   readonly z: number;
 }
 
-export function cube(x: number, y: number, z: number): Cube {
-  return { x, y, z };
-}
-
 export function add(a: Cube, b: Cube): Cube {
   return { x: a.x + b.x, y: a.y + b.y, z: a.z + b.z };
 }

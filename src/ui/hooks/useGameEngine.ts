@@ -81,5 +81,3 @@ export function useGameEngine(playerCount: PlayerCount, initialGameState?: GameS
     loadState,
   };
 }
-
-export type UseGameEngine = ReturnType<typeof useGameEngine>;

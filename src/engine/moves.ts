@@ -22,12 +22,6 @@ export function generateSteps(cell: Cube, occupied: ReadonlySet<string>): Cube[]
   return steps;
 }
 
-export function pegsAsOccupancyLookup(state: GameState): ReadonlyMap<string, Peg> {
-  const map = new Map<string, Peg>();
-  for (const p of state.pegs) map.set(key(p.cell), p);
-  return map;
-}
-
 export interface Hop {
   readonly direction: Cube;
   readonly span: number;

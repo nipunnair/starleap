@@ -8,7 +8,7 @@ import { Peg } from './Peg';
 import { PathPreview } from './PathPreview';
 import { AnimatedPeg } from './AnimatedPeg';
 
-export interface ActiveAnimation {
+interface ActiveAnimation {
   readonly move: Move;
   readonly owner: number;
   readonly reducedMotion: boolean;

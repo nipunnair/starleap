@@ -27,7 +27,7 @@ export interface SearchResult {
 }
 
 /** Static 1-ply eval delta for whoever is about to move, descending, capped to `k`. */
-export function topKMoves(state: GameState, mover: number, moves: readonly Move[], k: number, weights: EvalWeights): Move[] {
+function topKMoves(state: GameState, mover: number, moves: readonly Move[], k: number, weights: EvalWeights): Move[] {
   if (moves.length <= k) return [...moves];
   const baseline = evaluate(state, mover, weights);
   const scored = moves.map((m) => ({
@@ -205,7 +205,7 @@ export function searchBestMoveAlphaBeta(
 // --- Part B: 3+ player max^n (SPEC.md §3.2) ---
 
 /** Per-player evaluation vector at a leaf/cutoff node. */
-export type ScoreVector = readonly number[];
+type ScoreVector = readonly number[];
 
 /**
  * max^n: every player maximizes their own score (no adversarial minimizing). Each node

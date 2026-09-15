@@ -390,3 +390,24 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   because the app is a small hand-rolled React SPA with no heavy third-party scripts, no
   render-blocking web fonts, and the accessibility work from P8.1-P8.7 already covers what
   Lighthouse's axe-based accessibility category checks.
+- **P10.2 dead-code sweep (`npx knip`): fixed six real findings, kept one intentional one.**
+  Fixed: deleted `pegsAsOccupancyLookup` (`engine/moves.ts`) and the `cube()` constructor
+  (`engine/coords.ts`) entirely — both were genuinely called nowhere at all, not even
+  internally, true dead code left over from an earlier iteration (superseded by `buildOccupancy`
+  and plain object-literal construction respectively). Removed the `export` keyword (kept the
+  functions/types themselves, which ARE used internally in their own file) from `topKMoves`
+  (`ai/search.ts`), `SHAKE_HOP_THRESHOLD` (`ui/animation/chainAnimation.ts`), `ScoreVector`
+  (`ai/search.ts`), and `ActiveAnimation` (`ui/components/Board.tsx`); deleted the now-fully-
+  unused `UseGameEngine` type alias (`ui/hooks/useGameEngine.ts`) outright since removing its
+  `export` left nothing else referencing it. None of these six were ever imported by any file
+  other than their own. **Kept**: `src/engine/index.ts` (flagged as an "unused file") and its
+  re-exports of `isOnBoard`/`ZOBRIST_TABLE` (flagged as "unused exports") — this is the engine's
+  documented public API barrel, named explicitly in `docs/ARCHITECTURE.md`'s module table since
+  Step 1 (before any engine code existed), not something invented after the fact to justify
+  keeping it. It's true no internal code currently imports through it (every consumer reaches
+  into engine submodules directly), so it has no *current* consumer — but it's a deliberate,
+  zero-logic, ~30-line re-export module documenting the engine's intended public contract, not
+  speculative machinery with real complexity or maintenance cost. Deleting a pre-planned
+  architectural boundary during a final cleanup pass felt like the wrong kind of autonomous call
+  to make unilaterally; recorded here so a future maintainer can decide whether to start actually
+  routing imports through it, remove it, or leave it as living documentation.

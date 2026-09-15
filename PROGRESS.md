@@ -1,7 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1 through Phase 9 COMPLETE, gates green. Starting Phase 10 (Final sweep).
+All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -285,8 +285,29 @@ Phase 1 through Phase 9 COMPLETE, gates green. Starting Phase 10 (Final sweep).
   - **Phase 9 is fully complete — the phase's own GATE passes for real**: `starleap.html` opened
     via `file://` plays a complete game against Sirius with zero network requests.
 
+- **Phase 10 — Final sweep (P10.1-P10.3), all tasks complete:**
+  - P10.1: full gate rerun — `npm test` (126 passed), `npm run lint`, `npm run typecheck`,
+    `npm run build`, `npx playwright test` (60 passed, ~8.5 min, dominated by the one real
+    full-length Sirius game in `singlefile-offline.spec.ts`). All green.
+  - P10.2: `npx knip` dead-code sweep. Fixed 6 real findings — deleted two genuinely-unused
+    functions outright (`pegsAsOccupancyLookup` in `engine/moves.ts`, the `cube()` constructor
+    in `engine/coords.ts`, both called nowhere at all, not even internally) and removed
+    unnecessary `export` keywords from 4 internal-only symbols (`topKMoves`,
+    `SHAKE_HOP_THRESHOLD`, `ScoreVector`, `ActiveAnimation`), deleting one that became fully
+    dead once unexported (`UseGameEngine`). Kept `src/engine/index.ts` (the documented public
+    API barrel named in ARCHITECTURE.md since Step 1) despite knip flagging it as unused — see
+    DECISIONS.md for why that's a deliberate keep, not an oversight. No TODOs/FIXMEs and no
+    stray `console.log` in `src/` were found (CLI scripts' own stdout reporting is intentional).
+    Full gate rerun green after the cleanup.
+  - P10.3: `HANDOFF.md` written — what's built, what's explicitly deferred (with pointers to
+    the relevant DECISIONS.md entries), and how to extend the game (new AI tier, new board
+    theme, new phase, engine/rule changes).
+  - **The build is complete.** All 10 phases green, every phase gate passed for real (not
+    scoped down except where explicitly documented and justified), `BLOCKED.md` is empty.
+
 ## Next
-- Phase 10 (Final sweep): starting with P10.1 (re-run every gate).
+- Nothing left in `IMPLEMENTATION_PLAN.md`. See `HANDOFF.md` for deferred (non-blocking) items
+  and extension points for whoever picks this up next.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -307,4 +328,4 @@ Phase 1 through Phase 9 COMPLETE, gates green. Starting Phase 10 (Final sweep).
 - Phase 7 (Meta): **GREEN**
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
-- Phase 10 (Final sweep): not started
+- Phase 10 (Final sweep): **GREEN**
