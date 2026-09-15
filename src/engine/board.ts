@@ -2,7 +2,7 @@
  * Board construction: the 121-cell hexagram, its 61-cell hexagon, and six 10-cell corners.
  * See docs/SPEC.md §1. Zero imports outside coords.ts (which is itself zero-import).
  */
-import { type Cube, onBoard, key, rotate60 } from './coords';
+import { type Cube, onBoard, key, rotate60, distance } from './coords';
 
 export type CornerId = 'X+' | 'X-' | 'Y+' | 'Y-' | 'Z+' | 'Z-';
 
@@ -70,6 +70,20 @@ function buildBoard(): Board {
 }
 
 export const BOARD: Board = buildBoard();
+
+/** The single farthest-out cell of each corner (distance 8 from the board center). */
+function buildCornerApexes(): Readonly<Record<CornerId, Cube>> {
+  const apexes = {} as Record<CornerId, Cube>;
+  const origin: Cube = { x: 0, y: 0, z: 0 };
+  for (const id of CORNER_IDS) {
+    apexes[id] = BOARD.corners[id].reduce((farthest, c) =>
+      distance(origin, c) > distance(origin, farthest) ? c : farthest,
+    );
+  }
+  return apexes;
+}
+
+export const CORNER_APEX: Readonly<Record<CornerId, Cube>> = buildCornerApexes();
 
 export function isOnBoard(c: Cube): boolean {
   return BOARD.cellSet.has(key(c));

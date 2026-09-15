@@ -51,7 +51,7 @@ directory imports nothing (enforced by lint rule).
       otherwise-empty board (checked structurally, not as literal undo) — i.e. no move generates
       a landing cell that is provably unreachable-back-from under the same movement primitives. —
       `npx vitest run src/engine/__tests__/reversibility.test.ts`
-- [ ] P1.13 `src/engine/terminal.ts`: win detection (all 10 pegs in target corner), stalemate
+- [x] P1.13 `src/engine/terminal.ts`: win detection (all 10 pegs in target corner), stalemate
       detection (150 rounds), ranking (pegs-home desc, summed distance asc). —
       `npx vitest run src/engine/__tests__/terminal.test.ts`
 - [ ] P1.14 `src/engine/index.ts` public API barrel. Add eslint `no-restricted-imports`/

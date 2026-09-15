@@ -48,8 +48,16 @@ next up is Phase 1, task P1.1.
   opposite-direction inverse hop, and every step direction has an opposite in the direction
   set. Full suite: 44 tests green across 9 files.
 
+- P1.13: `src/engine/terminal.ts` — `hasWon`, `isStalemate` (150-round cap), `isGameOver`
+  (stalemate or only one player unfinished), and `rank` (pegs-home desc, then summed
+  distance-to-target-apex asc). Added `CORNER_APEX` to board.ts (each corner's single
+  farthest-out cell), shared with the future AI eval function's "distance to target apex" term.
+  Full suite: 50 tests green across 10 files.
+
 ## Next
-- Phase 1, task P1.13: `src/engine/terminal.ts` — win/stalemate detection and ranking.
+- Phase 1, task P1.14: `src/engine/index.ts` public API barrel + eslint import-boundary rule
+  (already added in the scaffold commit — verify it actually catches a violation, then check
+  off). Then P1.15: full Phase 1 gate run.
 
 ## Gate status
 - Phase 1 (Engine core): not started
