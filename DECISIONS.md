@@ -340,3 +340,12 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   violations found on any of them; no fixes were needed. The win-screen case reuses the
   `almostWon` debug fixture (see earlier celebrate.spec.ts decision) and required no human click
   since that fixture starts on the AI's turn, one move from completing the win itself.
+- **P8.8's Lighthouse gate uses the `lighthouse` + `chrome-launcher` packages directly in a
+  small CLI script**, not `playwright-lighthouse` (which wraps the same libraries but assumes a
+  Playwright-test context this is a standalone `npm run lighthouse` script, not a spec file).
+  `scripts/lighthouse-cli.ts` boots `vite preview` against `dist/`, launches headless Chrome,
+  audits the menu screen, and fails (non-zero exit) unless both performance and accessibility
+  score >= 90. First run scored 100/100 on both — no iteration/optimization was needed, likely
+  because the app is a small hand-rolled React SPA with no heavy third-party scripts, no
+  render-blocking web fonts, and the accessibility work from P8.1-P8.7 already covers what
+  Lighthouse's axe-based accessibility category checks.

@@ -223,9 +223,27 @@ Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
   - 129 unit tests (3 new: describeMove) + 51 Playwright E2E tests (10 new) — fixed one real
     test break along the way (`board-render.spec.ts` matched the SVG's exact old `aria-label`
     text, which changed when keyboard-nav instructions were added to it).
+- P8.6-P8.8 (PWA offline / accessibility audit / Lighthouse), all done and green:
+  - Fixed a latent gap: `public/favicon.svg` never actually existed even though
+    `vite.config.ts`'s `includeAssets` and the PWA manifest referenced it, and the manifest's
+    `icons` array was empty. Added the SVG (used for both the favicon and the manifest icons via
+    `sizes: "any"`, `purpose: any`/`maskable`).
+  - `pwa-offline.spec.ts`: after a first online visit and confirming
+    `navigator.serviceWorker.controller` is set, goes fully offline, reloads, and plays a
+    complete human move + AI Web Worker round-trip with zero network access. Passed first try —
+    `generateSW` mode's default precaching already covered the worker chunk.
+  - `axe-audit.spec.ts`: ran `@axe-core/playwright` against all 7 reachable screens (menu,
+    config, rules, settings, tutorial, board/game, post-game stats/win). Zero critical or serious
+    violations on any screen — no fixes needed.
+  - `scripts/lighthouse-cli.ts` (new, fills in the previously-unimplemented `npm run lighthouse`
+    script referenced in package.json): boots `vite preview` + headless Chrome, audits the menu
+    screen. First run: **Performance 100/100, Accessibility 100/100** — gate passed with no
+    iteration needed.
+  - 126 unit tests (unchanged — P8.6-P8.8 added E2E/CLI coverage only), 59 Playwright E2E tests
+    total. **Phase 8 is fully complete.**
 
 ## Next
-- Phase 8, task P8.6: PWA manifest + service worker offline verification.
+- Phase 9 (Packaging): starting with P9.1 (finalize `dist/` build).
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -244,6 +262,6 @@ Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
 - Phase 5 (Animation/juice): **GREEN**
 - Phase 6 (AI characters): **GREEN**
 - Phase 7 (Meta): **GREEN**
-- Phase 8 (Polish): not started
+- Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): not started
 - Phase 10 (Final sweep): not started
