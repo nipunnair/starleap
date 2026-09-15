@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import AIWorker from '../../ai/worker.ts?worker&inline';
 import type { GameState, PlayerCount } from '../../engine/state';
 import type { Move } from '../../engine/moves';
 import type { TierName } from '../../ai/tiers';
@@ -23,7 +24,12 @@ export function useAIWorker() {
   const requestIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const worker = new Worker(new URL('../../ai/worker.ts', import.meta.url), { type: 'module' });
+    // `?worker&inline` base64-embeds the worker's bundled source directly into the importing
+    // chunk instead of emitting it as a separate file referenced by URL — required for the
+    // singlefile build (opened via `file://`, which can't load a worker from a relative script
+    // URL or a cross-origin blob in most browsers) and works identically in the normal multi-file
+    // build, so both build targets share this one code path (see DECISIONS.md P9.2).
+    const worker = new AIWorker();
 
     worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       const response = event.data;

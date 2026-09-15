@@ -331,6 +331,47 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   is a separate script the service worker must also have precached. Passed on the first run with
   no code changes needed beyond adding the icons/favicon above — `generateSW` mode already
   precaches every build asset by default.
+- **`worker: { format: 'iife' }` in `vite.config.ts`, not `'es'`** — a real bug found while
+  building P9.2/P9.3, not a style choice. `useAIWorker.ts` was switched to Vite's `?worker&inline`
+  import (base64-embeds the worker instead of referencing it by URL) so the singlefile build's
+  worker can load under `file://`, which can't resolve a relative worker script URL. That alone
+  made the worker *load* under `file://`, but with `worker.format: 'es'` (a *module*-type
+  worker), the worker's script body silently never executed at all when instantiated from a
+  `blob:null` URL — the origin Chromium assigns to blobs created by a `file://` document is
+  opaque ("null"), and Chromium refuses to execute a module-type script fetched from a blob URL
+  with an opaque origin, with zero error surfaced anywhere (no `worker.onerror`, no console
+  output, no rejected promise — the worker object exists and `postMessage` to it silently does
+  nothing). The exact same code worked fine from `blob:http://...` when served normally, which is
+  what made this so easy to miss — every existing E2E test exercises Nova/Vega/Rigel over http,
+  and Sirius (the only tier whose behavior differs enough to matter, and coincidentally the one
+  the P9.3 gate specifically calls for) had never been driven through a real browser Worker in
+  any test before this task. Diagnosed by: (1) a throwaway Playwright script instrumenting
+  `page.on('worker', ...)` and `worker.on('console', ...)` — confirmed the worker was created but
+  never logged anything, even a debug line placed at the very top of the module; (2) confirming
+  the identical inline-worker mechanism DID work over `http://localhost:4173` (852ms response);
+  (3) a minimal standalone blob-worker test ruling out `performance.now()`/timers as the cause.
+  Fixed by building the worker as a classic (non-module) script instead — classic workers aren't
+  fetched as modules, so the opaque-origin restriction doesn't apply, and the bundled worker
+  chunk is fully self-contained (no external imports) regardless of format, so this changes
+  nothing about what code ships, only how it's wrapped. Re-verified: Sirius now responds in
+  ~850ms under `file://` too. This was almost shipped silently — `IMPLEMENTATION_PLAN.md`'s own
+  P9.2 line already anticipated "a blob-URL shim so the Web Worker works when loaded from
+  `file://`" in the abstract, but the specific module-vs-classic distinction wasn't something
+  that could be known without hitting it.
+- **P9.5's GitHub Pages workflow was verified by YAML syntax parsing, not `actionlint`** —
+  `actionlint` isn't installed in this sandbox and there's no network access to fetch it. Used
+  the standard, current three-job-free (`build` -> `deploy`) official GitHub Pages Actions
+  pattern (`actions/configure-pages`, `actions/upload-pages-artifact`,
+  `actions/deploy-pages`) rather than an older `peaceiris/actions-gh-pages`-style push-to-branch
+  approach, since it's the GitHub-maintained path and needs no deploy token/secret setup beyond
+  enabling Pages once in repo settings. Confirmed the file parses as valid YAML; full correctness
+  (e.g. exact permission scopes) can only be confirmed by an actual run once pushed, which is
+  outside this session's ability to trigger. Not treated as a blocker per the plan's own stated
+  fallback ("manual YAML review if actionlint unavailable").
+- **README's Docker section was verified with a real `docker build` + `docker run` + `curl`**,
+  not just written from the Dockerfile's intent — confirmed the built image serves `dist/`'s
+  `index.html` with a 200 on port 80. Docker was available in this sandbox, so P9.4 needed no
+  BLOCKED.md entry.
 - **P8.7's axe gate fails only on `critical`/`serious`-impact violations, per the plan's own
   "fix critical violations" wording**, not a zero-violations-of-any-kind bar — `moderate`/`minor`
   axe findings are frequently subjective or context-dependent (e.g. color-contrast heuristics on

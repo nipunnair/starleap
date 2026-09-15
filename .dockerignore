@@ -1,0 +1,9 @@
+node_modules
+dist
+dist-singlefile
+starleap.html
+playwright-report
+test-results
+coverage
+.vite
+*.log

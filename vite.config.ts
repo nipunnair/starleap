@@ -33,8 +33,15 @@ export default defineConfig(({ mode }) => {
             }),
           ]),
     ],
+    // Classic (not 'es') format: `useAIWorker.ts` loads the worker via `?worker&inline`, which
+    // base64-embeds it as a blob URL (needed for the singlefile build opened via `file://`).
+    // Chromium silently fails to execute a *module*-type worker loaded from a blob URL when the
+    // document has an opaque origin (which `file://` always does) — the worker is created but
+    // its script body never runs, no error is raised anywhere. Classic workers aren't fetched as
+    // modules and aren't subject to that restriction. The worker is fully self-contained after
+    // bundling either way, so this has no effect on what code runs, only how it's wrapped.
     worker: {
-      format: 'es',
+      format: 'iife',
     },
     build: {
       target: 'es2022',

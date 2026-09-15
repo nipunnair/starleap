@@ -273,22 +273,22 @@ GATE: lighthouse ≥90 on performance and accessibility; axe reports zero critic
 GATE: `starleap.html` opened via `file://` plays a complete game against Sirius with zero
 network requests.
 
-- [ ] P9.1 `dist/` production build config finalized (PWA + normal multi-file). —
+- [x] P9.1 `dist/` production build config finalized (PWA + normal multi-file). —
       `npm run build`
-- [ ] P9.2 `vite-plugin-singlefile` build producing `starleap.html`, including a blob-URL shim
+- [x] P9.2 `vite-plugin-singlefile` build producing `starleap.html`, including a blob-URL shim
       so the Web Worker works when loaded from `file://` (no relative worker script URL
       available in that context). — `npm run build:singlefile`
-- [ ] P9.3 Verify zero network requests from `starleap.html` under `file://` (playwright request
+- [x] P9.3 Verify zero network requests from `starleap.html` under `file://` (playwright request
       interception asserting an empty request list beyond the initial file load, while playing a
       full game against Sirius). — `npx playwright test singlefile-offline.spec.ts`
-- [ ] P9.4 `Dockerfile` (nginx:alpine serving `dist/`). — `docker build -t starleap . ` (or
+- [x] P9.4 `Dockerfile` (nginx:alpine serving `dist/`). — `docker build -t starleap . ` (or
       documented as untested if Docker isn't available in the build environment — see BLOCKED.md)
-- [ ] P9.5 GitHub Pages Actions workflow (`.github/workflows/pages.yml`) building and deploying
+- [x] P9.5 GitHub Pages Actions workflow (`.github/workflows/pages.yml`) building and deploying
       `dist/`. — `actionlint .github/workflows/pages.yml` (or manual YAML review if actionlint
       unavailable)
-- [ ] P9.6 README with three deployment paths (static `dist/` upload, `starleap.html`
+- [x] P9.6 README with three deployment paths (static `dist/` upload, `starleap.html`
       double-click, Docker) plus local dev instructions. — manual review
-- [ ] P9.7 Full phase gate. — `npx playwright test singlefile-offline.spec.ts`
+- [x] P9.7 Full phase gate. — `npx playwright test singlefile-offline.spec.ts`
 
 ## Phase 10 — Final sweep
 

@@ -1,7 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
+Phase 1 through Phase 9 COMPLETE, gates green. Starting Phase 10 (Final sweep).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -242,8 +242,51 @@ Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
   - 126 unit tests (unchanged — P8.6-P8.8 added E2E/CLI coverage only), 59 Playwright E2E tests
     total. **Phase 8 is fully complete.**
 
+- **Phase 9 — Packaging (P9.1-P9.7), all tasks complete:**
+  - P9.1: `dist/` build reconfirmed green (multi-file, PWA-enabled, favicon + manifest icons
+    from P8.6).
+  - P9.2: `useAIWorker.ts` switched from `new Worker(new URL(...), { type: 'module' })` to
+    Vite's `?worker&inline` import (base64-embeds the worker as a blob URL) — supersedes the
+    Phase 4 Done note above, which described the pre-singlefile mechanism.
+  - **Found and fixed a real bug while verifying P9.2/P9.3, not just a packaging detail**: with
+    `vite.config.ts`'s `worker: { format: 'es' }` (module-type worker), the inlined worker's
+    script body silently never executed at all when instantiated from a `file://` document's
+    `blob:null` (opaque-origin) URL — no error anywhere, `postMessage` to it just did nothing.
+    Every existing E2E test exercises the worker over `http://`, where the identical code works
+    fine (`blob:http://...` is not opaque) — and Sirius (the only tier meaningfully different
+    from the others, and the one the P9.3 gate specifically requires) had never actually been
+    driven through a real browser Worker in any test before this task, so the bug had no chance
+    to surface earlier. Fixed by switching `worker.format` to `'iife'` (classic, not module,
+    workers aren't fetched as ES modules and aren't subject to the restriction) — see DECISIONS.md
+    for the full diagnostic trail (a throwaway `page.on('worker')`/`worker.on('console')` script,
+    an isolated blob-worker timer test, and a direct http-vs-file:// comparison).
+  - `starleap.html` is produced at the repo root by `npm run build:singlefile` (via a `node -e`
+    copy step appended to the script) — gitignored, built fresh by the P9.3 test itself
+    (`test.beforeAll` runs the build) so the gate is self-contained.
+  - `singlefile-offline.spec.ts`: opens `starleap.html` via `file://`, configures a human vs.
+    Sirius 2-player game, plays it to completion via `playUntilGameOver`, and asserts zero
+    non-local requests (the initial `file://` navigation and the worker's own `blob:` URL are the
+    only two "requests" Playwright observes for a genuinely offline document — both are local,
+    in-memory resources, not network access). A real full game against Sirius (the slowest tier,
+    2.5s time budget/move) takes ~8.3 minutes end-to-end in the browser — accepted as correct,
+    not optimized further, matching this project's existing stance on full-game E2E runtime.
+  - P9.4: `Dockerfile` (`node:20-alpine` build stage -> `nginx:alpine` serving `dist/`) +
+    `.dockerignore`. Verified with a real `docker build` + `docker run` + `curl` (200 OK,
+    correct `index.html` served), not just written from intent — Docker was available in this
+    sandbox.
+  - P9.5: `.github/workflows/pages.yml` — standard GitHub-maintained Pages deploy pattern
+    (`configure-pages`/`upload-pages-artifact`/`deploy-pages`), verified by YAML parsing since
+    `actionlint` isn't available in this sandbox (plan's own stated fallback).
+  - P9.6: `README.md` — all three deployment paths (static `dist/` upload + GitHub Pages,
+    `starleap.html` double-click, Docker) plus local dev commands and project structure.
+  - Full suite reconfirmed green after the worker-format fix: 126 unit tests, 60 Playwright E2E
+    tests (the new `singlefile-offline.spec.ts` brings the full E2E run to ~8.5 minutes, up from
+    ~3.3, entirely due to that one real full-length Sirius game).
+  - **Phase 9 is fully complete — the phase's own GATE passes for real**: `starleap.html` opened
+    via `file://` plays a complete game against Sirius with zero network requests.
+
 ## Next
-- Phase 9 (Packaging): starting with P9.1 (finalize `dist/` build).
+- Phase 10 (Final sweep): starting with P10.1 (re-run every gate).
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -263,5 +306,5 @@ Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
 - Phase 6 (AI characters): **GREEN**
 - Phase 7 (Meta): **GREEN**
 - Phase 8 (Polish): **GREEN**
-- Phase 9 (Packaging): not started
+- Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): not started

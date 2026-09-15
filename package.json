@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:singlefile": "tsc -b && vite build --mode singlefile",
+    "build:singlefile": "tsc -b && vite build --mode singlefile && node -e \"require('fs').copyFileSync('dist-singlefile/index.html','starleap.html')\"",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . && node scripts/check-boundaries.mjs",
