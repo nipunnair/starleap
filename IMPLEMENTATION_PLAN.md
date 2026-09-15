@@ -188,9 +188,9 @@ a 7-hop chain.
 
 GATE: playwright asserts thinking state appears within 100ms of AI turn start.
 
-- [ ] P6.1 `CharacterAvatar` SVG component with the six states (idle/thinking/found-it/move/
+- [x] P6.1 `CharacterAvatar` SVG component with the six states (idle/thinking/found-it/move/
       celebrate/worried) as CSS-driven state classes. — `npm run typecheck`
-- [ ] P6.2 Per-opponent personality parameters (amplitude/frequency deltas for Nova/Vega/Rigel/
+- [x] P6.2 Per-opponent personality parameters (amplitude/frequency deltas for Nova/Vega/Rigel/
       Sirius) layered on the shared six-state component. — `npx vitest run
       src/ui/__tests__/character-personality.test.ts`
 - [ ] P6.3 Wire `thinking` to fire immediately on AI turn start (dispatch-time, not
