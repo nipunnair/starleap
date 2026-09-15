@@ -39,8 +39,13 @@ next up is Phase 1, task P1.1.
   and jump-chain endpoints, filtered by residency, with jump moves deduped by final cell. Full
   suite: 37 tests green across 7 files.
 
+- P1.11: `applyMove(state, move) -> state` — pure, immutable, latches `hasLeftStart`, advances
+  `currentPlayer`, increments `round` once every seated player has moved once. 50-run fast-check
+  property test plays random legal-move sequences and confirms every resulting peg stays
+  on-board with no overlaps.
+
 ## Next
-- Phase 1, task P1.11: `src/engine/apply.ts` — pure `applyMove(state, move) -> state`.
+- Phase 1, task P1.12: reversibility property test.
 
 ## Gate status
 - Phase 1 (Engine core): not started

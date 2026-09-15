@@ -42,7 +42,7 @@ directory imports nothing (enforced by lint rule).
 - [x] P1.10 Residency filter (SPEC §2.4) + anti-backward-block filter (SPEC §2.5) applied to
       candidate final resting cells (steps and chain endpoints alike). — `npx vitest run
       src/engine/__tests__/residency.test.ts`
-- [ ] P1.11 `src/engine/apply.ts`: pure `applyMove(state, move) -> state`, updates peg position,
+- [x] P1.11 `src/engine/apply.ts`: pure `applyMove(state, move) -> state`, updates peg position,
       `hasLeftStart`, current player, round counter. Property test: applying a move never
       produces a peg on an off-board or previously-occupied-by-another-peg cell. —
       `npx vitest run src/engine/__tests__/apply.test.ts`
