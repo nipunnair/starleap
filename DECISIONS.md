@@ -171,3 +171,8 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Sirius's uncapped depth ceiling — its breadth was consuming the time its depth needed. Verified
   the fix (topK 18) on the same matchup — 3 repeated trials all had Sirius win 10-9 pegs-home,
   consistently, before applying it to the real TIERS table.
+- **Re-tuned Sirius's `topK` from 18 down to 14** (deliberately below Rigel's 16). The 18-game,
+  30-games/pairing validation tournament with topK=18 showed Nova<Vega<Rigel monotonic and
+  correct, but Rigel vs Sirius came back a near coin flip (53.3%/46.7%, i.e. Sirius technically
+  losing more often) — not the ≥60% the gate requires. Verified 14 across 5 repeated direct
+  trials of the same matchup (all Sirius wins, 10-9 pegs-home) before applying it.
