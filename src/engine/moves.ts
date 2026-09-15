@@ -86,3 +86,54 @@ export function legalHopsFrom(cell: Cube, occupied: ReadonlySet<string>): Hop[] 
 
   return hops;
 }
+
+/** Hard cap per SPEC §2.3 — no legal position should approach it; it bounds worst-case search. */
+export const MAX_CHAIN_HOPS = 24;
+
+export interface JumpChainMove {
+  readonly type: 'jump';
+  readonly pegId: string;
+  readonly from: Cube;
+  readonly to: Cube;
+  readonly hops: readonly Hop[];
+}
+
+/**
+ * Every jump-chain move available from a peg's current cell: one entry per cell the chain
+ * could legally stop at (SPEC §2.3 — "you may stop at any point"), each carrying the full
+ * hop-by-hop path taken to reach it. DFS with a per-chain visited-cell guard (no cell may be
+ * visited twice within one chain) and the 24-hop cap.
+ */
+export function generateJumpChains(peg: Peg, occupied: ReadonlySet<string>): JumpChainMove[] {
+  const results: JumpChainMove[] = [];
+  const visited = new Set<string>([key(peg.cell)]);
+  const path: Hop[] = [];
+
+  function dfs(current: Cube): void {
+    if (path.length >= MAX_CHAIN_HOPS) return;
+
+    for (const hop of legalHopsFrom(current, occupied)) {
+      const landingKey = key(hop.landing);
+      if (visited.has(landingKey)) continue;
+
+      path.push(hop);
+      visited.add(landingKey);
+
+      results.push({
+        type: 'jump',
+        pegId: peg.id,
+        from: peg.cell,
+        to: hop.landing,
+        hops: [...path],
+      });
+
+      dfs(hop.landing);
+
+      path.pop();
+      visited.delete(landingKey);
+    }
+  }
+
+  dfs(peg.cell);
+  return results;
+}

@@ -28,8 +28,15 @@ next up is Phase 1, task P1.1.
   `legalHopsFrom`'s `span===1` results match exactly, including a 200-run fast-check property
   test over random occupancy patterns.
 
+- P1.8-P1.9: `generateJumpChains` DFS — every cell a chain could stop at (SPEC §2.3, "you may
+  stop at any point"), each with its full hop path, with a per-chain visited-cell guard and the
+  24-hop cap. Verified with a hand-built multi-hop ladder, a long-span (n=3) hop, an empty-board
+  zero-chains case, dense 6P position sanity, and a 100-run fast-check property test asserting no
+  chain ever revisits a cell.
+
 ## Next
-- Phase 1, task P1.8: full jump-chain DFS (any span per hop, visited-cell guard, 24-hop cap).
+- Phase 1, task P1.10: residency (§2.4) + anti-backward-block (§2.5) filters on candidate final
+  resting cells.
 
 ## Gate status
 - Phase 1 (Engine core): not started

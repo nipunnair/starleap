@@ -34,10 +34,10 @@ directory imports nothing (enforced by lint rule).
       landing for arbitrary span `n`), plus a hand-written classic-rules (`n=1`-only) reference
       jump generator used solely as a test oracle. Property test asserts the two agree exactly
       for `n=1`. — `npx vitest run src/engine/__tests__/jump-oracle.test.ts`
-- [ ] P1.8 `src/engine/moves.ts` part C: full jump-chain DFS (any span per hop, visited-cell
+- [x] P1.8 `src/engine/moves.ts` part C: full jump-chain DFS (any span per hop, visited-cell
       guard, 24-hop cap), enumerating every reachable chain-ending cell with its hop path. —
       `npx vitest run src/engine/__tests__/jump-chain.test.ts`
-- [ ] P1.9 Property test: no enumerated chain revisits a cell the mover has already stood on. —
+- [x] P1.9 Property test: no enumerated chain revisits a cell the mover has already stood on. —
       `npx vitest run src/engine/__tests__/jump-chain.test.ts`
 - [ ] P1.10 Residency filter (SPEC §2.4) + anti-backward-block filter (SPEC §2.5) applied to
       candidate final resting cells (steps and chain endpoints alike). — `npx vitest run
