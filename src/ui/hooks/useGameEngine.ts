@@ -27,9 +27,9 @@ function reducer(state: EngineState, action: Action): EngineState {
   }
 }
 
-export function useGameEngine(playerCount: PlayerCount) {
+export function useGameEngine(playerCount: PlayerCount, initialGameState?: GameState) {
   const [state, dispatch] = useReducer(reducer, playerCount, (pc) => ({
-    game: createInitialState(pc),
+    game: initialGameState ?? createInitialState(pc),
     selectedPegId: null,
   }));
 

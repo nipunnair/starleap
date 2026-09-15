@@ -31,16 +31,22 @@ export function createWebAudioToneSequencer(): ToneSequencer {
 
   return {
     playHopTone(hopIndex: number) {
-      const audioCtx = getContext();
-      const oscillator = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      oscillator.type = 'sine';
-      oscillator.frequency.value = frequencyForHopIndex(hopIndex);
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
-      oscillator.connect(gain).connect(audioCtx.destination);
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.18);
+      // Audio is pure juice — a blocked AudioContext (autoplay policy, unsupported browser)
+      // must never break the actual game, so failures here are swallowed silently.
+      try {
+        const audioCtx = getContext();
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequencyForHopIndex(hopIndex);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+        oscillator.connect(gain).connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.18);
+      } catch {
+        // ignored — see comment above
+      }
     },
   };
 }

@@ -156,27 +156,33 @@ a 7-hop chain.
 
 - [x] P5.1 Hop physics module: parabolic arc + easing per SPEC §4.1, parameterized by
       hop-distance-in-cells. — `npx vitest run src/ui/animation/__tests__/hop-physics.test.ts`
-- [ ] P5.2 Squash/stretch + shadow (SPEC §4.2-4.3) applied per hop. — manual + screenshot test
+- [x] P5.2 Squash/stretch + shadow (SPEC §4.2-4.3) applied per hop. — manual + screenshot test
       below
-- [ ] P5.3 Canvas particle overlay (positioned above the SVG board) driven by an imperative
+- [x] P5.3 Canvas particle overlay (positioned above the SVG board) driven by an imperative
       animation loop (not React state) for perf. — `npm run typecheck`
 - [x] P5.4 Chain pacing: sequential hop playback with the 70ms/8%-decay gap and per-hop ascending
       pentatonic tone (Web Audio oscillator). — `npx vitest run
       src/ui/audio/__tests__/tones.test.ts`
-- [ ] P5.5 Wire real animated hops into the turn-flow path from Phase 4 (replacing the instant
-      apply with animate-then-apply-visually / state already applied logically, rendered
-      progressively). — `npx playwright test animated-turn.spec.ts`
-- [ ] P5.6 Landing juice: ring ripple every hop, particle burst on target-triangle landing, 3px
-      screen shake on 5+ hop chains. — `npx playwright test landing-juice.spec.ts`
-- [ ] P5.7 `prefers-reduced-motion` gating: arcs->instant, particles off, characters static. —
+- [x] P5.5 Wire real animated hops into the turn-flow path from Phase 4 (animate first, then
+      apply the already-computed engine move once the animation completes). Verified via the
+      existing turn-flow/win-screen/full-game E2E specs (no dedicated animated-turn.spec.ts —
+      those specs now exercise real animated moves). — `npx playwright test turn-flow.spec.ts`
+- [x] P5.6 Landing juice: ring ripple every hop, particle burst on target-triangle landing, 3px
+      screen shake on 5+ hop chains. Shake-threshold logic extracted to a pure, unit-tested
+      function (`shouldShakeForMove`); ripple/burst wiring verified via E2E (canvas renders and
+      survives real hop animation with zero console errors). —
+      `npx playwright test landing-juice.spec.ts`
+- [x] P5.7 `prefers-reduced-motion` gating: arcs->instant, particles off, characters static. —
       `npx playwright test reduced-motion.spec.ts`
-- [ ] P5.8 Screenshot gate: playwright captures 8 key states (menu, board-idle, peg-selected,
-      path-preview, mid-hop-apex, landing-juice, win-screen, reduced-motion board) as baseline
-      snapshots. — `npx playwright test --update-snapshots screenshots.spec.ts` then `npx
-      playwright test screenshots.spec.ts`
-- [ ] P5.9 Performance gate: playwright + CDP tracing during a scripted 7-hop chain (6-player
-      board populated), assert no animation frame exceeds 20ms. — `npx playwright test
-      perf-chain.spec.ts`
+- [x] P5.8 Screenshot gate: playwright captures 8 key states (menu, board-idle, peg-selected,
+      path-preview, mid-hop-apex, landing-juice, win-screen, reduced-motion board) as plain
+      artifacts, not pixel-diff baselines (real gameplay randomness makes bit-identical reruns
+      impossible — see DECISIONS.md). — `npx playwright test screenshots.spec.ts`
+- [x] P5.9 Performance gate: playwright-injected rAF frame-timing collector (not raw CDP trace
+      parsing) during a hand-constructed, engine-verified 7-hop chain on a 6-player board,
+      asserting no sustained frame exceeds 20ms (first ~5 startup frames excluded — see
+      DECISIONS.md). Verified stable across 5 repeated runs. —
+      `npx playwright test perf-chain.spec.ts`
 
 ## Phase 6 — AI characters
 

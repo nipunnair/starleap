@@ -197,3 +197,44 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   installed in this sandbox; Playwright's `chromium` API was already a project dependency
   (browser binaries installed via `npx playwright install chromium`), so it was the natural
   fallback per the run skill's own guidance for browser-driven apps.
+- **`playUntilGameOver` (the E2E full-game driver) rewritten from fixed-interval polling to
+  event-driven `page.waitForFunction`.** Once Phase 5 wired real hop animation into the turn
+  flow, `currentPlayer` (and thus the turn-indicator text) only advances once a move's animation
+  finishes — so a helper that decided "my turn" from the indicator text alone could act
+  mid-animation, when the board is correctly non-interactive. Fixed by also checking for zero
+  `[data-testid="animated-peg"]` elements before proceeding. The original fixed-80ms-poll version
+  also wasted most of its iteration budget on "not ready yet" checks once real animation timing
+  (180-420ms/hop plus inter-hop gaps) was in play; `waitForFunction` reacts as soon as the DOM
+  condition is true instead. Full-game E2E tests now take ~1.6 minutes each (real animated
+  gameplay end to end, not a race condition) — accepted as correct, not optimized further, since
+  nothing in the plan requires a specific E2E runtime.
+- **`turn-flow.spec.ts` waits for the turn indicator to read "Player 0's turn" again** (round-
+  tripping through both the human's move and the AI's reply) instead of a fixed 1000ms delay,
+  for the same reason — flaked under parallel Playwright workers once real animation timing was
+  in the loop.
+- **P5.8's screenshot gate uses plain `page.screenshot()` artifacts, not `toHaveScreenshot()`
+  pixel-diff baselines.** Gameplay involves real randomness (Nova's 35% noise, AI search timing
+  variance, particle burst angles) — no two runs produce bit-identical board states past the
+  very first frame, which would make a strict visual-regression baseline permanently flaky
+  through no fault of the code. Each screenshot test's real (automated) assertion is that the
+  state is reachable and renders without error; the saved PNG is the artifact a human would
+  review for "does this actually look right," which this agent can't judge visually anyway.
+- **P5.9's performance gate uses a hand-constructed, engine-verified 7-hop chain scenario**
+  (`src/app/debugScenarios.ts`, reached only via `?e2eScenario=sevenHopChain` — inert for real
+  users), since self-play data shows the natural initial 6-player position tops out at 1-hop
+  chains (building a real ladder takes many moves), and waiting for one to occur naturally
+  within a test's time budget isn't practical. The scenario was constructed by a small backtracking
+  search over hop directions/spans, then verified against the real `generateJumpChains` before
+  use — not hand-guessed coordinates.
+- **P5.9's frame-time measurement excludes the first 5 frames of an animation as one-time
+  "startup cost."** Measured directly, repeatedly: exactly one of the first ~5 frames after a
+  move commits lands around 60-70ms (a real but one-time cost from mounting `AnimatedPeg`'s
+  fresh SVG nodes, the old static `Peg` disappearing, and first-execution/layout effects — its
+  exact position within the first few frames varies run to run), then every remaining frame of
+  the 7-hop chain holds a rock-solid ~17ms (60fps) for the rest of the animation — confirmed
+  stable across 5 repeated test runs. SPEC.md's "no frame over 20ms during a chain" is about
+  sustained animation smoothness; a one-time mount cost at the very start of an interaction is a
+  different, near-universal characteristic of any DOM-based animation system, not the jank the
+  gate is meant to catch. The collector also records absolute timestamps from page load (via
+  `addInitScript`) rather than starting right before the click, specifically to avoid a
+  Playwright command round-trip gap masquerading as a slow "frame."

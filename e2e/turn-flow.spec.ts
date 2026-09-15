@@ -19,8 +19,11 @@ test.describe('Turn flow (IMPLEMENTATION_PLAN.md P4.6)', () => {
     const destination = page.locator('circle[stroke="#50c88c"]').first();
     await destination.click();
 
-    // Give the AI worker a moment to respond (Nova's real budget is 250ms).
-    await page.waitForTimeout(1000);
+    // Wait for the turn to cycle all the way back to player 0 — only true once both the
+    // human's move and the AI's reply have finished animating and actually applied (rather
+    // than a fixed delay, which flakes under parallel-worker CPU contention).
+    await expect(page.getByTestId('turn-indicator')).toHaveText("Player 0's turn", { timeout: 10_000 });
+    await expect(page.getByTestId('animated-peg')).toHaveCount(0);
 
     const finalPegCells = await page.locator('[data-testid^="peg-p0-"]').evaluateAll((els) =>
       els.map((el) => el.getAttribute('data-testid')),

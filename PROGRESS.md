@@ -1,8 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1, Phase 2, Phase 3, and Phase 4 COMPLETE, gates green. Starting Phase 5 (Animation and
-juice).
+Phase 1 through Phase 5 COMPLETE, gates green. Starting Phase 6 (AI characters).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -126,8 +125,34 @@ juice).
     still green too (95 tests). `npx playwright install chromium` was needed first (not
     preinstalled in this sandbox).
 
+- **Phase 5 — Animation and juice (P5.1-P5.9), all tasks complete:**
+  - `hopPhysics.ts`: parabolic arc, easing, squash/stretch, shadow factor (SPEC §4.1-4.3), pure
+    and unit tested.
+  - `chainAnimation.ts`: turns a Move into timed hop segments with the 70ms/8%-decay inter-hop
+    gap (SPEC §4.4); `shouldShakeForMove` (5+-hop threshold) extracted as a pure, tested function.
+  - `tones.ts`: pentatonic per-hop tone frequency (pure/tested) + real Web Audio impl (errors
+    swallowed — audio must never break the game) + silent no-op for reduced-motion.
+  - `AnimatedPeg`: drives one peg through its hop-by-hop path via rAF, writing position/scale/
+    shadow directly to DOM refs (not React state) every frame; fires tones and per-hop landing
+    callbacks; resolves instantly under `prefers-reduced-motion`.
+  - `ParticleCanvas`: single canvas overlay above the SVG board, its own rAF loop (imperative,
+    not React state) for ring ripples (every hop) and particle bursts (target-triangle landings
+    only).
+  - `GameScreen` now animates every move (human or AI) before applying the underlying engine
+    state, with a `useReducedMotion` hook honoring the OS/browser setting, and a CSS keyframe
+    screen-shake for 5+-hop chains.
+  - **Gate: green.** 113 unit tests (7 new: hop physics, chain animation/shake-threshold, tones)
+    + 24 Playwright E2E tests (13 new: landing-juice, reduced-motion, 8-state screenshot gate,
+    performance gate). Fixed two real timing bugs found while writing E2E tests for real
+    animation (pass-screen-before-first-move; the full-game driver helper deciding "my turn"
+    from stale text during an in-flight animation) — both documented in DECISIONS.md.
+  - P5.9's gate uses a hand-constructed, engine-verified 7-hop scenario (natural play doesn't
+    reliably produce one within a test's time budget) reached only via a URL-only debug flag,
+    inert for real users — see `src/app/debugScenarios.ts` and DECISIONS.md.
+
 ## Next
-- Phase 5, task P5.1: hop physics module (parabolic arc + easing, SPEC §4.1).
+- Phase 6, task P6.1: `CharacterAvatar` SVG component with the six states (idle/thinking/
+  found-it/move/celebrate/worried).
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -143,7 +168,7 @@ juice).
 - Phase 3 (Full AI ladder): **GREEN** — see Done notes above for scope (30 games/pairing,
   scaled time budgets)
 - Phase 4 (Board UI): **GREEN**
-- Phase 5 (Animation/juice): not started
+- Phase 5 (Animation/juice): **GREEN**
 - Phase 6 (AI characters): not started
 - Phase 7 (Meta): not started
 - Phase 8 (Polish): not started

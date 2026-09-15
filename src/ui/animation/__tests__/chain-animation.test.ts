@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildChainSegments, totalChainDurationMs, segmentAt } from '../chainAnimation';
+import { buildChainSegments, totalChainDurationMs, segmentAt, shouldShakeForMove } from '../chainAnimation';
 import type { JumpChainMove, StepMove } from '../../../engine/moves';
 
 const SPACING = 32;
@@ -77,5 +77,33 @@ describe('buildChainSegments (SPEC.md §4.4)', () => {
     // Past the end.
     const total = totalChainDurationMs(segments);
     expect(segmentAt(segments, total + 100)).toBeNull();
+  });
+});
+
+describe('shouldShakeForMove (SPEC.md §4.6)', () => {
+  it('never shakes for a step', () => {
+    const move: StepMove = { type: 'step', pegId: 'p', from: { x: 0, y: 0, z: 0 }, to: { x: 1, y: -1, z: 0 } };
+    expect(shouldShakeForMove(move)).toBe(false);
+  });
+
+  function buildStraightChain(hopCount: number): JumpChainMove {
+    const dir = { x: 1, y: -1, z: 0 };
+    const start = { x: -4, y: 4, z: 0 };
+    let current = start;
+    const hops = [];
+    for (let i = 0; i < hopCount; i++) {
+      const h = hop(current, dir, 1);
+      hops.push(h);
+      current = h.landing;
+    }
+    return { type: 'jump', pegId: 'p', from: start, to: current, hops };
+  }
+
+  it('does not shake for chains under 5 hops', () => {
+    expect(shouldShakeForMove(buildStraightChain(4))).toBe(false);
+  });
+
+  it('shakes for chains of 5 or more hops', () => {
+    expect(shouldShakeForMove(buildStraightChain(5))).toBe(true);
   });
 });

@@ -9,3 +9,29 @@ body {
   background: #0b1020;
   color: #f4f4f8;
 }
+
+/* SPEC.md §4.6: 3px screen shake on chains of 5+ hops. */
+@keyframes starleap-shake {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-3px, 2px);
+  }
+  40% {
+    transform: translate(3px, -2px);
+  }
+  60% {
+    transform: translate(-2px, -3px);
+  }
+  80% {
+    transform: translate(2px, 3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+  }
+}
