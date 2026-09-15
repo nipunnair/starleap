@@ -54,9 +54,12 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   fast-check property test confirms it always matches full recomputation across random legal
   move sequences at all four seat counts.
 
+- P3.2: `src/ai/search.ts` — iterative-deepening alpha-beta (2P), top-K static-eval-delta
+  pruning at every node (shared helper, will be reused by max^n), Zobrist-keyed transposition
+  table with exact/lower/upper bound flags.
+
 ## Next
-- Phase 3, task P3.2: `src/ai/search.ts` part A — 2-player iterative-deepening alpha-beta with
-  the Zobrist-keyed transposition table.
+- Phase 3, task P3.3: `src/ai/search.ts` part B — 3+ player max^n at depth 2.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
