@@ -331,3 +331,12 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   is a separate script the service worker must also have precached. Passed on the first run with
   no code changes needed beyond adding the icons/favicon above — `generateSW` mode already
   precaches every build asset by default.
+- **P8.7's axe gate fails only on `critical`/`serious`-impact violations, per the plan's own
+  "fix critical violations" wording**, not a zero-violations-of-any-kind bar — `moderate`/`minor`
+  axe findings are frequently subjective or context-dependent (e.g. color-contrast heuristics on
+  a deliberately dark game-board theme) and out of scope for an autonomous pass with no design
+  review available. Ran `@axe-core/playwright` against all seven reachable screens (menu, config,
+  rules, settings, tutorial, board/game, post-game stats/win) — zero critical or serious
+  violations found on any of them; no fixes were needed. The win-screen case reuses the
+  `almostWon` debug fixture (see earlier celebrate.spec.ts decision) and required no human click
+  since that fixture starts on the AI's turn, one move from completing the win itself.

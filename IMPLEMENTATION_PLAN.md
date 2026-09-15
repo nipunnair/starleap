@@ -262,7 +262,7 @@ GATE: lighthouse ≥90 on performance and accessibility; axe reports zero critic
       (character animation, menu transitions). — `npx playwright test reduced-motion-full.spec.ts`
 - [x] P8.6 PWA manifest + service worker (offline shell caching) via `vite-plugin-pwa`. —
       `npm run build && npx playwright test pwa-offline.spec.ts`
-- [ ] P8.7 Run axe against every screen (menu/config/board/rules/tutorial/settings/stats),
+- [x] P8.7 Run axe against every screen (menu/config/board/rules/tutorial/settings/stats),
       fix critical violations. — `npx playwright test axe-audit.spec.ts`
 - [ ] P8.8 Run Lighthouse (via `playwright-lighthouse` or CLI against a built preview server)
       for performance + accessibility, iterate until ≥90 on both. — `npm run build && npm run
