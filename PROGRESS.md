@@ -34,9 +34,13 @@ next up is Phase 1, task P1.1.
   zero-chains case, dense 6P position sanity, and a 100-run fast-check property test asserting no
   chain ever revisits a cell.
 
+- P1.10: `isLegalRestingCell` (residency §2.4 + anti-backward-block §2.5) and the top-level
+  `generateLegalMoves(state, player)` aggregator — the real per-turn move list, combining steps
+  and jump-chain endpoints, filtered by residency, with jump moves deduped by final cell. Full
+  suite: 37 tests green across 7 files.
+
 ## Next
-- Phase 1, task P1.10: residency (§2.4) + anti-backward-block (§2.5) filters on candidate final
-  resting cells.
+- Phase 1, task P1.11: `src/engine/apply.ts` — pure `applyMove(state, move) -> state`.
 
 ## Gate status
 - Phase 1 (Engine core): not started

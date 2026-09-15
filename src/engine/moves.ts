@@ -3,7 +3,8 @@
  * Zero imports outside coords.ts/board.ts/state.ts (all themselves zero-import).
  */
 import { type Cube, add, scale, onBoard, key, NEIGHBOR_DIRECTIONS } from './coords';
-import type { GameState, Peg } from './state';
+import { cornerOf } from './board';
+import { seatOf, type GameState, type Peg } from './state';
 
 export function buildOccupancy(state: GameState): ReadonlySet<string> {
   return new Set(state.pegs.map((p) => key(p.cell)));
@@ -136,4 +137,63 @@ export function generateJumpChains(peg: Peg, occupied: ReadonlySet<string>): Jum
 
   dfs(peg.cell);
   return results;
+}
+
+/**
+ * Residency (SPEC §2.4) + anti-backward-block (SPEC §2.5): may `peg` legally END a turn on
+ * cell `to`? Only the final resting cell is checked — mid-chain passage is unrestricted.
+ */
+export function isLegalRestingCell(state: GameState, peg: Peg, to: Cube): boolean {
+  const corner = cornerOf(to);
+  if (corner === null) return true; // central hexagon: never restricted
+
+  const seat = seatOf(state, peg.owner);
+  const isAssigned = state.seats.some((s) => s.startCorner === corner || s.targetCorner === corner);
+  if (!isAssigned) return true; // neutral corner (fewer than six players): resting there is fine
+
+  if (corner === seat.targetCorner) return true;
+  if (corner === seat.startCorner) return !peg.hasLeftStart; // anti-backward-block
+
+  return false; // another seated player's start or target corner
+}
+
+export interface StepMove {
+  readonly type: 'step';
+  readonly pegId: string;
+  readonly from: Cube;
+  readonly to: Cube;
+}
+
+export type Move = StepMove | JumpChainMove;
+
+/**
+ * The full, rules-legal move list for `player` this turn: every STEP and every jump-chain
+ * stopping point across all of the player's pegs, filtered by residency/anti-block. Jump
+ * chains that reach the same final cell via different hop sequences are deduplicated (only the
+ * resulting position matters to the game; the first path found is kept for animation).
+ */
+export function generateLegalMoves(state: GameState, player: number): Move[] {
+  const occupied = buildOccupancy(state);
+  const moves: Move[] = [];
+
+  for (const peg of state.pegs) {
+    if (peg.owner !== player) continue;
+
+    for (const to of generateSteps(peg.cell, occupied)) {
+      if (isLegalRestingCell(state, peg, to)) {
+        moves.push({ type: 'step', pegId: peg.id, from: peg.cell, to });
+      }
+    }
+
+    const seenChainEndings = new Set<string>();
+    for (const chain of generateJumpChains(peg, occupied)) {
+      const toKey = key(chain.to);
+      if (seenChainEndings.has(toKey)) continue;
+      if (!isLegalRestingCell(state, peg, chain.to)) continue;
+      seenChainEndings.add(toKey);
+      moves.push(chain);
+    }
+  }
+
+  return moves;
 }

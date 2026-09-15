@@ -39,7 +39,7 @@ directory imports nothing (enforced by lint rule).
       `npx vitest run src/engine/__tests__/jump-chain.test.ts`
 - [x] P1.9 Property test: no enumerated chain revisits a cell the mover has already stood on. —
       `npx vitest run src/engine/__tests__/jump-chain.test.ts`
-- [ ] P1.10 Residency filter (SPEC §2.4) + anti-backward-block filter (SPEC §2.5) applied to
+- [x] P1.10 Residency filter (SPEC §2.4) + anti-backward-block filter (SPEC §2.5) applied to
       candidate final resting cells (steps and chain endpoints alike). — `npx vitest run
       src/engine/__tests__/residency.test.ts`
 - [ ] P1.11 `src/engine/apply.ts`: pure `applyMove(state, move) -> state`, updates peg position,
