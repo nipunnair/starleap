@@ -1,66 +1,39 @@
 # PROGRESS
 
 ## Status
-Step 1 (bootstrap docs) and Step 2 (scaffold) both complete and committed. No game code yet —
-next up is Phase 1, task P1.1.
+Phase 1 (Engine core) COMPLETE, gate green. Starting Phase 2 (self-play harness + greedy
+baseline AI).
 
 ## Done
-- docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md, PROMPT_build.md,
-  loop.sh, PROGRESS.md/DECISIONS.md/BLOCKED.md written (Step 1).
-- Vite + React 18 + TypeScript scaffold hand-written (create-vite CLI didn't cooperate in this
-  sandbox, see DECISIONS.md). vitest, fast-check (installed, not yet used), playwright,
-  vite-plugin-singlefile, vite-plugin-pwa, eslint (flat config with engine-purity import-boundary
-  rules) all installed and wired. `.github/workflows/ci.yml` runs typecheck + lint + test.
-- Verified green: `npm run typecheck`, `npm run lint`, `npm test` (1 smoke test), `npm run build`
-  (produces `dist/` with PWA manifest/service worker).
-
-- P1.1-P1.4: `src/engine/coords.ts` (cube coords, onBoard, neighbors, distance, rotate60,
-  screen projection) and `src/engine/board.ts` (121-cell hexagram, 61-cell hexagon, six 10-cell
-  corners, opposite-pair map). Property tests confirm exact cardinalities and 60°-rotation
-  invariance. `npm run typecheck && npm run lint && npm test` all green.
-
-- P1.5: `src/engine/state.ts` — GameState type, seating plans for 2/3/4/6 players (see
-  DECISIONS.md for the 4P/6P corner-assignment judgment call), initial peg placement.
-
-- P1.6-P1.7: `src/engine/moves.ts` — `generateSteps` (adjacent empty neighbor) and
-  `legalHopsFrom` (arbitrary-span hop legality per SPEC §2.3: pivot/approach-gap/landing/
-  departure-gap). A hand-written classic-rules (`n=1`-only) oracle in the test file confirms
-  `legalHopsFrom`'s `span===1` results match exactly, including a 200-run fast-check property
-  test over random occupancy patterns.
-
-- P1.8-P1.9: `generateJumpChains` DFS — every cell a chain could stop at (SPEC §2.3, "you may
-  stop at any point"), each with its full hop path, with a per-chain visited-cell guard and the
-  24-hop cap. Verified with a hand-built multi-hop ladder, a long-span (n=3) hop, an empty-board
-  zero-chains case, dense 6P position sanity, and a 100-run fast-check property test asserting no
-  chain ever revisits a cell.
-
-- P1.10: `isLegalRestingCell` (residency §2.4 + anti-backward-block §2.5) and the top-level
-  `generateLegalMoves(state, player)` aggregator — the real per-turn move list, combining steps
-  and jump-chain endpoints, filtered by residency, with jump moves deduped by final cell. Full
-  suite: 37 tests green across 7 files.
-
-- P1.11: `applyMove(state, move) -> state` — pure, immutable, latches `hasLeftStart`, advances
-  `currentPlayer`, increments `round` once every seated player has moved once. 50-run fast-check
-  property test plays random legal-move sequences and confirms every resulting peg stays
-  on-board with no overlaps.
-
-- P1.12: reversibility property test — proves every hop has a same-span, same-pivot,
-  opposite-direction inverse hop, and every step direction has an opposite in the direction
-  set. Full suite: 44 tests green across 9 files.
-
-- P1.13: `src/engine/terminal.ts` — `hasWon`, `isStalemate` (150-round cap), `isGameOver`
-  (stalemate or only one player unfinished), and `rank` (pegs-home desc, then summed
-  distance-to-target-apex asc). Added `CORNER_APEX` to board.ts (each corner's single
-  farthest-out cell), shared with the future AI eval function's "distance to target apex" term.
-  Full suite: 50 tests green across 10 files.
+- **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
+  PROMPT_build.md, loop.sh, PROGRESS.md/DECISIONS.md/BLOCKED.md.
+- **Scaffold** (Step 2): Vite + React 18 + TypeScript (hand-written — create-vite CLI didn't
+  cooperate in this sandbox, see DECISIONS.md). vitest, fast-check, playwright,
+  vite-plugin-singlefile, vite-plugin-pwa, eslint all wired. CI runs typecheck+lint+test.
+- **Phase 1 — Engine core (P1.1-P1.15), all tasks complete:**
+  - `coords.ts` / `board.ts`: cube coordinates, the 121-cell hexagram (61-cell hexagon + six
+    10-cell corners), 60°-rotation symmetry, opposite-pair map, corner apexes.
+  - `state.ts`: GameState, seating for 2/3/4/6 players (4P/6P corner assignment is a documented
+    judgment call).
+  - `moves.ts`: STEP generation; arbitrary-span hop legality (verified against a hand-written
+    n=1-only classic-rules oracle); full jump-chain DFS with a per-chain visited-cell guard and
+    24-hop cap (every stoppable cell, not just leaves); residency (§2.4) + anti-backward-block
+    (§2.5) filters; `generateLegalMoves` aggregator.
+  - `apply.ts`: pure `applyMove`. `terminal.ts`: win/stalemate/ranking.
+  - `index.ts` public API barrel. Engine-purity boundary enforced by
+    `scripts/check-boundaries.mjs` (chained into `npm run lint`) — see DECISIONS.md for why this
+    replaced `eslint-plugin-import`'s zone rule, which silently failed to fire.
+  - **Gate: green.** 50 tests across 10 files (property tests included: 121/61/10×6 cardinality,
+    60°-rotation invariance, n=1 oracle equivalence incl. 200-run fast-check, no-chain-revisits
+    incl. 100-run fast-check, reversibility incl. 200-run fast-check, apply-move safety incl.
+    50-run fast-check). `npm test && npm run lint && npm run typecheck && npm run build` all
+    green.
 
 ## Next
-- Phase 1, task P1.14: `src/engine/index.ts` public API barrel + eslint import-boundary rule
-  (already added in the scaffold commit — verify it actually catches a violation, then check
-  off). Then P1.15: full Phase 1 gate run.
+- Phase 2, task P2.1: `src/ai/eval.ts` — the weighted evaluation function (SPEC §3.1).
 
 ## Gate status
-- Phase 1 (Engine core): not started
+- Phase 1 (Engine core): **GREEN**
 - Phase 2 (Self-play + greedy AI): not started
 - Phase 3 (Full AI ladder): not started
 - Phase 4 (Board UI): not started

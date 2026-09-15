@@ -2,9 +2,12 @@ import js from '@eslint/js';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import importPlugin from 'eslint-plugin-import';
 import tseslint from 'typescript-eslint';
 
+// Note: the authoritative check that src/engine/** imports nothing outside itself, and that
+// src/ai/** never imports src/ui/**, is scripts/check-boundaries.mjs (run as part of `npm run
+// lint`). eslint-plugin-import's import/no-restricted-paths was tried first but proved
+// unreliable under this project's ESLint 9 flat config — see DECISIONS.md.
 export default tseslint.config(
   { ignores: ['dist', 'dist-singlefile', 'node_modules', 'playwright-report', 'test-results'] },
   {
@@ -17,56 +20,23 @@ export default tseslint.config(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      import: importPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
-  // Engine purity: src/engine/** may not import anything outside itself.
-  // Test files are exempt from this — they legitimately import vitest/fast-check
-  // to verify the pure engine, which never happens at runtime.
+  // Engine purity, partial: catches React specifically (fast, in-editor feedback). The full
+  // zero-import rule (any package, any path outside engine/) is enforced by the boundary script.
   {
     files: ['src/engine/**/*.{ts,tsx}'],
     ignores: ['src/engine/**/__tests__/**'],
     rules: {
-      'import/no-restricted-paths': [
-        'error',
-        {
-          zones: [
-            {
-              target: './src/engine',
-              from: '.',
-              except: ['./src/engine'],
-              message: 'src/engine must not import anything outside itself (zero-import rule, see AGENTS.md).',
-            },
-          ],
-        },
-      ],
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             { group: ['react', 'react-dom', 'react/*', 'react-dom/*'], message: 'engine/ must not import React.' },
-          ],
-        },
-      ],
-    },
-  },
-  // ai/ may import engine/, but never ui/.
-  {
-    files: ['src/ai/**/*.{ts,tsx}'],
-    rules: {
-      'import/no-restricted-paths': [
-        'error',
-        {
-          zones: [
-            {
-              target: './src/ai',
-              from: './src/ui',
-              message: 'src/ai must not import from src/ui.',
-            },
           ],
         },
       ],

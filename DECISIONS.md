@@ -35,3 +35,15 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   "occupied by another peg," a contradiction no real game state can reach. This produced two
   false test failures (not engine bugs) before the fix. Any future engine property test that
   generates synthetic occupancy alongside a specific mover cell should filter that cell out.
+- **Replaced `eslint-plugin-import`'s `import/no-restricted-paths` with a plain Node script**
+  (`scripts/check-boundaries.mjs`, chained into `npm run lint`). The plugin rule silently failed
+  to flag a real relative cross-directory import (`src/engine/*.ts` importing `../app/App`) even
+  with correctly matching zone globs — it only ever caught the separate `no-restricted-imports`
+  React-specific rule, never the path-zone rule, under this project's ESLint 9 flat config
+  (verified by deliberately introducing the violation and re-testing after several glob-syntax
+  attempts). Rather than keep debugging a third-party plugin's flat-config resolver behavior
+  past the anti-rabbit-hole budget, wrote a ~70-line script that regex-scans engine/**'s import
+  specifiers directly — it has no resolver ambiguity to get wrong, and is verified (in this same
+  session) to catch both a relative cross-directory import and a bare-package import, and to
+  pass clean on the real codebase. `eslint-plugin-import` was uninstalled since nothing else in
+  the config uses it.

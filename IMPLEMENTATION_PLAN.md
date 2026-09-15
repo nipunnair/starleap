@@ -54,10 +54,10 @@ directory imports nothing (enforced by lint rule).
 - [x] P1.13 `src/engine/terminal.ts`: win detection (all 10 pegs in target corner), stalemate
       detection (150 rounds), ranking (pegs-home desc, summed distance asc). —
       `npx vitest run src/engine/__tests__/terminal.test.ts`
-- [ ] P1.14 `src/engine/index.ts` public API barrel. Add eslint `no-restricted-imports`/
+- [x] P1.14 `src/engine/index.ts` public API barrel. Add eslint `no-restricted-imports`/
       `import/no-restricted-paths` rule forbidding `engine/**` from importing anything outside
       `engine/**`. — `npm run lint`
-- [ ] P1.15 Full phase gate run. — `npm test && npm run lint && npm run typecheck`
+- [x] P1.15 Full phase gate run. — `npm test && npm run lint && npm run typecheck`
 
 ## Phase 2 — Self-play harness + greedy baseline AI
 
