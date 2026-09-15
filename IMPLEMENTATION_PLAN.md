@@ -87,7 +87,7 @@ move generation under 5ms.
 GATE: round-robin, 200 games per pairing, each tier beats the tier below at ≥60%. Not monotonic
 → tune weights and rerun, do not proceed until it is.
 
-- [ ] P3.1 `src/engine/zobrist.ts`: Zobrist hash table (random 64-bit-ish bigint per
+- [x] P3.1 `src/engine/zobrist.ts`: Zobrist hash table (random 64-bit-ish bigint per
       cell×occupant-slot) + incremental hash maintained alongside `applyMove`. —
       `npx vitest run src/engine/__tests__/zobrist.test.ts`
 - [ ] P3.2 `src/ai/search.ts` part A: 2-player iterative-deepening alpha-beta with transposition

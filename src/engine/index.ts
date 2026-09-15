@@ -24,6 +24,8 @@ export {
 
 export { applyMove, advanceTurnWithoutMove } from './apply';
 
+export { ZOBRIST_TABLE, zobristHashOf, zobristUpdateForMove } from './zobrist';
+
 export type { RankingEntry } from './terminal';
 export {
   hasWon,

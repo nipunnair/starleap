@@ -49,8 +49,14 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   take ~31s; switched to cheap steps+single-hops counting (~1.7s for the same game). See
   DECISIONS.md.
 
+- P3.1: `src/engine/zobrist.ts` — splitmix64-seeded per-(cell, player, hasLeftStart) hash table
+  plus per-player turn entries. `zobristUpdateForMove` incrementally updates in O(1); a 50-run
+  fast-check property test confirms it always matches full recomputation across random legal
+  move sequences at all four seat counts.
+
 ## Next
-- Phase 3, task P3.1: `src/engine/zobrist.ts` — Zobrist hash table + incremental hash.
+- Phase 3, task P3.2: `src/ai/search.ts` part A — 2-player iterative-deepening alpha-beta with
+  the Zobrist-keyed transposition table.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
