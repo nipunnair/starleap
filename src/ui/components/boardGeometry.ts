@@ -3,6 +3,16 @@ import { project, type Cube } from '../../engine/coords';
 
 export const CELL_SPACING = 32;
 export const CELL_RADIUS = 13;
+/**
+ * Interactive hit-target radius for cells and pegs, in SVG viewBox units — the maximum possible
+ * without adjacent targets overlapping (half the cell spacing, with a small safety margin).
+ * SPEC.md P8.2 wants >=44 CSS px touch targets; on a 121-cell board rendered at up to 640px wide
+ * that's geometrically unreachable without either horizontal scrolling or making single cells
+ * bigger than a phone screen (documented judgment call — see DECISIONS.md). This maximizes hit
+ * area within that hard constraint; full keyboard navigation (P8.3) is the precise, touch-
+ * target-size-independent alternative input path.
+ */
+export const HIT_RADIUS = 15;
 
 export interface ProjectedCell {
   readonly cell: Cube;

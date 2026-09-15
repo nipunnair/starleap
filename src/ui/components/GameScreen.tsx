@@ -12,6 +12,7 @@ import type { TierName } from '../../ai/tiers';
 import { evaluate } from '../../ai/eval';
 import { createWebAudioToneSequencer, SILENT_TONE_SEQUENCER } from '../audio/tones';
 import { shouldShakeForMove } from '../animation/chainAnimation';
+import { describeMove } from '../animation/describeMove';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
 import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
@@ -84,6 +85,7 @@ export function GameScreen({
   const plyCountRef = useRef(0);
   const longestChainHopsRef = useRef(0);
   const [finalStats, setFinalStats] = useState<GameStats | null>(null);
+  const [moveAnnouncement, setMoveAnnouncement] = useState('');
 
   const currentSeat = seats[engine.game.currentPlayer];
   const isAITurn = currentSeat !== 'human';
@@ -179,6 +181,7 @@ export function GameScreen({
     const nextState = applyMove(engine.game, move);
     engine.applyMove(move, seats[owner] === 'human');
     setPendingMove(null);
+    setMoveAnnouncement(describeMove(move, seats[owner] === 'human' ? `Player ${owner}` : (seats[owner] as string)));
 
     plyCountRef.current += 1;
     const hopCount = move.type === 'jump' ? move.hops.length : 0;
@@ -243,6 +246,9 @@ export function GameScreen({
 
   return (
     <div data-testid="game-screen">
+      <div aria-live="polite" className="sr-only" data-testid="move-announcer">
+        {moveAnnouncement}
+      </div>
       {opponentTier && (
         <CharacterAvatar
           tier={opponentTier}

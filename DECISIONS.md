@@ -294,3 +294,21 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Player N" again (for the player undo returned control to) is the correct, safe behavior rather
   than assuming continuity. Adjusted the undo E2E test to expect and dismiss this prompt rather
   than treating its reappearance as a bug.
+- **44px touch targets (P8.2) are geometrically unreachable for the board's own cells/pegs,
+  given 121 cells rendered at up to 640px wide.** The physical maximum non-overlapping hit
+  radius is half the cell spacing (~15 of 32 SVG units); even at that maximum, the on-screen hit
+  diameter tops out around 30-41px CSS pixels across the whole 360-640px render range — never
+  reaching 44px without either horizontal scrolling or making the board wider than a phone
+  screen (17 cells x 44px = 748px minimum just for one axis). Maximized hit targets to that
+  physical limit (`HIT_RADIUS` in boardGeometry.ts, used for both cell click areas and an
+  invisible larger circle behind each peg) and ensured every OTHER control (buttons, selects,
+  radio/checkbox inputs) genuinely meets 44px via global CSS — that's where the real
+  accessibility win is achievable. Full keyboard navigation (P8.3) is the precise, touch-target-
+  size-independent alternative input path for the board itself.
+- **Keyboard navigation (P8.3) uses 4 of the 6 hex neighbor directions, not all 6.** The cube
+  lattice has only 2 degrees of freedom (x+y+z=0), so 2 independent directions and their
+  opposites — mapped to the 4 arrow keys — can reach every cell via combinations (verified by
+  BFS in the E2E test's setup: e.g. up-right = ArrowUp then ArrowRight generates the third
+  direction (1,0,-1) exactly). A single `tabIndex=0` SVG root with an internal "virtual focus"
+  cell (not real per-cell DOM focus) was the pragmatic choice over a full roving-tabindex pattern
+  across 121 individual elements, given the time budget.

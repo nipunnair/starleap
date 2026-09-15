@@ -205,8 +205,27 @@ Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
     post-game-stats, the full P7.9 gate). Full E2E suite: ~3.3 minutes total (four ~3.1-minute
     full-game specs run in parallel, not sequentially).
 
+- **Phase 8 — Polish, in progress (P8.1-P8.5 complete):**
+  - Global CSS: responsive `main` container (safe-area-aware padding, max-width), 44px minimum
+    on buttons/selects/radio/checkbox inputs.
+  - `HIT_RADIUS` in boardGeometry.ts maximizes board cell/peg hit targets to the physical
+    non-overlap limit — genuinely can't reach 44px on a 121-cell board without horizontal
+    scrolling (documented, measured judgment call in DECISIONS.md); every non-board control does
+    meet 44px.
+  - Full keyboard navigation: `Board` is a `tabIndex=0` SVG with an internal focused-cell concept,
+    4 arrow keys (2 independent hex-lattice directions + opposites, reaching every cell via
+    combinations) plus Enter/Space to select/confirm.
+  - `describeMove()` + an `aria-live="polite"` region in `GameScreen` announce every committed
+    move in plain language.
+  - Confirmed via E2E that the existing blanket reduced-motion CSS rule already covers Phase 6/7
+    additions (character avatar animations); menu/settings screens have no transitions to worry
+    about.
+  - 129 unit tests (3 new: describeMove) + 51 Playwright E2E tests (10 new) — fixed one real
+    test break along the way (`board-render.spec.ts` matched the SVG's exact old `aria-label`
+    text, which changed when keyboard-nav instructions were added to it).
+
 ## Next
-- Phase 8, task P8.1: responsive layout pass down to 360px width.
+- Phase 8, task P8.6: PWA manifest + service worker offline verification.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.

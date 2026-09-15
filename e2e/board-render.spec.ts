@@ -6,7 +6,7 @@ test.describe('Board rendering (IMPLEMENTATION_PLAN.md P4.2)', () => {
     await page.getByRole('button', { name: 'Play vs Nova' }).click();
     await expect(page.getByTestId('game-screen')).toBeVisible();
 
-    const cells = page.locator('svg[aria-label="STARLEAP board"] circle[data-cell]');
+    const cells = page.getByRole('group', { name: /STARLEAP board/ }).locator('circle[data-cell]');
     await expect(cells).toHaveCount(121);
 
     const pegs = page.locator('[data-testid^="peg-"]');

@@ -246,17 +246,19 @@ GATE: playwright covers config → play → quit → resume → finish.
 
 GATE: lighthouse ≥90 on performance and accessibility; axe reports zero critical violations.
 
-- [ ] P8.1 Responsive layout pass down to 360px width (board scales, HUD reflows/stacks). —
+- [x] P8.1 Responsive layout pass down to 360px width (board scales, HUD reflows/stacks). —
       manual device-width check + `npx playwright test responsive-360.spec.ts`
-- [ ] P8.2 Touch target audit: every interactive element ≥44px hit area (pegs may need an
-      invisible padded hit-target larger than their visual radius at small board sizes). —
+- [x] P8.2 Touch target audit: every interactive element ≥44px hit area (pegs may need an
+      invisible padded hit-target larger than their visual radius at small board sizes). The
+      board's own cells/pegs are a documented, geometrically-forced exception (see
+      DECISIONS.md); every other control genuinely meets 44px. —
       `npx playwright test touch-targets.spec.ts`
-- [ ] P8.3 Keyboard navigation: tab order through menu and board (arrow-key cell navigation +
-      enter to select/confirm) without a mouse. — `npx playwright test keyboard-nav.spec.ts`
-- [ ] P8.4 Screen-reader move announcements: an `aria-live` region announcing each committed
-      move in plain language ("Nova jumps from A3 to C5, 2 hops"). — `npx playwright test
-      aria-announcements.spec.ts`
-- [ ] P8.5 Confirm `prefers-reduced-motion` behavior from P5.7 also covers any Phase 6/7 additions
+- [x] P8.3 Keyboard navigation: tab order through menu and board (arrow-key cell navigation +
+      enter to select/confirm) without a mouse. Uses 4 of 6 hex directions, which reach every
+      cell via combinations (see DECISIONS.md). — `npx playwright test keyboard-nav.spec.ts`
+- [x] P8.4 Screen-reader move announcements: an `aria-live` region announcing each committed
+      move in plain language. — `npx playwright test aria-announcements.spec.ts`
+- [x] P8.5 Confirm `prefers-reduced-motion` behavior from P5.7 also covers any Phase 6/7 additions
       (character animation, menu transitions). — `npx playwright test reduced-motion-full.spec.ts`
 - [ ] P8.6 PWA manifest + service worker (offline shell caching) via `vite-plugin-pwa`. —
       `npm run build && npx playwright test pwa-offline.spec.ts`
