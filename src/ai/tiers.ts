@@ -25,11 +25,16 @@ export interface TierConfig {
   readonly maxChainHops?: number;
 }
 
+// Sirius's topK is tuned down from SPEC.md §3.3's initial value of 24 to 18 — see DECISIONS.md.
+// Search cost per depth level scales with topK^depth, so a topK of 24 (vs Rigel's 16) consumed
+// Sirius's larger time budget on extra breadth rather than the extra depth that's supposed to
+// be its distinguishing advantage over Rigel, leaving it barely deeper than Rigel in practice
+// and unable to reliably beat it.
 export const TIERS: Readonly<Record<TierName, TierConfig>> = {
   Nova: { name: 'Nova', depth: 1, topK: 6, noise: 0.35, timeBudgetMs: 250, maxChainHops: 2 },
   Vega: { name: 'Vega', depth: 1, topK: 12, noise: 0.1, timeBudgetMs: 600 },
   Rigel: { name: 'Rigel', depth: 3, topK: 16, noise: 0, timeBudgetMs: 1500 },
-  Sirius: { name: 'Sirius', depth: 30, topK: 24, noise: 0, timeBudgetMs: 2500 },
+  Sirius: { name: 'Sirius', depth: 30, topK: 18, noise: 0, timeBudgetMs: 2500 },
 };
 
 export const TIER_ORDER: readonly TierName[] = ['Nova', 'Vega', 'Rigel', 'Sirius'];

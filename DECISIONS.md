@@ -160,3 +160,14 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   matchup before applying it: with reduced weights, the identical Rigel vs Vega setup finished a
   real, close, competitive game (Rigel 9 pegs home / dist 21 vs Vega's win at 10/20) in 45 rounds
   instead of stalling to the 150-round cap. Applied to `DEFAULT_WEIGHTS` in eval.ts.
+- **Tuned Sirius's `topK` down from SPEC.md §3.3's initial value of 24 to 18.** After the weight
+  fix, Rigel correctly beat Vega, but now Sirius lost to Rigel — the reverse of an earlier run.
+  Traced it to search cost scaling with `topK^depth`: Sirius's topK=24 (vs Rigel's 16) means
+  each additional depth level costs ~2.25-3.4x more than Rigel's, so Sirius's larger time budget
+  (1.67x Rigel's, both at real SPEC values and at every scaled-down test value, since scaling is
+  uniform) was being spent on extra breadth rather than the extra depth that's supposed to be
+  its distinguishing advantage. Measured directly: at a 6x-larger absolute budget (750ms/450ms)
+  Sirius's average `depthReached` (3.03) was barely above Rigel's fixed cap (3.00) despite
+  Sirius's uncapped depth ceiling — its breadth was consuming the time its depth needed. Verified
+  the fix (topK 18) on the same matchup — 3 repeated trials all had Sirius win 10-9 pegs-home,
+  consistently, before applying it to the real TIERS table.
