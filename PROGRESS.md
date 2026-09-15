@@ -63,9 +63,14 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   depth 2 for all tiers (see DECISIONS.md for why the ladder table's per-tier Depth column is
   read as applying to 2P alpha-beta only, not max^n).
 
+- P3.4: `src/ai/tiers.ts` — TIERS table (Nova/Vega/Rigel/Sirius per SPEC §3.3), noise injection
+  (probabilistic uniform-random substitution), Nova's 2-hop chain-hop cap (with fallback to the
+  full move set if filtering would leave zero candidates). Extended `search.ts` with a
+  `maxDepth` option and a `rootMoveOverride` parameter on both search entry points so tiers can
+  cap depth and restrict Nova's candidate set without duplicating the search loops.
+
 ## Next
-- Phase 3, task P3.4: `src/ai/tiers.ts` — Nova/Vega/Rigel/Sirius parameter table + noise
-  injection + Nova's 2-hop chain cap.
+- Phase 3, task P3.5: `src/ai/worker.ts` + `worker-protocol.ts` — the Web Worker entry point.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**

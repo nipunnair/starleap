@@ -15,6 +15,9 @@ export interface SearchOptions {
    * 1-ply eval delta before recursing (SPEC §3.2-3.3), applied at every node. */
   readonly topK: number;
   readonly weights?: EvalWeights;
+  /** Caps iterative deepening (2P alpha-beta only; max^n's depth is fixed, see below).
+   * Defaults to MAX_SEARCH_DEPTH (effectively "no cap but the time budget"). */
+  readonly maxDepth?: number;
 }
 
 export interface SearchResult {
@@ -106,13 +109,19 @@ function alphaBeta(
  * Iterative-deepening alpha-beta from the root: searches depth 1, 2, 3, ... until the time
  * budget is spent, returning the best move found at the deepest fully-completed depth.
  */
-export function searchBestMoveAlphaBeta(state: GameState, player: number, options: SearchOptions): SearchResult {
+export function searchBestMoveAlphaBeta(
+  state: GameState,
+  player: number,
+  options: SearchOptions,
+  rootMoveOverride?: readonly Move[],
+): SearchResult {
   const weights = options.weights ?? DEFAULT_WEIGHTS;
   const deadline = performance.now() + options.timeBudgetMs;
   const tt = new Map<bigint, TTEntry>();
   const rootHash = zobristHashOf(state);
+  const maxDepth = Math.min(options.maxDepth ?? MAX_SEARCH_DEPTH, MAX_SEARCH_DEPTH);
 
-  const allMoves = generateLegalMoves(state, player);
+  const allMoves = rootMoveOverride ?? generateLegalMoves(state, player);
   if (allMoves.length === 0) {
     throw new Error('searchBestMoveAlphaBeta called with no legal moves for the given player');
   }
@@ -121,7 +130,7 @@ export function searchBestMoveAlphaBeta(state: GameState, player: number, option
   let bestScore = -Infinity;
   let depthReached = 0;
 
-  for (let depth = 1; depth <= MAX_SEARCH_DEPTH; depth++) {
+  for (let depth = 1; depth <= maxDepth; depth++) {
     if (performance.now() > deadline) break;
 
     const rootMoves = topKMoves(state, player, allMoves, options.topK, weights);
@@ -218,11 +227,12 @@ export function searchBestMoveMaxN(
   player: number,
   playerCount: number,
   options: SearchOptions,
+  rootMoveOverride?: readonly Move[],
 ): SearchResult {
   const weights = options.weights ?? DEFAULT_WEIGHTS;
   const deadline = performance.now() + options.timeBudgetMs;
 
-  const allMoves = generateLegalMoves(state, player);
+  const allMoves = rootMoveOverride ?? generateLegalMoves(state, player);
   if (allMoves.length === 0) {
     throw new Error('searchBestMoveMaxN called with no legal moves for the given player');
   }
