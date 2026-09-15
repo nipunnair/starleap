@@ -25,8 +25,11 @@ export default tseslint.config(
     },
   },
   // Engine purity: src/engine/** may not import anything outside itself.
+  // Test files are exempt from this — they legitimately import vitest/fast-check
+  // to verify the pure engine, which never happens at runtime.
   {
     files: ['src/engine/**/*.{ts,tsx}'],
+    ignores: ['src/engine/**/__tests__/**'],
     rules: {
       'import/no-restricted-paths': [
         'error',

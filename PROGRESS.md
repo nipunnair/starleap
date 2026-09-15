@@ -14,9 +14,13 @@ next up is Phase 1, task P1.1.
 - Verified green: `npm run typecheck`, `npm run lint`, `npm test` (1 smoke test), `npm run build`
   (produces `dist/` with PWA manifest/service worker).
 
+- P1.1-P1.4: `src/engine/coords.ts` (cube coords, onBoard, neighbors, distance, rotate60,
+  screen projection) and `src/engine/board.ts` (121-cell hexagram, 61-cell hexagon, six 10-cell
+  corners, opposite-pair map). Property tests confirm exact cardinalities and 60°-rotation
+  invariance. `npm run typecheck && npm run lint && npm test` all green.
+
 ## Next
-- Phase 1, task P1.1: `src/engine/coords.ts` (cube coordinates, onBoard, neighbors, distance,
-  rotate60). See IMPLEMENTATION_PLAN.md.
+- Phase 1, task P1.5: `src/engine/state.ts` (GameState type, seating for 2/3/4/6 players).
 
 ## Gate status
 - Phase 1 (Engine core): not started

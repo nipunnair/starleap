@@ -16,14 +16,14 @@ GATE: `npm test` green, including property tests asserting: board is exactly 121
 `n=1` long-jump results are identical to a hand-written classic-rules jump generator. Engine
 directory imports nothing (enforced by lint rule).
 
-- [ ] P1.1 Scaffold `src/engine/coords.ts`: cube coordinate type, `add`, `scale`, `equals`,
+- [x] P1.1 Scaffold `src/engine/coords.ts`: cube coordinate type, `add`, `scale`, `equals`,
       `onBoard`, `NEIGHBOR_DIRECTIONS`, `neighbors`, `distance`, `rotate60`. — `npm run typecheck`
-- [ ] P1.2 `src/engine/board.ts`: build the full 121-cell set from `onBoard`, partition into
+- [x] P1.2 `src/engine/board.ts`: build the full 121-cell set from `onBoard`, partition into
       hexagon (61) + six corners (10 each), identify corner by out-of-range coordinate, build
       opposite-pair map. — `npx vitest run src/engine/__tests__/board.test.ts`
-- [ ] P1.3 Property test: board cardinality and partition sizes (121 / 61 / 10×6). —
+- [x] P1.3 Property test: board cardinality and partition sizes (121 / 61 / 10×6). —
       `npx vitest run src/engine/__tests__/board.test.ts`
-- [ ] P1.4 Property test: cell set invariant under `rotate60` (set-equality of coordinates
+- [x] P1.4 Property test: cell set invariant under `rotate60` (set-equality of coordinates
       before/after rotating every cell). — `npx vitest run src/engine/__tests__/board.test.ts`
 - [ ] P1.5 `src/engine/state.ts`: `GameState` type — per-player peg cell lists, `hasLeftStart`
       booleans, current player index, round counter, seating (start/target corner per player).

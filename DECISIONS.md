@@ -18,3 +18,8 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
 - **eslint `import/no-restricted-paths` zones enforce the engine-imports-nothing and
   ai-never-imports-ui rules structurally** (per AGENTS.md non-negotiables), not just by code
   review convention, so `npm run lint` is a real gate for architecture drift, not just style.
+- **Exempted `src/engine/**/__tests__/**` from the engine-purity import rule.** The zero-import
+  constraint is about the engine's runtime/library code (what ships and what self-play calls
+  thousands of times a minute); its test files legitimately import `vitest`/`fast-check`, which
+  never execute at runtime. Without this exemption `npm run lint` would fail on every engine test
+  file that imports its test framework, which isn't the drift the rule is meant to catch.
