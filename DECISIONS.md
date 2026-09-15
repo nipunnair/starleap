@@ -75,3 +75,19 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   table) and the ladder table's Depth column as applying to 2-player alpha-beta only. For 3+
   players, tiers instead vary strength via top-K breadth, noise, and time budget — all of which
   still apply uniformly to both search modes.
+- **Worker tested via a plain function, not a live `Worker` instance.** `computeFindMoveResponse`
+  in `src/ai/worker.ts` holds all the actual dispatch logic and is synchronous/pure, so tests
+  call it directly rather than constructing a real `Worker` inside vitest/jsdom (unreliable to
+  set up and would test the browser's worker plumbing more than our code). The `self.onmessage`
+  wiring around it is thin glue, gated by `typeof self.importScripts === 'function'` (only true
+  in a real worker global scope) so it never activates during tests or a normal page load.
+  `self` is typed with a minimal ad hoc shape rather than `DedicatedWorkerGlobalScope`, since the
+  project's DOM lib (needed elsewhere) and the WebWorker lib declare incompatible ambient `self`
+  types in the same TS project.
+- **CANCEL can't interrupt a search already in progress.** JS worker message handlers run to
+  completion before the next queued message (including a CANCEL) is even dequeued, and search is
+  synchronous, so true mid-search interruption isn't possible without restructuring search into
+  a cooperatively-yielding coroutine — out of scope here. `worker.ts` tracks cancelled request
+  IDs defensively (skips posting a response if the ID was cancelled by the time computation
+  finishes) but ARCHITECTURE.md's documented real mechanism is simpler: the main thread tears
+  down and recreates the worker on a new game or tier change rather than relying on CANCEL.

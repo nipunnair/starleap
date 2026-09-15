@@ -98,9 +98,10 @@ GATE: round-robin, 200 games per pairing, each tier beats the tier below at ≥6
 - [x] P3.4 `src/ai/tiers.ts`: Nova/Vega/Rigel/Sirius parameter table (depth, top-K, noise, time
       budget per SPEC §3.3) + noise injection (uniform-random move substitution at the given
       probability) + Nova's 2-hop chain cap during search. — `npm run typecheck`
-- [ ] P3.5 `src/ai/worker.ts` + `src/ai/worker-protocol.ts`: Web Worker entry implementing the
-      FIND_MOVE/CANCEL/THINKING/MOVE_FOUND/ERROR protocol from ARCHITECTURE.md. —
-      `npx vitest run src/ai/__tests__/worker.test.ts` (using a worker-polyfill/jsdom harness)
+- [x] P3.5 `src/ai/worker.ts` + `src/ai/worker-protocol.ts`: Web Worker entry implementing the
+      FIND_MOVE/CANCEL/THINKING/MOVE_FOUND/ERROR protocol from ARCHITECTURE.md. Tested via the
+      pure `computeFindMoveResponse` function rather than a live Worker — see DECISIONS.md. —
+      `npx vitest run src/ai/__tests__/worker.test.ts`
 - [ ] P3.6 Sirius opening ladder book: short hardcoded table of strong first-few-move formations
       per seating, consulted before search when the position matches. — `npx vitest run
       src/ai/__tests__/opening-book.test.ts`

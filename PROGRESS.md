@@ -69,8 +69,14 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   `maxDepth` option and a `rootMoveOverride` parameter on both search entry points so tiers can
   cap depth and restrict Nova's candidate set without duplicating the search loops.
 
+- P3.5: `src/ai/worker.ts` + `worker-protocol.ts` — FIND_MOVE/CANCEL/THINKING/MOVE_FOUND/ERROR
+  protocol from ARCHITECTURE.md. Tested via the pure `computeFindMoveResponse` function (real
+  `Worker` construction is unreliable under vitest/jsdom); `self.onmessage` wiring is thin glue
+  gated to only activate in an actual worker global scope. See DECISIONS.md for why CANCEL can't
+  truly interrupt an in-progress synchronous search.
+
 ## Next
-- Phase 3, task P3.5: `src/ai/worker.ts` + `worker-protocol.ts` — the Web Worker entry point.
+- Phase 3, task P3.6: Sirius opening ladder book.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
