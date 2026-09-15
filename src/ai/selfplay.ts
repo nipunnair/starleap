@@ -7,8 +7,18 @@ import { generateLegalMoves, type Move } from '../engine/moves';
 import { key } from '../engine/coords';
 import { applyMove, advanceTurnWithoutMove } from '../engine/apply';
 import { isGameOver, isStalemate, rank, type RankingEntry } from '../engine/terminal';
+import { zobristHashOf } from '../engine/zobrist';
 
-export type AIPlayer = (state: import('../engine/state').GameState, player: number) => Move | null;
+/**
+ * `visitedHashes`: every position hash the actual game has passed through so far (not the AI's
+ * search tree) — for repetition avoidance. See DECISIONS.md and tiers.ts's chooseTieredMove.
+ */
+export type AIPlayer = (
+  state: import('../engine/state').GameState,
+  player: number,
+  visitedHashes?: ReadonlySet<bigint>,
+) => Move | null;
+
 
 export interface GameResult {
   readonly rounds: number;
@@ -33,6 +43,7 @@ export function playHeadlessGame(playerCount: PlayerCount, players: readonly AIP
   let illegalMoveCount = 0;
   let plies = 0;
   const moveGenTimesMs: number[] = [];
+  const visitedHashes = new Set<bigint>([zobristHashOf(state)]);
 
   while (!isGameOver(state)) {
     const player = state.currentPlayer;
@@ -48,7 +59,7 @@ export function playHeadlessGame(playerCount: PlayerCount, players: readonly AIP
       continue;
     }
 
-    const chosen = players[player]!(state, player);
+    const chosen = players[player]!(state, player, visitedHashes);
     if (chosen === null || !isMoveInSet(chosen, legalMoves)) {
       illegalMoveCount += 1;
       state = applyMove(state, legalMoves[0]!); // keep the game moving; still recorded as illegal
@@ -56,6 +67,7 @@ export function playHeadlessGame(playerCount: PlayerCount, players: readonly AIP
       state = applyMove(state, chosen);
     }
 
+    visitedHashes.add(zobristHashOf(state));
     plies += 1;
   }
 

@@ -99,3 +99,51 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Chinese-Checkers opening theory of developing toward the center before committing to a jump
   lane, rather than moving an apex peg first. Applies once per game per player, then defers to
   normal search. Worth revisiting with real self-play data once the full ladder exists.
+- **AI search recursion (non-root nodes) caps jump chains at 6 hops via a new optional
+  `maxChainHops` parameter on `generateJumpChains`/`generateLegalMoves`** (default stays the
+  full 24-hop SPEC cap everywhere else — real gameplay, self-play, and the root of every search
+  always see every legal move). The full exponential chain-DFS is by far the most expensive part
+  of move generation, and search calls it once per tree node; at real branching factors this
+  made a single Rigel/Sirius search take tens of seconds of wall time regardless of its
+  configured time budget (iterative deepening just explored fewer, more expensive nodes). This
+  never changes what's actually legal for a player to choose, only how deep a hypothetical
+  future search node bothers looking — the same category of fix as the earlier eval() mobility
+  change, now applied to search.ts itself.
+- **Tournament time budgets must be scaled down from SPEC.md §3.3's real values for automated
+  testing.** Those budgets (250ms-2.5s per move) are sized for human-facing gameplay and are
+  used as-is by the product; iterative-deepening search always consumes its *entire* budget by
+  design (it keeps deepening until time runs out), so running hundreds of games at real budgets
+  is a multi-hour job, confirmed empirically (a 4-games/pairing run at scale 1.0 didn't finish in
+  5 minutes). `scripts/tournament-cli.ts` takes a `--scale` multiplier for exactly this — the
+  committed gate run's actual scale/games/results are recorded in PROGRESS.md.
+- **Added game-history-based repetition avoidance to `chooseTieredMove`.** Diagnosed via an
+  instrumented single-game trace (Rigel vs Sirius): with no mechanism to recognize "this move
+  recreates a position we've already been in," both tiers found locally-neutral-or-favorable
+  reversible shuffles and repeated them for the entire remainder of the game, hitting the
+  150-round stalemate cap despite one side being clearly ahead on pegs-home. This wasn't a
+  weight-tuning problem (eval scores along the cycle were genuinely stable/favorable to the
+  mover — search had no way to see that repeating is bad) and a small recent-window check wasn't
+  enough either (the first cycle found was 2 plies; after avoiding that, a second run found a
+  ~30-ply cycle a short window couldn't detect). Fixed properly: `AIPlayer` now takes an
+  optional `visitedHashes` — the actual game's FULL Zobrist position history (every distinct
+  position reached so far this game, not the AI's hypothetical search tree) — and
+  `chooseTieredMove` excludes any candidate move whose resulting position exactly matches one
+  already visited, falling back to the unfiltered set if that would leave nothing.
+  `playHeadlessGame` threads this through automatically. This is a real product-quality fix, not
+  just a tournament-testing workaround — the same cycling would occur in a real human-vs-AI game
+  in Phase 4+ without it.
+- **2-player alpha-beta now backs up a RELATIVE score (rootPlayer's eval minus the opponent's),
+  not the raw per-player eval.** Found via tournament testing: Vega (depth 1) was beating both
+  Rigel (depth 3) and Sirius (deep ID) most of the time — clearly backwards. Root cause: `eval()`
+  isn't zero-sum (evaluate(state,0) + evaluate(state,1) isn't constant), but classic alpha-beta's
+  min/max backup rule is only sound for a value both sides are genuinely adversarial over. Using
+  the raw per-player score as the leaf value meant Rigel/Sirius modeled the opponent as maximally
+  hostile toward Rigel/Sirius's own score specifically — a threat model no real self-interested
+  opponent (who maximizes their OWN separate eval) actually plays like — so deeper lookahead
+  chased defenses against threats that don't really exist, while Vega's shallow, non-adversarial
+  evaluation didn't have this failure mode at all. Switched the leaf/backup value to
+  `evaluate(rootPlayer) - evaluate(opponent)`, the standard fix for this class of problem in
+  classical 2-player minimax game AI (board space/tempo genuinely is a shared, contested
+  resource, so the differential is a coherent adversarial objective even though each player's
+  actual win condition is independent). SPEC.md §3.2 still calls for alpha-beta specifically
+  at 2 players; this changes what value it backs up, not the algorithm.

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../../engine/state';
 import { generateLegalMoves } from '../../engine/moves';
+import { applyMove } from '../../engine/apply';
+import { zobristHashOf, zobristUpdateForMove } from '../../engine/zobrist';
 import { chooseTieredMove, TIERS, TIER_ORDER } from '../tiers';
 
 function isLegal(move: { pegId: string; to: { x: number; y: number; z: number } }, legal: ReturnType<typeof generateLegalMoves>): boolean {
@@ -53,5 +55,50 @@ describe('chooseTieredMove (SPEC.md §3.3)', () => {
     const state = createInitialState(2);
     const empty = { ...state, pegs: state.pegs.filter((p) => p.owner !== 0) };
     expect(() => chooseTieredMove(empty, 0, 2, TIERS.Nova)).toThrow();
+  });
+
+  describe('repetition avoidance (visitedHashes)', () => {
+    it('never picks a move that returns to an exactly visited position when a non-repeating one exists', () => {
+      const state = createInitialState(2);
+      const currentHash = zobristHashOf(state);
+      const legal = generateLegalMoves(state, 0);
+      expect(legal.length).toBeGreaterThan(1);
+
+      // Mark every legal destination except one as "already visited," forcing the filter to
+      // prove it actually steers away from the visited ones rather than ignoring the set.
+      const toAvoid = legal.slice(1);
+      const visited = new Set<bigint>([currentHash]);
+      for (const move of toAvoid) {
+        const next = applyMove(state, move);
+        visited.add(zobristUpdateForMove(currentHash, state, move, next));
+      }
+
+      const result = chooseTieredMove(state, 0, 2, { ...TIERS.Nova, noise: 0 }, undefined, () => 0.999, visited);
+      const chosenNext = applyMove(state, result.move);
+      const chosenHash = zobristUpdateForMove(currentHash, state, result.move, chosenNext);
+      expect(visited.has(chosenHash)).toBe(false);
+    });
+
+    it('falls back to the full candidate set if every legal move would repeat a visited position', () => {
+      const state = createInitialState(2);
+      const currentHash = zobristHashOf(state);
+      const legal = generateLegalMoves(state, 0);
+
+      const visited = new Set<bigint>([currentHash]);
+      for (const move of legal) {
+        const next = applyMove(state, move);
+        visited.add(zobristUpdateForMove(currentHash, state, move, next));
+      }
+
+      // Every possible destination is "visited" — must still return a legal move, not throw.
+      const result = chooseTieredMove(state, 0, 2, TIERS.Nova, undefined, undefined, visited);
+      expect(isLegal(result.move, legal)).toBe(true);
+    });
+
+    it('with no visitedHashes argument, behaves exactly as before (no filtering)', () => {
+      const state = createInitialState(2);
+      const result = chooseTieredMove(state, 0, 2, TIERS.Vega);
+      expect(isLegal(result.move, generateLegalMoves(state, 0))).toBe(true);
+    });
   });
 });

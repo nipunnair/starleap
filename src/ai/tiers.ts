@@ -5,6 +5,8 @@
  */
 import type { GameState, PlayerCount } from '../engine/state';
 import { generateLegalMoves, type Move } from '../engine/moves';
+import { applyMove } from '../engine/apply';
+import { zobristHashOf, zobristUpdateForMove } from '../engine/zobrist';
 import { searchBestMoveAlphaBeta, searchBestMoveMaxN } from './search';
 import { DEFAULT_WEIGHTS, type EvalWeights } from './eval';
 import { openingBookMove } from './opening-book';
@@ -45,7 +47,8 @@ export interface TieredMoveResult {
 
 /**
  * Chooses `player`'s move under `tier`'s parameters. `rng` is injectable for deterministic
- * tests; defaults to Math.random.
+ * tests; defaults to Math.random. `visitedHashes` is the actual game's own full position
+ * history (not the search tree's) — see the repetition-avoidance note below.
  */
 export function chooseTieredMove(
   state: GameState,
@@ -54,6 +57,7 @@ export function chooseTieredMove(
   tier: TierConfig,
   weights: EvalWeights = DEFAULT_WEIGHTS,
   rng: () => number = Math.random,
+  visitedHashes?: ReadonlySet<bigint>,
 ): TieredMoveResult {
   const legalMoves = generateLegalMoves(state, player);
   if (legalMoves.length === 0) {
@@ -67,7 +71,7 @@ export function chooseTieredMove(
     }
   }
 
-  const candidates =
+  let candidates =
     tier.maxChainHops !== undefined
       ? (() => {
           const filtered = legalMoves.filter((m) => !isChainTooLong(m, tier.maxChainHops!));
@@ -77,6 +81,23 @@ export function chooseTieredMove(
           return filtered.length > 0 ? filtered : legalMoves;
         })()
       : legalMoves;
+
+  // Repetition avoidance: a finite-depth eval has no way to see that a locally-attractive move
+  // recreates a position already visited in THIS game, so wider/deeper tiers (more likely to
+  // find a "safe" reversible shuffle) can get stuck oscillating forever and hit the 150-round
+  // stalemate cap even while clearly ahead — including cycles many plies long, which is why
+  // this checks against the FULL game history, not just a short recent window (see
+  // DECISIONS.md for how this was diagnosed). Falls back to the full candidate set if avoiding
+  // every visited position would leave nothing.
+  if (visitedHashes && visitedHashes.size > 0) {
+    const currentHash = zobristHashOf(state);
+    const nonRepeating = candidates.filter((move) => {
+      const next = applyMove(state, move);
+      const nextHash = zobristUpdateForMove(currentHash, state, move, next);
+      return !visitedHashes.has(nextHash);
+    });
+    if (nonRepeating.length > 0) candidates = nonRepeating;
+  }
 
   if (rng() < tier.noise) {
     const pick = candidates[Math.floor(rng() * candidates.length)]!;

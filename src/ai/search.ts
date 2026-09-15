@@ -40,6 +40,17 @@ export function topKMoves(state: GameState, mover: number, moves: readonly Move[
 
 const MAX_SEARCH_DEPTH = 30;
 
+/**
+ * Chain-hop cap used only for move generation INSIDE the search tree (not at the root, not in
+ * real gameplay/self-play). generateLegalMoves' jump-chain DFS is the most expensive part of
+ * move generation, and search calls it once per node — at real branching factors this made a
+ * single Rigel/Sirius search take tens of seconds instead of respecting its time budget (see
+ * DECISIONS.md). Capping hypothetical-node chains to 6 hops keeps most realistic tactical
+ * chains visible while bounding worst-case enumeration; it never changes what's actually legal
+ * for the player to choose (the root and all real move application always use the full cap).
+ */
+const SEARCH_NODE_CHAIN_CAP = 6;
+
 type TTFlag = 'exact' | 'lower' | 'upper';
 interface TTEntry {
   readonly depth: number;
@@ -47,10 +58,27 @@ interface TTEntry {
   readonly flag: TTFlag;
 }
 
-/** Minimax with alpha-beta pruning, scored from `rootPlayer`'s perspective throughout. */
+/**
+ * evaluate() is per-player, not zero-sum (evaluate(state,0) + evaluate(state,1) isn't
+ * constant) — but classic alpha-beta pruning's min/max backup rule is only sound for a value
+ * both sides are truly adversarial over. Using the raw per-player eval as the leaf value made
+ * deeper search perform WORSE than shallow search in testing (see DECISIONS.md): Rigel/Sirius
+ * modeled the opponent as maximally hostile toward Rigel/Sirius's own score specifically, which
+ * a real self-interested opponent (maximizing their OWN separate eval) never actually plays
+ * like, so deeper adversarial lookahead chased threats that don't really exist. The standard
+ * fix (used in essentially every classical 2-player minimax game AI) is a RELATIVE score —
+ * rootPlayer's eval minus the opponent's — which is genuinely a value both sides compete over
+ * (board space/tempo is a shared, contested resource), making the min/max framing coherent.
+ */
+function relativeEval(state: GameState, rootPlayer: number, opponent: number, weights: EvalWeights): number {
+  return evaluate(state, rootPlayer, weights) - evaluate(state, opponent, weights);
+}
+
+/** Minimax with alpha-beta pruning, scored as rootPlayer's relative advantage throughout. */
 function alphaBeta(
   state: GameState,
   rootPlayer: number,
+  opponent: number,
   depth: number,
   alpha: number,
   beta: number,
@@ -61,7 +89,7 @@ function alphaBeta(
   hash: bigint,
 ): number {
   if (isGameOver(state) || depth === 0 || performance.now() > deadline) {
-    return evaluate(state, rootPlayer, weights);
+    return relativeEval(state, rootPlayer, opponent, weights);
   }
 
   const ttEntry = tt.get(hash);
@@ -74,11 +102,11 @@ function alphaBeta(
 
   const mover = state.currentPlayer;
   const maximizing = mover === rootPlayer;
-  const legalMoves = generateLegalMoves(state, mover);
+  const legalMoves = generateLegalMoves(state, mover, SEARCH_NODE_CHAIN_CAP);
 
   if (legalMoves.length === 0) {
     const next = advanceTurnWithoutMove(state);
-    return alphaBeta(next, rootPlayer, depth - 1, alpha, beta, deadline, topK, weights, tt, zobristHashOf(next));
+    return alphaBeta(next, rootPlayer, opponent, depth - 1, alpha, beta, deadline, topK, weights, tt, zobristHashOf(next));
   }
 
   const moves = topKMoves(state, mover, legalMoves, topK, weights);
@@ -88,7 +116,7 @@ function alphaBeta(
   for (const move of moves) {
     const next = applyMove(state, move);
     const nextHash = zobristUpdateForMove(hash, state, move, next);
-    const score = alphaBeta(next, rootPlayer, depth - 1, alpha, beta, deadline, topK, weights, tt, nextHash);
+    const score = alphaBeta(next, rootPlayer, opponent, depth - 1, alpha, beta, deadline, topK, weights, tt, nextHash);
 
     if (maximizing) {
       if (score > best) best = score;
@@ -120,6 +148,7 @@ export function searchBestMoveAlphaBeta(
   const tt = new Map<bigint, TTEntry>();
   const rootHash = zobristHashOf(state);
   const maxDepth = Math.min(options.maxDepth ?? MAX_SEARCH_DEPTH, MAX_SEARCH_DEPTH);
+  const opponent = player === 0 ? 1 : 0; // this function is only ever called for 2-player games
 
   const allMoves = rootMoveOverride ?? generateLegalMoves(state, player);
   if (allMoves.length === 0) {
@@ -147,7 +176,7 @@ export function searchBestMoveAlphaBeta(
       }
       const next = applyMove(state, move);
       const nextHash = zobristUpdateForMove(rootHash, state, move, next);
-      const score = alphaBeta(next, player, depth - 1, alpha, beta, deadline, options.topK, weights, tt, nextHash);
+      const score = alphaBeta(next, player, opponent, depth - 1, alpha, beta, deadline, options.topK, weights, tt, nextHash);
 
       if (score > localBestScore) {
         localBestScore = score;
@@ -199,7 +228,7 @@ function maxN(
   }
 
   const mover = state.currentPlayer;
-  const legalMoves = generateLegalMoves(state, mover);
+  const legalMoves = generateLegalMoves(state, mover, SEARCH_NODE_CHAIN_CAP);
 
   if (legalMoves.length === 0) {
     const next = advanceTurnWithoutMove(state);

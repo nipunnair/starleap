@@ -105,13 +105,17 @@ export interface JumpChainMove {
  * hop-by-hop path taken to reach it. DFS with a per-chain visited-cell guard (no cell may be
  * visited twice within one chain) and the 24-hop cap.
  */
-export function generateJumpChains(peg: Peg, occupied: ReadonlySet<string>): JumpChainMove[] {
+export function generateJumpChains(
+  peg: Peg,
+  occupied: ReadonlySet<string>,
+  maxHops: number = MAX_CHAIN_HOPS,
+): JumpChainMove[] {
   const results: JumpChainMove[] = [];
   const visited = new Set<string>([key(peg.cell)]);
   const path: Hop[] = [];
 
   function dfs(current: Cube): void {
-    if (path.length >= MAX_CHAIN_HOPS) return;
+    if (path.length >= maxHops) return;
 
     for (const hop of legalHopsFrom(current, occupied)) {
       const landingKey = key(hop.landing);
@@ -171,8 +175,13 @@ export type Move = StepMove | JumpChainMove;
  * stopping point across all of the player's pegs, filtered by residency/anti-block. Jump
  * chains that reach the same final cell via different hop sequences are deduplicated (only the
  * resulting position matters to the game; the first path found is kept for animation).
+ *
+ * `maxChainHops` defaults to the full SPEC §2.3 cap (24) — real gameplay, self-play, and the
+ * root of every AI search always see every legal move. AI search recursion below the root uses
+ * a smaller cap purely for tractability (see src/ai/search.ts and DECISIONS.md); it never
+ * changes what's actually legal, only what a deep hypothetical search node bothers exploring.
  */
-export function generateLegalMoves(state: GameState, player: number): Move[] {
+export function generateLegalMoves(state: GameState, player: number, maxChainHops: number = MAX_CHAIN_HOPS): Move[] {
   const occupied = buildOccupancy(state);
   const moves: Move[] = [];
 
@@ -186,7 +195,7 @@ export function generateLegalMoves(state: GameState, player: number): Move[] {
     }
 
     const seenChainEndings = new Set<string>();
-    for (const chain of generateJumpChains(peg, occupied)) {
+    for (const chain of generateJumpChains(peg, occupied, maxChainHops)) {
       const toKey = key(chain.to);
       if (seenChainEndings.has(toKey)) continue;
       if (!isLegalRestingCell(state, peg, chain.to)) continue;

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { playHeadlessGame, type AIPlayer } from '../selfplay';
 import { chooseGreedyMove } from '../greedy';
+import { chooseTieredMove, TIERS } from '../tiers';
 
 const greedyPlayer: AIPlayer = (state, player) => chooseGreedyMove(state, player);
 
@@ -42,5 +43,19 @@ describe('playHeadlessGame (IMPLEMENTATION_PLAN.md P2.3)', () => {
       const players: AIPlayer[] = Array.from({ length: n }, () => greedyPlayer);
       expect(() => playHeadlessGame(n, players)).not.toThrow();
     }
+  });
+
+  it('threads visitedHashes into tiered AI players and avoids the exact-repetition stalemate', () => {
+    // Regression test for the cycling bug found during Phase 3 tournament diagnosis (see
+    // DECISIONS.md): tiny time budgets let both sides fall into a repeating shuffle with no
+    // history-based escape. A scaled-down Rigel-vs-Rigel game at a real (if small) budget
+    // should reliably finish with a real win, not run out the full 150-round cap.
+    const tinyRigel: AIPlayer = (state, player, visitedHashes) =>
+      chooseTieredMove(state, player, 2, { ...TIERS.Rigel, timeBudgetMs: 20 }, undefined, undefined, visitedHashes)
+        .move;
+
+    const result = playHeadlessGame(2, [tinyRigel, tinyRigel]);
+    expect(result.stalemate).toBe(false);
+    expect(result.winner).not.toBeNull();
   });
 });

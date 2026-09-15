@@ -1,7 +1,10 @@
 # PROGRESS
 
 ## Status
-Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
+Phase 1 and Phase 2 COMPLETE, gates green. Phase 3 (full AI ladder) in progress: all
+infrastructure built (P3.1-P3.6), tournament CLI built (P3.7), currently validating
+monotonicity (P3.8-P3.9) after fixing three real bugs found via tournament testing — see Done
+notes below and DECISIONS.md. A confirming tournament run is in flight as of this update.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -80,8 +83,32 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   `chooseTieredMove` (checked before search, only for the Sirius tier). Heuristic, not
   researched opening theory — see DECISIONS.md.
 
+- P3.7-P3.9 in progress: `scripts/tournament-cli.ts` round-robin CLI built (`--games`,
+  `--players`, `--scale` for time-budget scaling — real SPEC §3.3 budgets are impractical for
+  automated bulk tournaments, iterative deepening always spends its full budget by design; see
+  DECISIONS.md). Tournament testing surfaced and fixed three real bugs, all documented in
+  DECISIONS.md:
+  1. Search recursed through the full expensive jump-chain generator at every tree node —
+     capped internal search-node move generation to 6 hops (root/real gameplay unaffected).
+  2. AIs had no repetition awareness and could get stuck in exact position cycles (one 2 plies,
+     one ~30 plies) hitting the 150-round cap despite being ahead — added game-history-based
+     repetition avoidance (`visitedHashes` threaded through `AIPlayer`/`chooseTieredMove`).
+  3. 2-player alpha-beta backed up the raw per-player eval, which isn't zero-sum, so deeper
+     search modeled an unrealistically hostile opponent and actually played WORSE than shallow
+     Vega — switched to a relative score (rootPlayer eval minus opponent eval), the standard fix
+     for this class of problem.
+  A small validation tournament is running to confirm monotonicity after fix #3; not yet
+  confirmed green. If this file still says "in progress" here, that tournament's result is the
+  next thing to check.
+
 ## Next
-- Phase 3, task P3.7: `npm run tournament` CLI — round-robin across all four tiers.
+- Confirm the post-relative-eval-fix tournament result (should be running or just finished —
+  check for a `scripts/tournament-cli.ts` run in shell history / rerun `npm run tournament --
+  --games 20 --scale 0.05`). If monotonic and 0 illegal moves: check off P3.7-P3.8, move to
+  P3.9 (already effectively done via the fixes above — just needs the passing run recorded), then
+  P3.9's confirming re-run, then move to Phase 4. If still not monotonic: continue investigating
+  per DECISIONS.md's pattern (this has been real bugs so far, not just weight magnitudes — check
+  for another structural issue before reaching for weight tuning).
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
