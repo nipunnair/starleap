@@ -7,12 +7,18 @@ import { isGameOver } from '../../engine/terminal';
 interface EngineState {
   readonly game: GameState;
   readonly selectedPegId: string | null;
+  readonly previousGame: GameState | null;
+  /** True only when the last applied move was the human's own and hasn't been undone or
+   * followed by another move yet — SPEC.md P7.6: "undo human moves only," single level. */
+  readonly canUndo: boolean;
 }
 
 type Action =
   | { type: 'SELECT'; pegId: string }
   | { type: 'DESELECT' }
-  | { type: 'APPLY_MOVE'; move: Move };
+  | { type: 'APPLY_MOVE'; move: Move; isHuman: boolean }
+  | { type: 'UNDO' }
+  | { type: 'LOAD_STATE'; game: GameState };
 
 function reducer(state: EngineState, action: Action): EngineState {
   switch (action.type) {
@@ -21,7 +27,17 @@ function reducer(state: EngineState, action: Action): EngineState {
     case 'DESELECT':
       return { ...state, selectedPegId: null };
     case 'APPLY_MOVE':
-      return { game: engineApplyMove(state.game, action.move), selectedPegId: null };
+      return {
+        game: engineApplyMove(state.game, action.move),
+        selectedPegId: null,
+        previousGame: state.game,
+        canUndo: action.isHuman,
+      };
+    case 'UNDO':
+      if (!state.canUndo || !state.previousGame) return state;
+      return { game: state.previousGame, selectedPegId: null, previousGame: null, canUndo: false };
+    case 'LOAD_STATE':
+      return { game: action.game, selectedPegId: null, previousGame: null, canUndo: false };
     default:
       return state;
   }
@@ -31,11 +47,18 @@ export function useGameEngine(playerCount: PlayerCount, initialGameState?: GameS
   const [state, dispatch] = useReducer(reducer, playerCount, (pc) => ({
     game: initialGameState ?? createInitialState(pc),
     selectedPegId: null,
+    previousGame: null,
+    canUndo: false,
   }));
 
   const select = useCallback((pegId: string) => dispatch({ type: 'SELECT', pegId }), []);
   const deselect = useCallback(() => dispatch({ type: 'DESELECT' }), []);
-  const applyMove = useCallback((move: Move) => dispatch({ type: 'APPLY_MOVE', move }), []);
+  const applyMove = useCallback(
+    (move: Move, isHuman: boolean) => dispatch({ type: 'APPLY_MOVE', move, isHuman }),
+    [],
+  );
+  const undo = useCallback(() => dispatch({ type: 'UNDO' }), []);
+  const loadState = useCallback((game: GameState) => dispatch({ type: 'LOAD_STATE', game }), []);
 
   const legalMoves = useMemo(() => {
     if (!state.selectedPegId) return [];
@@ -50,9 +73,12 @@ export function useGameEngine(playerCount: PlayerCount, initialGameState?: GameS
     selectedPegId: state.selectedPegId,
     legalMoves,
     gameOver,
+    canUndo: state.canUndo,
     select,
     deselect,
     applyMove,
+    undo,
+    loadState,
   };
 }
 

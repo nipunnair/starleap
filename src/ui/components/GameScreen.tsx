@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useGameEngine } from '../hooks/useGameEngine';
 import { useAIWorker } from '../hooks/useAIWorker';
-import { useReducedMotion } from '../hooks/useReducedMotion';
-import { rank, hasWon } from '../../engine/terminal';
+import { useReducedMotion, type ReducedMotionOverride } from '../hooks/useReducedMotion';
+import { rank, hasWon, isGameOver } from '../../engine/terminal';
 import { cornerOf } from '../../engine/board';
 import { key, project, type Cube } from '../../engine/coords';
-import { seatOf } from '../../engine/state';
-import type { PlayerCount } from '../../engine/state';
+import { seatOf, type PlayerCount, type GameState } from '../../engine/state';
 import { applyMove } from '../../engine/apply';
 import type { Move } from '../../engine/moves';
 import type { TierName } from '../../ai/tiers';
@@ -20,12 +19,24 @@ import { CELL_SPACING } from './boardGeometry';
 
 export type SeatConfig = 'human' | TierName;
 
+export interface GameStats {
+  readonly plyCount: number;
+  readonly longestChainHops: number;
+  readonly durationMs: number;
+}
+
 export interface GameScreenProps {
   readonly playerCount: PlayerCount;
   readonly seats: readonly SeatConfig[];
   readonly onExit: () => void;
   /** Test-only: see src/app/debugScenarios.ts. */
-  readonly initialGameState?: import('../../engine/state').GameState;
+  readonly initialGameState?: GameState;
+  /** Called after every committed move (human or AI) so a parent can persist progress
+   * (ARCHITECTURE.md's save/resume) without GameScreen itself knowing about localStorage. */
+  readonly onStateChange?: (game: GameState, gameOver: boolean) => void;
+  /** Phase 7 settings screen: 'system' (default) follows the OS, 'on'/'off' force it. */
+  readonly reducedMotionOverride?: ReducedMotionOverride;
+  readonly audioEnabled?: boolean;
 }
 
 const SHAKE_DURATION_MS = 300;
@@ -41,11 +52,22 @@ const WORRIED_EVAL_DROP_THRESHOLD = 10;
  * "fires when the AI completes its win condition"); a documented judgment call. */
 const CELEBRATE_BEFORE_WIN_SCREEN_MS = 1200;
 
-export function GameScreen({ playerCount, seats, onExit, initialGameState }: GameScreenProps) {
+export function GameScreen({
+  playerCount,
+  seats,
+  onExit,
+  initialGameState,
+  onStateChange,
+  reducedMotionOverride = 'system',
+  audioEnabled = true,
+}: GameScreenProps) {
   const engine = useGameEngine(playerCount, initialGameState);
   const ai = useAIWorker();
-  const reducedMotion = useReducedMotion();
-  const toneSequencer = useMemo(() => (reducedMotion ? SILENT_TONE_SEQUENCER : createWebAudioToneSequencer()), [reducedMotion]);
+  const reducedMotion = useReducedMotion(reducedMotionOverride);
+  const toneSequencer = useMemo(
+    () => (reducedMotion || !audioEnabled ? SILENT_TONE_SEQUENCER : createWebAudioToneSequencer()),
+    [reducedMotion, audioEnabled],
+  );
   const particlesRef = useRef<ParticleCanvasHandle>(null);
   const [previewMove, setPreviewMove] = useState<Move | null>(null);
   const [shaking, setShaking] = useState(false);
@@ -56,6 +78,12 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
   // pass prompt needed until the active seat actually changes to someone else.
   const [dismissedPassScreenFor, setDismissedPassScreenFor] = useState<number | null>(engine.game.currentPlayer);
   const [pendingMove, setPendingMove] = useState<{ move: Move; owner: number } | null>(null);
+
+  // Post-game stats (P7.8): plies played, longest chain used, wall-clock duration.
+  const gameStartedAtRef = useRef(Date.now());
+  const plyCountRef = useRef(0);
+  const longestChainHopsRef = useRef(0);
+  const [finalStats, setFinalStats] = useState<GameStats | null>(null);
 
   const currentSeat = seats[engine.game.currentPlayer];
   const isAITurn = currentSeat !== 'human';
@@ -149,8 +177,22 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
 
   function handleMoveAnimationComplete(move: Move, owner: number) {
     const nextState = applyMove(engine.game, move);
-    engine.applyMove(move);
+    engine.applyMove(move, seats[owner] === 'human');
     setPendingMove(null);
+
+    plyCountRef.current += 1;
+    const hopCount = move.type === 'jump' ? move.hops.length : 0;
+    if (hopCount > longestChainHopsRef.current) longestChainHopsRef.current = hopCount;
+
+    const gameOver = isGameOver(nextState);
+    onStateChange?.(nextState, gameOver);
+    if (gameOver) {
+      setFinalStats({
+        plyCount: plyCountRef.current,
+        longestChainHops: longestChainHopsRef.current,
+        durationMs: Date.now() - gameStartedAtRef.current,
+      });
+    }
 
     const aiWon = seats[owner] !== 'human' && hasWon(nextState, owner);
     setCharacterState(aiWon ? 'celebrate' : 'idle');
@@ -175,6 +217,16 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
             </li>
           ))}
         </ol>
+        {finalStats && (
+          <dl data-testid="post-game-stats">
+            <dt>Total moves</dt>
+            <dd data-testid="stat-ply-count">{finalStats.plyCount}</dd>
+            <dt>Longest chain</dt>
+            <dd data-testid="stat-longest-chain">{finalStats.longestChainHops} hops</dd>
+            <dt>Duration</dt>
+            <dd data-testid="stat-duration">{Math.round(finalStats.durationMs / 1000)}s</dd>
+          </dl>
+        )}
         <button onClick={onExit}>Back to menu</button>
       </div>
     );
@@ -237,6 +289,11 @@ export function GameScreen({ playerCount, seats, onExit, initialGameState }: Gam
         />
         <ParticleCanvas ref={particlesRef} reducedMotion={reducedMotion} />
       </div>
+      {engine.canUndo && !pendingMove && (
+        <button data-testid="undo-button" onClick={() => engine.undo()}>
+          Undo
+        </button>
+      )}
       <button onClick={onExit}>Quit</button>
     </div>
   );

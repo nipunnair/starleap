@@ -1,6 +1,18 @@
 import type { Page } from '@playwright/test';
 
 /**
+ * Waits for one full hop-animation cycle: an `[data-testid="animated-peg"]` appears, then
+ * disappears. Use this (not a check like "turn indicator says Player 0's turn") to confirm a
+ * move actually completed — "Player 0's turn" is also trivially true before any move has ever
+ * been made, since player 0 goes first, so asserting on that text alone doesn't prove a
+ * round-trip happened (found the hard way — see DECISIONS.md).
+ */
+export async function waitForMoveRoundTrip(page: Page, timeout = 10_000): Promise<void> {
+  await page.waitForSelector('[data-testid="animated-peg"]', { timeout });
+  await page.waitForFunction(() => !document.querySelector('[data-testid="animated-peg"]'), undefined, { timeout });
+}
+
+/**
  * Drives a human-vs-Nova game (human is always player 0) by picking the first legal
  * destination for the first peg that has any, every time it's the human's turn. Used by the
  * win-screen and full-game gates — this proves the UI plumbing works end to end, not that the

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { waitForMoveRoundTrip } from './helpers';
 
 test.describe('Landing juice (IMPLEMENTATION_PLAN.md P5.6)', () => {
   test('the particle canvas overlay renders above the board during a game', async ({ page }) => {
@@ -24,7 +25,7 @@ test.describe('Landing juice (IMPLEMENTATION_PLAN.md P5.6)', () => {
     const destination = page.locator('circle[stroke="#50c88c"]').first();
     await destination.click();
 
-    await expect(page.getByTestId('turn-indicator')).toHaveText("Player 0's turn", { timeout: 10_000 });
+    await waitForMoveRoundTrip(page);
 
     await expect(page.getByTestId('particle-canvas')).toBeVisible();
     expect(consoleErrors).toEqual([]);

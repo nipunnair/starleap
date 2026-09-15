@@ -215,28 +215,30 @@ GATE: playwright asserts thinking state appears within 100ms of AI turn start.
 
 GATE: playwright covers config → play → quit → resume → finish.
 
-- [ ] P7.1 Main menu screen: new game / resume (if save exists) / rules / settings. —
+- [x] P7.1 Main menu screen: new game / resume (if save exists) / rules / settings. —
       `npx playwright test menu.spec.ts`
-- [ ] P7.2 Game config screen: player count (2/3/4/6), per-seat human/AI toggle, per-AI-seat
+- [x] P7.2 Game config screen: player count (2/3/4/6), per-seat human/AI toggle, per-AI-seat
       tier selection. — `npx playwright test config.spec.ts`
-- [ ] P7.3 Settings screen: audio on/off, reduced-motion override (in addition to OS
+- [x] P7.3 Settings screen: audio on/off, reduced-motion override (in addition to OS
       preference), board theme (STARLEAP default + Nakshatra/Chhalaang fallback themes from
-      buildkit.md Part 0). — `npx playwright test settings.spec.ts`
-- [ ] P7.4 Rules screen: static rendering of the STARLEAP rules (from SPEC.md §2), written for a
+      buildkit.md Part 0 — a light accent-color swap, not a full reskin, see DECISIONS.md). —
+      `npx playwright test settings.spec.ts`
+- [x] P7.4 Rules screen: static rendering of the STARLEAP rules (from SPEC.md §2), written for a
       player, not a re-paste of the formal spec language. — `npx playwright test
       rules-screen.spec.ts`
-- [ ] P7.5 Interactive tutorial: a scripted mini-board that walks a new player through a step,
+- [x] P7.5 Interactive tutorial: a scripted mini-board that walks a new player through a step,
       then specifically teaches the long-jump chain (the brief's stated hardest-to-teach
-      mechanic) using the path-preview visuals from Phase 4/5. — `npx playwright test
-      tutorial.spec.ts`
-- [ ] P7.6 Undo: single-level undo of the last committed move (human moves only; undoing an AI
+      mechanic) using the path-preview visuals from Phase 4/5. Found and fixed a real bug where
+      switching stages never reset the board (useReducer's lazy init only runs once) — see
+      DECISIONS.md. — `npx playwright test tutorial.spec.ts`
+- [x] P7.6 Undo: single-level undo of the last committed move (human moves only; undoing an AI
       move is out of scope — documented in DECISIONS.md if this needs revisiting). —
       `npx playwright test undo.spec.ts`
-- [ ] P7.7 Save/resume to localStorage per ARCHITECTURE.md persistence section, including the
+- [x] P7.7 Save/resume to localStorage per ARCHITECTURE.md persistence section, including the
       versioned-key mismatch-is-no-save behavior. — `npx playwright test save-resume.spec.ts`
-- [ ] P7.8 Post-game stats screen: per-player finishing order, move count, longest chain, total
+- [x] P7.8 Post-game stats screen: per-player finishing order, move count, longest chain, total
       game duration. — `npx playwright test post-game-stats.spec.ts`
-- [ ] P7.9 Full phase gate: playwright flow — configure a game, play a few moves, quit to menu,
+- [x] P7.9 Full phase gate: playwright flow — configure a game, play a few moves, quit to menu,
       resume from menu, finish the game, see stats. — `npx playwright test
       config-play-quit-resume-finish.spec.ts`
 

@@ -261,3 +261,36 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   winning move ~65% of the time (20-trial sample), while Rigel and Sirius (no noise) took it
   100% of the time. Nova's randomness is intentional (SPEC §3.3), but makes it unsuitable for a
   deterministic single-move E2E fixture.
+- **Found a real, general E2E anti-pattern: asserting `turn-indicator` reads "Player 0's turn"
+  as proof a move round-trip completed is vacuous, since that exact text is ALSO true before
+  any move has ever been made (player 0 always moves first).** Discovered while building
+  Phase 7's save/resume: a test clicked "Quit" immediately because the wait condition was
+  already satisfied at t=0, before the human's move had even started animating, so nothing was
+  ever actually saved — not a persistence bug, a test bug. Audited every spec using this pattern
+  and fixed four real instances (`menu.spec.ts`, `turn-flow.spec.ts`, `settings.spec.ts`,
+  `reduced-motion.spec.ts`, `landing-juice.spec.ts`) by either waiting for an actual
+  `[data-testid="animated-peg"]` appear→disappear cycle (`waitForMoveRoundTrip` in
+  `e2e/helpers.ts`) or, where the animation might resolve too fast to reliably catch
+  (reduced-motion cases), polling for an actual peg-position change instead. `playUntilGameOver`
+  and `thinking-within-100ms.spec.ts` were already using this same text correctly — as a
+  same-tick "is it currently safe to click" gate re-checked every loop iteration, or to detect
+  the transition *away* from player 0's turn (which isn't trivially true) — so they needed no
+  change.
+- **Found and fixed a real bug in `TutorialScreen`: switching stages never actually reset the
+  board.** `useGameEngine`'s `useReducer` lazy initializer only runs once on mount, so passing a
+  new `initialGameState` through on a later render (via a `useMemo` keyed on the tutorial stage)
+  was silently ignored — the second stage kept playing out on the first stage's now-stale single-
+  peg state, which is why the "long jump" step reported zero legal destinations. Fixed by calling
+  the engine's existing `loadState` action explicitly on the stage transition. Caught by the
+  E2E test failing, not by inspection.
+- **Board theme setting is a light accent-color swap, not a full reskin.** SPEC/buildkit.md name
+  Nakshatra and Chhalaang as "board themes," but don't specify what visually distinguishes them;
+  given the time budget, implemented as a `data-theme` attribute on `<body>` with a different
+  background color per theme, persisted like the rest of settings. A deeper reskin (peg colors,
+  cell styling) is a reasonable follow-up but out of scope here.
+- **Undoing a move that changes `currentPlayer` correctly re-triggers the pass-and-play prompt.**
+  In a multi-human game, undo reverts `currentPlayer` back to whoever moved — but pass-and-play
+  has no way to know whether the device has been physically handed back, so showing "pass to
+  Player N" again (for the player undo returned control to) is the correct, safe behavior rather
+  than assuming continuity. Adjusted the undo E2E test to expect and dismiss this prompt rather
+  than treating its reappearance as a bug.

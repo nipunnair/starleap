@@ -1,7 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1 through Phase 6 COMPLETE, gates green. Starting Phase 7 (Meta).
+Phase 1 through Phase 7 COMPLETE, gates green. Starting Phase 8 (Polish).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -172,8 +172,41 @@ Phase 1 through Phase 6 COMPLETE, gates green. Starting Phase 7 (Meta).
     tests now take ~3.1 minutes each (was ~1.6 min) due to the SPEC-mandated thinking floor —
     documented as intentional latency, not a regression; `test.setTimeout` raised accordingly.
 
+- **Phase 7 — Meta (P7.1-P7.9), all tasks complete:**
+  - `ConfigScreen`: player count (2/3/4/6) radio + per-seat human/tier `<select>`, dynamically
+    resizing the seat list.
+  - `SettingsScreen` + `settingsStore.ts`: audio on/off, reduced-motion override
+    (`system`/`on`/`off`, layered on top of the OS preference via an extended
+    `useReducedMotion(override)`), board theme (light accent-color swap — see DECISIONS.md for
+    scope), all persisted to `localStorage`.
+  - `RulesScreen`: player-facing prose rewrite of SPEC.md §2.
+  - `TutorialScreen`: a real 2-stage scripted board (step, then a genuine span-2 long jump) using
+    the actual `Board`/`useGameEngine`/`PathPreview` components.
+  - `useGameEngine` gained `canUndo`/`undo()` (single-level, human moves only — falls out
+    naturally from tracking one `previousGame` plus whether the last move was human's) and
+    `loadState()` (for resume).
+  - `persistence.ts`: versioned-key (`starleap.save.v1`) localStorage save/load, best-effort
+    (never throws on quota/private-browsing/malformed data).
+  - `GameScreen` now tracks post-game stats (ply count, longest chain, duration) and exposes an
+    `onStateChange` callback so `App` can autosave after every move and clear the save on
+    game-over, without `GameScreen` itself knowing about `localStorage`.
+  - **Found and fixed a real, general E2E testing anti-pattern while building this phase**:
+    asserting the turn-indicator reads "Player 0's turn" as proof a move round-trip completed is
+    vacuous, since that text is also true before any move has ever been made. Audited every spec
+    and fixed 5 real instances (see DECISIONS.md) with either an actual animated-peg
+    appear→disappear wait (`waitForMoveRoundTrip`, added to `e2e/helpers.ts`) or a
+    peg-position-changed poll where the animation might resolve too fast to reliably catch.
+  - **Found and fixed a real `TutorialScreen` bug**: switching stages never actually reset the
+    board, because `useReducer`'s lazy initializer only runs once on mount — passing a new
+    initial state through on a later render was silently ignored. Fixed via the engine's
+    `loadState` action. Caught by a failing E2E test, not by inspection.
+  - **Gate: green.** 123 unit tests (4 new: persistence round-trip/malformed-data handling) + 41
+    Playwright E2E tests (15 new: menu, config, settings, rules, tutorial, undo, save-resume,
+    post-game-stats, the full P7.9 gate). Full E2E suite: ~3.3 minutes total (four ~3.1-minute
+    full-game specs run in parallel, not sequentially).
+
 ## Next
-- Phase 7, task P7.1: main menu screen (new game / resume / rules / settings).
+- Phase 8, task P8.1: responsive layout pass down to 360px width.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -191,7 +224,7 @@ Phase 1 through Phase 6 COMPLETE, gates green. Starting Phase 7 (Meta).
 - Phase 4 (Board UI): **GREEN**
 - Phase 5 (Animation/juice): **GREEN**
 - Phase 6 (AI characters): **GREEN**
-- Phase 7 (Meta): not started
+- Phase 7 (Meta): **GREEN**
 - Phase 8 (Polish): not started
 - Phase 9 (Packaging): not started
 - Phase 10 (Final sweep): not started
