@@ -55,6 +55,46 @@ violations on any screen.
   but a future maintainer could equally decide to either start routing internal imports through
   it or remove it.
 
+## Future scope (from first-round playtesting)
+
+Not built, not scheduled — captured here so it isn't lost. Ordered roughly as raised, not by
+priority:
+
+- **Make suggested-move highlighting optional**, off by default (or off at higher difficulty
+  selections). Currently every legal destination for a selected peg is always highlighted
+  (`Board`/`PathPreview`) — good for onboarding, but experienced players may want to turn it off.
+- **At higher difficulty settings, replace move suggestions with a reward signal for chaining**
+  instead (e.g. a small "happy stars" burst on a long jump chain) rather than just removing help.
+  Ties into the next item.
+- **Show a counter/score for chained jumps as they happen** — a visible "leveling up" moment when
+  a player pulls off a multi-hop chain, not just the existing screen-shake-on-5+-hops juice.
+  Would likely live in `GameScreen`'s per-move handling alongside `shouldShakeForMove`.
+- **The initial menu flow needs a redesign pass** — flagged as "clunky" in first playtesting.
+  The current menu (`App.tsx`'s bare fallback screen) is functional but was never given a design
+  pass; a first-time player's path through menu → config → rules/tutorial is worth rethinking as
+  a whole rather than patching individual screens.
+- **The AI "thinking" character animation is real but easy to miss in practice.** Diagnosed
+  during the same playtest feedback session: the state machine, CSS animation, and 60px avatar
+  are all present and working (verified: `.starleap-avatar--thinking` has a working orbiting-dots
+  keyframe, `CharacterAvatar` receives the right `data-state`), but at Nova's tier the whole
+  thinking→found-it cycle is only ~600-850ms (250ms search budget + 400ms min-thinking floor +
+  200ms found-it display), and the avatar itself is small with no strong visual anchoring —
+  genuinely easy to not notice mid-game. Worth either slowing it down, making it larger/more
+  prominent, or moving it somewhere a player's eyes are more likely to already be (e.g. nearer
+  the board or the turn indicator) rather than treating it as broken.
+- **A simple leaderboard tracking who's played and their scores**, once the game is hosted
+  somewhere multiple people can reach. The app is currently 100% client-side with zero backend
+  (a deliberate zero-backend design — see `docs/ARCHITECTURE.md`), so this needs *some* shared
+  persistence layer that doesn't exist yet. Cheapest realistic paths, roughly in order of setup
+  effort: (1) a tiny serverless function + KV/Redis store (e.g. Cloudflare Workers + KV, or a
+  Vercel/Netlify function) that the client POSTs a name + final stats to after a game ends,
+  fronted by a simple `/leaderboard` read endpoint; (2) Firebase/Supabase free tier for the same
+  thing with less custom backend code to write; (3) if hosted as a Claude Artifact instead of (or
+  in addition to) GitHub Pages, its built-in shared-database capability would cover this with no
+  separate infrastructure at all. Needs a product decision first (what counts as a "score" —
+  win/loss? fastest win? longest chain? — ties into the chain-counter item above) before picking
+  an implementation.
+
 ## How to extend
 
 **Add a new AI tier**: add an entry to `TIERS` in `src/ai/tiers.ts` (depth, topK, noise,

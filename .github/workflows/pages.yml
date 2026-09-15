@@ -24,8 +24,13 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - uses: actions/configure-pages@v5
+      - id: pages
+        uses: actions/configure-pages@v5
+      # Project Pages sites are served from /<repo-name>/, not /, so the build needs to know its
+      # own base path for asset URLs to resolve — `npm run build` alone (used by the other
+      # deployment paths in README.md) assumes root ("/"), which is correct for those but wrong
+      # here.
+      - run: npx tsc -b && npx vite build --base="${{ steps.pages.outputs.base_path }}/"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

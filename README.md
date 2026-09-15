@@ -5,6 +5,8 @@ that removes the classic blocking stalemate, and a difficulty ladder of named AI
 Vega, Rigel, Sirius) verified by headless self-play. See `docs/SPEC.md` for full rules and
 `docs/ARCHITECTURE.md` for module boundaries.
 
+**Play it live**: https://nipunnair.github.io/starleap/
+
 ## Local development
 
 ```bash
