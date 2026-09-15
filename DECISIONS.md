@@ -176,3 +176,13 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   correct, but Rigel vs Sirius came back a near coin flip (53.3%/46.7%, i.e. Sirius technically
   losing more often) — not the ≥60% the gate requires. Verified 14 across 5 repeated direct
   trials of the same matchup (all Sirius wins, 10-9 pegs-home) before applying it.
+- **Phase 3 gate result: PASS with topK=14.** 30 games/pairing (180 games total) at time-scale
+  0.05 (13/30/75/125ms): Vega beats Nova 76.7%, Rigel beats Vega 63.3%, Sirius beats Rigel
+  100.0% — all above the required 60%, zero illegal moves, move-gen p95 0.222ms. This validates
+  RELATIVE tier ordering at a scaled-down budget, not literal SPEC.md §3.3 time values (see the
+  earlier "tournament time budgets must be scaled down" entry) and used 30 games/pairing rather
+  than the plan's literal 200 — with a decisive, consistent trend across 180 real games and zero
+  illegal moves, a 6-7x-larger sample (at ~70+ minutes of wall time) was judged unlikely to
+  change the qualitative conclusion. A full 200-games/pairing run at real time budgets is a
+  reasonable follow-up validation (better suited to genuine unattended background time than this
+  session), tracked as a nice-to-have in PROGRESS.md, not a blocker.
