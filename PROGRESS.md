@@ -1,15 +1,22 @@
 # PROGRESS
 
 ## Status
-Bootstrap in progress (Step 1 of the kickoff prompt). No implementation code yet.
+Step 1 (bootstrap docs) and Step 2 (scaffold) both complete and committed. No game code yet —
+next up is Phase 1, task P1.1.
 
 ## Done
 - docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md, PROMPT_build.md,
-  loop.sh, PROGRESS.md/DECISIONS.md/BLOCKED.md written.
+  loop.sh, PROGRESS.md/DECISIONS.md/BLOCKED.md written (Step 1).
+- Vite + React 18 + TypeScript scaffold hand-written (create-vite CLI didn't cooperate in this
+  sandbox, see DECISIONS.md). vitest, fast-check (installed, not yet used), playwright,
+  vite-plugin-singlefile, vite-plugin-pwa, eslint (flat config with engine-purity import-boundary
+  rules) all installed and wired. `.github/workflows/ci.yml` runs typecheck + lint + test.
+- Verified green: `npm run typecheck`, `npm run lint`, `npm test` (1 smoke test), `npm run build`
+  (produces `dist/` with PWA manifest/service worker).
 
 ## Next
-- Finish Step 1 (this file's own initial commit), then Step 2 (Vite/React/TS scaffold + test
-  tooling + CI), then start Phase 1 task P1.1 in IMPLEMENTATION_PLAN.md.
+- Phase 1, task P1.1: `src/engine/coords.ts` (cube coordinates, onBoard, neighbors, distance,
+  rotate60). See IMPLEMENTATION_PLAN.md.
 
 ## Gate status
 - Phase 1 (Engine core): not started

@@ -1,0 +1,46 @@
+{
+  "name": "starleap",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:singlefile": "tsc -b && vite build --mode singlefile",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "selfplay": "tsx scripts/selfplay-cli.ts",
+    "tournament": "tsx scripts/tournament-cli.ts",
+    "e2e": "playwright test",
+    "lighthouse": "tsx scripts/lighthouse-cli.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@playwright/test": "^1.46.0",
+    "@types/node": "^26.5.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "fast-check": "^3.20.0",
+    "globals": "^15.9.0",
+    "jsdom": "^24.1.1",
+    "tsx": "^4.16.5",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1",
+    "vite": "^5.4.0",
+    "vite-plugin-pwa": "^0.20.1",
+    "vite-plugin-singlefile": "^2.0.3",
+    "vitest": "^2.0.5"
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-singlefile/
+starleap.html
+.loop.log
+*.log
+.DS_Store
+playwright-report/
+test-results/
+.vite/
+coverage/
+*.tsbuildinfo
