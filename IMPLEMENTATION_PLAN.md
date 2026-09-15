@@ -154,13 +154,13 @@ GATE: playwright completes a full human-vs-Nova game start to win.
 GATE: playwright screenshots at 8 key states; performance trace shows no frame over 20ms during
 a 7-hop chain.
 
-- [ ] P5.1 Hop physics module: parabolic arc + easing per SPEC §4.1, parameterized by
+- [x] P5.1 Hop physics module: parabolic arc + easing per SPEC §4.1, parameterized by
       hop-distance-in-cells. — `npx vitest run src/ui/animation/__tests__/hop-physics.test.ts`
 - [ ] P5.2 Squash/stretch + shadow (SPEC §4.2-4.3) applied per hop. — manual + screenshot test
       below
 - [ ] P5.3 Canvas particle overlay (positioned above the SVG board) driven by an imperative
       animation loop (not React state) for perf. — `npm run typecheck`
-- [ ] P5.4 Chain pacing: sequential hop playback with the 70ms/8%-decay gap and per-hop ascending
+- [x] P5.4 Chain pacing: sequential hop playback with the 70ms/8%-decay gap and per-hop ascending
       pentatonic tone (Web Audio oscillator). — `npx vitest run
       src/ui/audio/__tests__/tones.test.ts`
 - [ ] P5.5 Wire real animated hops into the turn-flow path from Phase 4 (replacing the instant
