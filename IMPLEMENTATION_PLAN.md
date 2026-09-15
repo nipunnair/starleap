@@ -93,7 +93,7 @@ GATE: round-robin, 200 games per pairing, each tier beats the tier below at ≥6
 - [x] P3.2 `src/ai/search.ts` part A: 2-player iterative-deepening alpha-beta with transposition
       table keyed by Zobrist hash, time-budgeted (wall-clock cutoff mid-search). —
       `npx vitest run src/ai/__tests__/search-2p.test.ts`
-- [ ] P3.3 `src/ai/search.ts` part B: 3+ player max^n at depth 2 with top-K static-eval pruning.
+- [x] P3.3 `src/ai/search.ts` part B: 3+ player max^n at depth 2 with top-K static-eval pruning.
       — `npx vitest run src/ai/__tests__/search-maxn.test.ts`
 - [ ] P3.4 `src/ai/tiers.ts`: Nova/Vega/Rigel/Sirius parameter table (depth, top-K, noise, time
       budget per SPEC §3.3) + noise injection (uniform-random move substitution at the given

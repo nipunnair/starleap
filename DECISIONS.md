@@ -65,3 +65,13 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Phase 3 gate activity). The 1000-game/0-stalemate/p95<5ms gate is verified for 2P only; the
   3P/4P/6P stalemate rate is a known baseline-AI limitation to watch when Phase 3's tournament
   gate runs those seat counts.
+- **max^n uses a fixed depth of 2 for every tier, not the ladder table's per-tier Depth column.**
+  SPEC.md §3.2 states two things that read as being in tension: the Search subsection says "3+
+  players → max^n at depth 2" (unqualified), while the Difficulty ladder table gives Rigel depth
+  3 and Sirius "ID to budget." Applying those deeper values to max^n directly would be far more
+  expensive than for 2-player alpha-beta, since max^n's branching multiplies across every seated
+  player rather than alternating a single mover/opponent. Read the Search subsection's "depth 2"
+  as the authoritative, architecture-level statement (it's stated independently of the tier
+  table) and the ladder table's Depth column as applying to 2-player alpha-beta only. For 3+
+  players, tiers instead vary strength via top-K breadth, noise, and time budget — all of which
+  still apply uniformly to both search modes.

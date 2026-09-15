@@ -24,7 +24,7 @@ export interface SearchResult {
 }
 
 /** Static 1-ply eval delta for whoever is about to move, descending, capped to `k`. */
-function topKMoves(state: GameState, mover: number, moves: readonly Move[], k: number, weights: EvalWeights): Move[] {
+export function topKMoves(state: GameState, mover: number, moves: readonly Move[], k: number, weights: EvalWeights): Move[] {
   if (moves.length <= k) return [...moves];
   const baseline = evaluate(state, mover, weights);
   const scored = moves.map((m) => ({
@@ -162,4 +162,85 @@ export function searchBestMoveAlphaBeta(state: GameState, player: number, option
   }
 
   return { move: bestMove, evalScore: bestScore, depthReached };
+}
+
+// --- Part B: 3+ player max^n (SPEC.md §3.2) ---
+
+/** Per-player evaluation vector at a leaf/cutoff node. */
+export type ScoreVector = readonly number[];
+
+/**
+ * max^n: every player maximizes their own score (no adversarial minimizing). Each node
+ * propagates the FULL vector of the child chosen by the mover (highest in the mover's own
+ * coordinate), so ancestors can still read every other player's component. Fixed depth of 2
+ * per SPEC §3.2 — max^n's branching cost multiplies across every seated player, so tiers vary
+ * strength via top-K breadth, noise, and time budget rather than search depth (see
+ * DECISIONS.md).
+ */
+function maxN(
+  state: GameState,
+  playerCount: number,
+  depth: number,
+  deadline: number,
+  topK: number,
+  weights: EvalWeights,
+): ScoreVector {
+  if (isGameOver(state) || depth === 0 || performance.now() > deadline) {
+    return Array.from({ length: playerCount }, (_, p) => evaluate(state, p, weights));
+  }
+
+  const mover = state.currentPlayer;
+  const legalMoves = generateLegalMoves(state, mover);
+
+  if (legalMoves.length === 0) {
+    const next = advanceTurnWithoutMove(state);
+    return maxN(next, playerCount, depth - 1, deadline, topK, weights);
+  }
+
+  const moves = topKMoves(state, mover, legalMoves, topK, weights);
+  let bestVector: ScoreVector = Array.from({ length: playerCount }, () => -Infinity);
+
+  for (const move of moves) {
+    const next = applyMove(state, move);
+    const vector = maxN(next, playerCount, depth - 1, deadline, topK, weights);
+    if (vector[mover]! > bestVector[mover]!) {
+      bestVector = vector;
+    }
+  }
+
+  return bestVector;
+}
+
+export const MAX_N_DEPTH = 2;
+
+export function searchBestMoveMaxN(
+  state: GameState,
+  player: number,
+  playerCount: number,
+  options: SearchOptions,
+): SearchResult {
+  const weights = options.weights ?? DEFAULT_WEIGHTS;
+  const deadline = performance.now() + options.timeBudgetMs;
+
+  const allMoves = generateLegalMoves(state, player);
+  if (allMoves.length === 0) {
+    throw new Error('searchBestMoveMaxN called with no legal moves for the given player');
+  }
+
+  const moves = topKMoves(state, player, allMoves, options.topK, weights);
+  let bestMove = moves[0]!;
+  let bestScore = -Infinity;
+
+  for (const move of moves) {
+    if (performance.now() > deadline) break;
+    const next = applyMove(state, move);
+    const vector = maxN(next, playerCount, MAX_N_DEPTH - 1, deadline, options.topK, weights);
+    const score = vector[player]!;
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = move;
+    }
+  }
+
+  return { move: bestMove, evalScore: bestScore, depthReached: MAX_N_DEPTH };
 }

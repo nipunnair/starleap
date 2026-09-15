@@ -58,8 +58,14 @@ Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
   pruning at every node (shared helper, will be reused by max^n), Zobrist-keyed transposition
   table with exact/lower/upper bound flags.
 
+- P3.3: `searchBestMoveMaxN` — every player maximizes their own eval (no adversarial
+  minimizing), each node propagating the full score vector of the mover's best child. Fixed
+  depth 2 for all tiers (see DECISIONS.md for why the ladder table's per-tier Depth column is
+  read as applying to 2P alpha-beta only, not max^n).
+
 ## Next
-- Phase 3, task P3.3: `src/ai/search.ts` part B — 3+ player max^n at depth 2.
+- Phase 3, task P3.4: `src/ai/tiers.ts` — Nova/Vega/Rigel/Sirius parameter table + noise
+  injection + Nova's 2-hop chain cap.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
