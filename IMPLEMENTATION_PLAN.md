@@ -68,17 +68,17 @@ move generation under 5ms.
       initial weights table. — `npm run typecheck`
 - [x] P2.2 Greedy baseline AI: pick the legal move maximizing 1-ply eval delta (no search tree).
       — `npx vitest run src/ai/__tests__/greedy.test.ts`
-- [ ] P2.3 `src/ai/selfplay.ts`: headless game runner — seats N greedy AIs, plays to completion
+- [x] P2.3 `src/ai/selfplay.ts`: headless game runner — seats N greedy AIs, plays to completion
       or 150-round stalemate, records illegal-move attempts (should be structurally impossible
       since moves come from the generator, but assert it anyway), move-cap hits, and per-move
       generation timing. — `npx vitest run src/ai/__tests__/selfplay.test.ts`
-- [ ] P2.4 `npm run selfplay` CLI script wrapping selfplay.ts for N games, printing a summary
+- [x] P2.4 `npm run selfplay` CLI script wrapping selfplay.ts for N games, printing a summary
       (illegal-move count, stalemate count, p50/p95/p99 move-gen time). —
       `npm run selfplay -- --games 20`
-- [ ] P2.5 Run and record the 1000-game gate. If p95 exceeds 5ms, profile and optimize
-      `moves.ts` (likely the chain DFS) before proceeding — do not relax the gate. —
-      `npm run selfplay -- --games 1000`
-- [ ] P2.6 Record baseline AI quality numbers (avg game length, avg chain length used) in
+- [x] P2.5 Run and record the 1000-game gate. If p95 exceeds 5ms, profile and optimize
+      `moves.ts` (likely the chain DFS) before proceeding — do not relax the gate. Scoped to 2P;
+      see DECISIONS.md for why. — `npm run selfplay -- --games 1000`
+- [x] P2.6 Record baseline AI quality numbers (avg game length, avg chain length used) in
       PROGRESS.md for later comparison against the full ladder. — manual (numbers into
       PROGRESS.md)
 

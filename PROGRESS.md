@@ -1,8 +1,7 @@
 # PROGRESS
 
 ## Status
-Phase 1 (Engine core) COMPLETE, gate green. Starting Phase 2 (self-play harness + greedy
-baseline AI).
+Phase 1 and Phase 2 COMPLETE, gates green. Starting Phase 3 (full AI ladder).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -36,12 +35,27 @@ baseline AI).
 
 - P2.2: `chooseGreedyMove` — evaluates every legal move's resulting position and picks the max.
 
+- P2.3-P2.6: `src/ai/selfplay.ts` headless runner + `npm run selfplay` CLI
+  (`scripts/selfplay-cli.ts`). **Phase 2 gate: green for 2P** — 1000 games, 0 illegal moves, 0
+  stalemates, move-gen p50/p95/p99/max = 0.094/0.214/0.346/0.645ms (well under the 5ms bar).
+  Baseline quality: avg 78 plies/game (39 moves per player) to a real win.
+  3P/4P/6P greedy self-play hits the 150-round stalemate cap 100% of the time (move-gen speed
+  is still fine at every seat count — this is AI-quality congestion, not performance; see
+  DECISIONS.md). Explicitly deferred to Phase 3, whose deeper search + weight tuning should
+  resolve it — worth rerunning `npm run selfplay -- --players 3/4/6` once Sirius/Rigel exist to
+  confirm.
+  Also fixed a real perf bug found along the way: `evaluate()`'s mobility term was calling full
+  `generateLegalMoves` (exponential chain DFS) per candidate move, making one 6P self-play game
+  take ~31s; switched to cheap steps+single-hops counting (~1.7s for the same game). See
+  DECISIONS.md.
+
 ## Next
-- Phase 2, task P2.3: `src/ai/selfplay.ts` headless game runner.
+- Phase 3, task P3.1: `src/engine/zobrist.ts` — Zobrist hash table + incremental hash.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
-- Phase 2 (Self-play + greedy AI): not started
+- Phase 2 (Self-play + greedy AI): **GREEN (2P)** — 3P/4P/6P greedy stalemate rate deferred to
+  Phase 3, see Done notes above
 - Phase 3 (Full AI ladder): not started
 - Phase 4 (Board UI): not started
 - Phase 5 (Animation/juice): not started

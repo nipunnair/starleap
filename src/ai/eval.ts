@@ -4,7 +4,7 @@
 import { type Cube, distance, project } from '../engine/coords';
 import { CORNER_APEX, cornerOf } from '../engine/board';
 import { seatOf, pegsOf, pegAt, type GameState } from '../engine/state';
-import { buildOccupancy, generateLegalMoves, legalHopsFrom } from '../engine/moves';
+import { buildOccupancy, generateSteps, legalHopsFrom } from '../engine/moves';
 
 export interface EvalWeights {
   readonly wLag: number;
@@ -67,7 +67,14 @@ export function evaluate(state: GameState, player: number, weights: EvalWeights 
 
   const occupied = buildOccupancy(state);
   const ladder = jumpReadyAlignments(state, player, occupied);
-  const mobility = generateLegalMoves(state, player).length;
+  // Immediate step/single-hop options only (not full multi-hop chain enumeration): eval is
+  // called once per candidate move during search, and full chain generation is by far the most
+  // expensive part of move generation (SPEC.md §3.2 itself relies on eval being cheap enough to
+  // prune the tree *before* recursing into it). See DECISIONS.md.
+  const mobility = pegs.reduce(
+    (sum, p) => sum + generateSteps(p.cell, occupied).length + legalHopsFrom(p.cell, occupied).length,
+    0,
+  );
 
   return (
     -sumDistance -

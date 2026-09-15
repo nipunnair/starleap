@@ -22,7 +22,7 @@ export {
   MAX_CHAIN_HOPS,
 } from './moves';
 
-export { applyMove } from './apply';
+export { applyMove, advanceTurnWithoutMove } from './apply';
 
 export type { RankingEntry } from './terminal';
 export {

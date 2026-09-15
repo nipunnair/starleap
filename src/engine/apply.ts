@@ -24,3 +24,15 @@ export function applyMove(state: GameState, move: Move): GameState {
 
   return { ...state, pegs, currentPlayer: nextPlayer, round };
 }
+
+/**
+ * Advances the turn without moving any peg. SPEC.md doesn't define a "pass" move — a player
+ * always has at least one legal move in every realistic position — but a boxed-in edge case
+ * (zero legal moves for the current player) is theoretically reachable, and the self-play
+ * harness must not hang on it. Same turn/round bookkeeping as applyMove, minus the peg update.
+ */
+export function advanceTurnWithoutMove(state: GameState): GameState {
+  const nextPlayer = (state.currentPlayer + 1) % state.playerCount;
+  const round = nextPlayer === 0 ? state.round + 1 : state.round;
+  return { ...state, currentPlayer: nextPlayer, round };
+}
