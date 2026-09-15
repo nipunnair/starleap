@@ -25,7 +25,7 @@ directory imports nothing (enforced by lint rule).
       `npx vitest run src/engine/__tests__/board.test.ts`
 - [x] P1.4 Property test: cell set invariant under `rotate60` (set-equality of coordinates
       before/after rotating every cell). — `npx vitest run src/engine/__tests__/board.test.ts`
-- [ ] P1.5 `src/engine/state.ts`: `GameState` type — per-player peg cell lists, `hasLeftStart`
+- [x] P1.5 `src/engine/state.ts`: `GameState` type — per-player peg cell lists, `hasLeftStart`
       booleans, current player index, round counter, seating (start/target corner per player).
       Seating logic for 2/3/4/6 players per SPEC §1.9. — `npm run typecheck`
 - [ ] P1.6 `src/engine/moves.ts` part A: STEP generation (adjacent empty neighbor). —

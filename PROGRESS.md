@@ -19,8 +19,11 @@ next up is Phase 1, task P1.1.
   corners, opposite-pair map). Property tests confirm exact cardinalities and 60°-rotation
   invariance. `npm run typecheck && npm run lint && npm test` all green.
 
+- P1.5: `src/engine/state.ts` — GameState type, seating plans for 2/3/4/6 players (see
+  DECISIONS.md for the 4P/6P corner-assignment judgment call), initial peg placement.
+
 ## Next
-- Phase 1, task P1.5: `src/engine/state.ts` (GameState type, seating for 2/3/4/6 players).
+- Phase 1, task P1.6: `src/engine/moves.ts` part A — STEP generation.
 
 ## Gate status
 - Phase 1 (Engine core): not started

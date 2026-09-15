@@ -23,3 +23,9 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   thousands of times a minute); its test files legitimately import `vitest`/`fast-check`, which
   never execute at runtime. Without this exemption `npm run lint` would fail on every engine test
   file that imports its test framework, which isn't the drift the rule is meant to catch.
+- **Seating plans for 4P and 6P** (buildkit.md only says "two opposite pairs" / "all six," not
+  which pairs or what order): 4P uses X+/X-/Y+/Y- (drops the Z pair), interleaved as
+  X+,Y+,X-,Y- so consecutive turns are never between opposite-corner players. 6P uses the true
+  60°-rotation geometric cyclic order (X+,Y-,Z+,X-,Y+,Z-, derived by repeatedly applying
+  `rotate60` to a corner's apex direction) so turn order actually walks around the star rather
+  than jumping erratically. Neither choice affects correctness, only turn-order feel.
