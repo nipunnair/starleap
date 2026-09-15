@@ -25,7 +25,10 @@ export default defineConfig(({ mode }) => {
                 theme_color: '#0b1020',
                 background_color: '#0b1020',
                 display: 'standalone',
-                icons: [],
+                icons: [
+                  { src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+                  { src: 'favicon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'maskable' },
+                ],
               },
             }),
           ]),

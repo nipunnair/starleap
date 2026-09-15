@@ -312,3 +312,22 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   direction (1,0,-1) exactly). A single `tabIndex=0` SVG root with an internal "virtual focus"
   cell (not real per-cell DOM focus) was the pragmatic choice over a full roving-tabindex pattern
   across 121 individual elements, given the time budget.
+- **PWA manifest icons (P8.6) are a single SVG referenced twice (`purpose: any` and
+  `purpose: maskable`) with `sizes: "any"`, not generated PNG raster sets.** No image-generation
+  tool was available in this sandbox to produce real 192x192/512x512 PNGs, and Chromium (the only
+  browser this project's E2E suite drives) natively supports SVG manifest icons with `sizes: any`
+  for both installability and the maskable-icon check. `public/favicon.svg` (a simple star mark
+  matching the theme colors) was also missing entirely before this task — `vite.config.ts`'s
+  `includeAssets: ['favicon.svg']` referenced a file that didn't exist, which built silently
+  without erroring but meant the site had no favicon and the manifest had an empty `icons: []`.
+  Added the file, wired it into `index.html`'s `<link rel="icon">`, and populated the manifest.
+  Revisit with real raster icons if a non-Chromium install target is ever added.
+- **PWA offline verification (P8.6) tests a genuine full move round-trip while offline, not just
+  that the shell paints.** `e2e/pwa-offline.spec.ts` does a first online visit, waits for
+  `navigator.serviceWorker.controller` (proof the SW has taken control, not just registered),
+  sets the browser context fully offline, reloads, then plays an actual human move and waits for
+  the AI Web Worker's reply via `waitForMoveRoundTrip` — this exercises the precached worker
+  chunk (`assets/worker-*.js`) too, which a shell-only check wouldn't catch, since the AI worker
+  is a separate script the service worker must also have precached. Passed on the first run with
+  no code changes needed beyond adding the icons/favicon above — `generateSW` mode already
+  precaches every build asset by default.

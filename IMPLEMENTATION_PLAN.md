@@ -260,7 +260,7 @@ GATE: lighthouse ≥90 on performance and accessibility; axe reports zero critic
       move in plain language. — `npx playwright test aria-announcements.spec.ts`
 - [x] P8.5 Confirm `prefers-reduced-motion` behavior from P5.7 also covers any Phase 6/7 additions
       (character animation, menu transitions). — `npx playwright test reduced-motion-full.spec.ts`
-- [ ] P8.6 PWA manifest + service worker (offline shell caching) via `vite-plugin-pwa`. —
+- [x] P8.6 PWA manifest + service worker (offline shell caching) via `vite-plugin-pwa`. —
       `npm run build && npx playwright test pwa-offline.spec.ts`
 - [ ] P8.7 Run axe against every screen (menu/config/board/rules/tutorial/settings/stats),
       fix critical violations. — `npx playwright test axe-audit.spec.ts`
