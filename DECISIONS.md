@@ -29,3 +29,9 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   60°-rotation geometric cyclic order (X+,Y-,Z+,X-,Y+,Z-, derived by repeatedly applying
   `rotate60` to a corner's apex direction) so turn order actually walks around the star rather
   than jumping erratically. Neither choice affects correctness, only turn-order feel.
+- **Property-test convention: exclude the mover's own cell from synthetic occupancy sets.**
+  Hit this in both P1.9 (jump-chain revisit test) and P1.12 (reversibility test) — fast-check's
+  random occupancy generator can otherwise mark the cell a peg is "standing on" as also
+  "occupied by another peg," a contradiction no real game state can reach. This produced two
+  false test failures (not engine bugs) before the fix. Any future engine property test that
+  generates synthetic occupancy alongside a specific mover cell should filter that cell out.

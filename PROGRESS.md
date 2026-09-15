@@ -44,8 +44,12 @@ next up is Phase 1, task P1.1.
   property test plays random legal-move sequences and confirms every resulting peg stays
   on-board with no overlaps.
 
+- P1.12: reversibility property test — proves every hop has a same-span, same-pivot,
+  opposite-direction inverse hop, and every step direction has an opposite in the direction
+  set. Full suite: 44 tests green across 9 files.
+
 ## Next
-- Phase 1, task P1.12: reversibility property test.
+- Phase 1, task P1.13: `src/engine/terminal.ts` — win/stalemate detection and ranking.
 
 ## Gate status
 - Phase 1 (Engine core): not started

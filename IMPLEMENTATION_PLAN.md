@@ -46,7 +46,7 @@ directory imports nothing (enforced by lint rule).
       `hasLeftStart`, current player, round counter. Property test: applying a move never
       produces a peg on an off-board or previously-occupied-by-another-peg cell. —
       `npx vitest run src/engine/__tests__/apply.test.ts`
-- [ ] P1.12 Reversibility property test: for every generated move, there exists a legal move
+- [x] P1.12 Reversibility property test: for every generated move, there exists a legal move
       shape (step or single hop) from the resulting position back toward the origin cell for an
       otherwise-empty board (checked structurally, not as literal undo) — i.e. no move generates
       a landing cell that is provably unreachable-back-from under the same movement primitives. —
