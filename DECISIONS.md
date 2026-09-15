@@ -186,3 +186,14 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   change the qualitative conclusion. A full 200-games/pairing run at real time budgets is a
   reasonable follow-up validation (better suited to genuine unattended background time than this
   session), tracked as a nice-to-have in PROGRESS.md, not a blocker.
+- **Pass-and-play's "dismissed for" state now initializes to the game's starting player, not
+  `null`.** Caught by the pass-and-play E2E test: with `null` initial state, a fresh Human-vs-
+  Human game showed the "pass the device" screen before player 0's own very first move — but
+  the player who just configured the game already holds the device, so there's nothing to pass
+  yet. Initializing `dismissedPassScreenFor` to `engine.game.currentPlayer` means the prompt
+  only appears once the active seat actually changes to a different human.
+- **Phase 4's browser verification used a throwaway Playwright driver script (not committed),
+  run before writing the real E2E tests** — `chromium-cli` (the run skill's preferred tool) isn't
+  installed in this sandbox; Playwright's `chromium` API was already a project dependency
+  (browser binaries installed via `npx playwright install chromium`), so it was the natural
+  fallback per the run skill's own guidance for browser-driven apps.

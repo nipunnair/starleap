@@ -1,7 +1,8 @@
 # PROGRESS
 
 ## Status
-Phase 1, Phase 2, and Phase 3 COMPLETE, gates green. Starting Phase 4 (Board UI).
+Phase 1, Phase 2, Phase 3, and Phase 4 COMPLETE, gates green. Starting Phase 5 (Animation and
+juice).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -104,16 +105,36 @@ Phase 1, Phase 2, and Phase 3 COMPLETE, gates green. Starting Phase 4 (Board UI)
     (13/30/75/125ms): Vega beats Nova 76.7%, Rigel beats Vega 63.3%, Sirius beats Rigel 100.0%
     — all ≥60%, zero illegal moves, move-gen p95 0.222ms.
 
+- **Phase 4 — Board UI (P4.1-P4.9), all tasks complete:**
+  - `useGameEngine` hook: `useReducer` over engine `GameState` + peg selection, exposing
+    `legalMoves` for the selected peg (via `generateLegalMoves`), `applyMove`, `gameOver`.
+  - `useAIWorker` hook: wraps the real Web Worker (`new Worker(new URL('../../ai/worker.ts',
+    import.meta.url), { type: 'module' })`), promise-based `findMove`, ignores stale responses
+    by request ID, exposes `thinking`.
+  - `Board`/`Peg`/`PathPreview` SVG components (`src/ui/components/`): all 121 cells projected
+    via `engine/coords.project`, legal destinations highlighted, static numbered hop-by-hop path
+    preview on hover (pivots marked) per SPEC §4.5.
+  - `GameScreen`: turn flow (commit move → advance → dispatch to AI worker when the seat isn't
+    human), pass-and-play screen (only for >1 human seat; the configuring player's own first
+    turn skips it — see DECISIONS.md for a real bug this caught), win screen with ranking.
+  - `App`: minimal menu ("Play vs Nova" / "Human vs Human") — full config screen is Phase 7.
+  - Manually verified the whole flow in a real browser (Playwright driver script, not committed)
+    before writing E2E tests: human move applies, Nova responds automatically, zero console
+    errors.
+  - **Gate: green.** 12 Playwright tests across 8 spec files, including two full human-vs-Nova
+    playthroughs to a real terminal state (~20s each) with zero console errors. Full unit suite
+    still green too (95 tests). `npx playwright install chromium` was needed first (not
+    preinstalled in this sandbox).
+
 ## Next
-- Phase 4, task P4.1: Vite React app shell (`App`, routing state, `useGameEngine` hook wrapping
-  `useReducer` over engine state).
+- Phase 5, task P5.1: hop physics module (parabolic arc + easing, SPEC §4.1).
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
-- **Worth reconfirming once real gameplay exists (Phase 4+):** rerun `npm run selfplay --
+- **Worth reconfirming now that real gameplay exists:** rerun `npm run selfplay --
   --players 3/4/6` with the tuned weights — Phase 2's finding that greedy AI stalemates 100% of
   3P/4P/6P games was explicitly deferred to Phase 3's fixes; the repetition-avoidance and weight
-  tuning done here likely improve it but haven't been re-measured for those seat counts.
+  tuning done there likely improve it but haven't been re-measured for those seat counts.
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
@@ -121,7 +142,7 @@ Phase 1, Phase 2, and Phase 3 COMPLETE, gates green. Starting Phase 4 (Board UI)
   Phase 3, see Done notes above
 - Phase 3 (Full AI ladder): **GREEN** — see Done notes above for scope (30 games/pairing,
   scaled time budgets)
-- Phase 4 (Board UI): not started
+- Phase 4 (Board UI): **GREEN**
 - Phase 5 (Animation/juice): not started
 - Phase 6 (AI characters): not started
 - Phase 7 (Meta): not started

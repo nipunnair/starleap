@@ -123,28 +123,28 @@ GATE: round-robin, 200 games per pairing, each tier beats the tier below at ≥6
 
 GATE: playwright completes a full human-vs-Nova game start to win.
 
-- [ ] P4.1 Vite React app shell: `App`, routing state (menu/game/rules/tutorial), `useGameEngine`
+- [x] P4.1 Vite React app shell: `App`, routing state (menu/game/rules/tutorial), `useGameEngine`
       hook wrapping `useReducer` over engine state + move application. — `npm run dev` (manual
       smoke) + `npm run typecheck`
-- [ ] P4.2 `Board` SVG component: render 121 cells at their projected screen positions (SPEC
+- [x] P4.2 `Board` SVG component: render 121 cells at their projected screen positions (SPEC
       §1.8), colored by owner/corner. — `npx playwright test board-render.spec.ts`
-- [ ] P4.3 `Peg` component + selection: click/tap a peg belonging to the current player to select
+- [x] P4.3 `Peg` component + selection: click/tap a peg belonging to the current player to select
       it, click again or click elsewhere to deselect. — `npx playwright test peg-select.spec.ts`
-- [ ] P4.4 Legal-destination highlighting: on peg selection, compute and highlight every legal
+- [x] P4.4 Legal-destination highlighting: on peg selection, compute and highlight every legal
       final cell (step or chain-endpoint) via the engine's move generator. —
       `npx playwright test legal-destinations.spec.ts`
-- [ ] P4.5 Path preview (static, pre-animation): hovering/tapping a highlighted destination shows
+- [x] P4.5 Path preview (static, pre-animation): hovering/tapping a highlighted destination shows
       the numbered hop-by-hop path with pivots marked (SPEC §4.5, visuals only — no arcs/motion
       yet, that's Phase 5). — `npx playwright test path-preview.spec.ts`
-- [ ] P4.6 Turn flow: committing a destination applies the move, advances current player,
+- [x] P4.6 Turn flow: committing a destination applies the move, advances current player,
       triggers AI turn via `useAIWorker` when applicable (moves applied instantly pre-Phase-5
       animation). — `npx playwright test turn-flow.spec.ts`
-- [ ] P4.7 Pass-and-play: for multiple human seats, an inter-turn "pass the device" screen
+- [x] P4.7 Pass-and-play: for multiple human seats, an inter-turn "pass the device" screen
       between human turns (config-gated, off when only one human seat). —
       `npx playwright test pass-and-play.spec.ts`
-- [ ] P4.8 Win screen: detect terminal state via `engine/terminal.ts`, show result. —
+- [x] P4.8 Win screen: detect terminal state via `engine/terminal.ts`, show result. —
       `npx playwright test win-screen.spec.ts`
-- [ ] P4.9 Full phase gate: playwright script that configures a human-vs-Nova 2-player game and
+- [x] P4.9 Full phase gate: playwright script that configures a human-vs-Nova 2-player game and
       plays it to completion (driving the human side with "always pick a legal highlighted
       move" logic, since we're testing UI plumbing, not human skill). —
       `npx playwright test full-game-vs-nova.spec.ts`
