@@ -22,8 +22,14 @@ next up is Phase 1, task P1.1.
 - P1.5: `src/engine/state.ts` — GameState type, seating plans for 2/3/4/6 players (see
   DECISIONS.md for the 4P/6P corner-assignment judgment call), initial peg placement.
 
+- P1.6-P1.7: `src/engine/moves.ts` — `generateSteps` (adjacent empty neighbor) and
+  `legalHopsFrom` (arbitrary-span hop legality per SPEC §2.3: pivot/approach-gap/landing/
+  departure-gap). A hand-written classic-rules (`n=1`-only) oracle in the test file confirms
+  `legalHopsFrom`'s `span===1` results match exactly, including a 200-run fast-check property
+  test over random occupancy patterns.
+
 ## Next
-- Phase 1, task P1.6: `src/engine/moves.ts` part A — STEP generation.
+- Phase 1, task P1.8: full jump-chain DFS (any span per hop, visited-cell guard, 24-hop cap).
 
 ## Gate status
 - Phase 1 (Engine core): not started

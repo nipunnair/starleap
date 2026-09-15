@@ -28,9 +28,9 @@ directory imports nothing (enforced by lint rule).
 - [x] P1.5 `src/engine/state.ts`: `GameState` type — per-player peg cell lists, `hasLeftStart`
       booleans, current player index, round counter, seating (start/target corner per player).
       Seating logic for 2/3/4/6 players per SPEC §1.9. — `npm run typecheck`
-- [ ] P1.6 `src/engine/moves.ts` part A: STEP generation (adjacent empty neighbor). —
+- [x] P1.6 `src/engine/moves.ts` part A: STEP generation (adjacent empty neighbor). —
       `npx vitest run src/engine/__tests__/moves-step.test.ts`
-- [ ] P1.7 `src/engine/moves.ts` part B: single-hop legality check per SPEC §2.3 (pivot/gaps/
+- [x] P1.7 `src/engine/moves.ts` part B: single-hop legality check per SPEC §2.3 (pivot/gaps/
       landing for arbitrary span `n`), plus a hand-written classic-rules (`n=1`-only) reference
       jump generator used solely as a test oracle. Property test asserts the two agree exactly
       for `n=1`. — `npx vitest run src/engine/__tests__/jump-oracle.test.ts`
