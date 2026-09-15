@@ -64,7 +64,7 @@ directory imports nothing (enforced by lint rule).
 GATE: 1000 headless games complete, zero illegal moves, zero games hitting the move cap, p95
 move generation under 5ms.
 
-- [ ] P2.1 `src/ai/eval.ts`: implement the weighted evaluation function (SPEC §3.1) with the
+- [x] P2.1 `src/ai/eval.ts`: implement the weighted evaluation function (SPEC §3.1) with the
       initial weights table. — `npm run typecheck`
 - [ ] P2.2 Greedy baseline AI: pick the legal move maximizing 1-ply eval delta (no search tree).
       — `npx vitest run src/ai/__tests__/greedy.test.ts`

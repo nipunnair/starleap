@@ -29,8 +29,13 @@ baseline AI).
     50-run fast-check). `npm test && npm run lint && npm run typecheck && npm run build` all
     green.
 
+- P2.1: `src/ai/eval.ts` — weighted evaluation (progress, straggler `W_lag`, `W_home`,
+  on-axis `W_spread`, jump-ready `W_ladder`, `W_mobility`) with SPEC §3.1's initial weights.
+  `lateralDeviation` uses 2D screen-projected perpendicular distance from the start→target axis;
+  `jumpReadyAlignments` reuses `legalHopsFrom` counting hops whose pivot is the player's own peg.
+
 ## Next
-- Phase 2, task P2.1: `src/ai/eval.ts` — the weighted evaluation function (SPEC §3.1).
+- Phase 2, task P2.2: greedy baseline AI (1-ply eval-delta move selection).
 
 ## Gate status
 - Phase 1 (Engine core): **GREEN**
