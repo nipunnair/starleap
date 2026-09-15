@@ -147,3 +147,16 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   resource, so the differential is a coherent adversarial objective even though each player's
   actual win condition is independent). SPEC.md §3.2 still calls for alpha-beta specifically
   at 2 players; this changes what value it backs up, not the algorithm.
+- **Tuned `W_ladder` (1.5→0.3) and `W_mobility` (0.05→0.02) down from SPEC.md §3.1's initial
+  values** (Phase 3's own anticipated tuning step). After the relative-eval fix, Sirius correctly
+  beat Rigel, but Vega (depth 1) still beat Rigel (depth 3) 100% of the time — traced a
+  Rigel-vs-Vega game move-by-move and found Rigel's pegs-home count froze at 6/10 for over 200
+  plies straight while Vega kept progressing to a full win. Not a repetition-avoidance gap
+  (positions weren't exactly repeating) — Rigel was finding long, ever-changing but
+  non-progressing sequences that kept "jump-ready alignment" and mobility scores high without
+  advancing pegs, and wider/deeper search (Rigel's topK=16, depth=3) has far more such sequences
+  available to find than Vega's narrower topK=12, depth=1 — explaining why this specifically and
+  severely hurt Rigel rather than being a general problem. Verified the fix on the same traced
+  matchup before applying it: with reduced weights, the identical Rigel vs Vega setup finished a
+  real, close, competitive game (Rigel 9 pegs home / dist 21 vs Vega's win at 10/20) in 45 rounds
+  instead of stalling to the 150-round cap. Applied to `DEFAULT_WEIGHTS` in eval.ts.

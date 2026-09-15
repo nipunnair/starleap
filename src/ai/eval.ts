@@ -14,13 +14,21 @@ export interface EvalWeights {
   readonly wMobility: number;
 }
 
-/** Initial weights per SPEC §3.1, tuned during the Phase 3 gate if the ladder isn't monotonic. */
+/**
+ * Weights per SPEC §3.1, tuned during the Phase 3 gate (see DECISIONS.md). `wLadder` and
+ * `wMobility` were reduced from the spec's initial 1.5/0.05: at the initial values, wider/
+ * deeper search (Rigel, Sirius) could find long non-repeating sequences of moves that kept
+ * "ladder-ready" formation quality high without making real progress, permanently stalling
+ * pegs-home at a partial count for the rest of the game — wider search has more such sequences
+ * available than narrower search, so this specifically and severely hurt Rigel. Lowering both
+ * so real distance progress dominates formation-quality tie-breaking resolved it.
+ */
 export const DEFAULT_WEIGHTS: EvalWeights = {
   wLag: 2.0,
   wHome: 8.0,
   wSpread: 0.5,
-  wLadder: 1.5,
-  wMobility: 0.05,
+  wLadder: 0.3,
+  wMobility: 0.02,
 };
 
 /** Perpendicular distance from `cell` to the straight line from `from` to `to` (2D projection). */
