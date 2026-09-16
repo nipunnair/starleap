@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import type { PlayerCount } from '../engine/state';
 import type { SeatConfig } from '../ui/components/GameScreen';
-import { TIER_ORDER } from '../ai/tiers';
+import { TIER_ORDER, type TierName } from '../ai/tiers';
 import { playerLabel } from '../ui/components/boardGeometry';
+
+const TIER_BLURBS: Readonly<Record<TierName, string>> = {
+  Nova: 'Nova plays fast and loose, with plenty of random surprises. Easiest opponent.',
+  Vega: 'Vega plans a little further ahead and makes fewer random mistakes than Nova.',
+  Rigel: 'Rigel plays a genuinely tactical game with real lookahead. A tough fight.',
+  Sirius: 'Sirius searches deep and rarely blunders. The strongest opponent.',
+};
 
 export interface GameConfigResult {
   readonly playerCount: PlayerCount;
@@ -68,6 +75,9 @@ export function ConfigScreen({ onStart, onBack }: ConfigScreenProps) {
                 ))}
               </select>
             </label>
+            {seat !== 'human' && (
+              <p data-testid={`tier-blurb-${i}`}>{TIER_BLURBS[seat]}</p>
+            )}
           </div>
         ))}
       </fieldset>

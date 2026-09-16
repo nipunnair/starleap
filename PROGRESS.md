@@ -3,7 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.2 done.
+P11.1-P11.3 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -321,6 +321,14 @@ P11.1-P11.2 done.
     `npm test && npx playwright test win-screen.spec.ts` (also spot-checked
     pass-and-play/thinking-within-100ms/config/aria-announcements specs).
 
+  - P11.3: `TIER_BLURBS` (one plain-language sentence per `TierName`) added to `ConfigScreen.tsx`
+    (kept out of `ai/tiers.ts` since it's presentation copy, not AI logic). Each non-human seat
+    row renders its tier's blurb in a `data-testid="tier-blurb-{i}"` paragraph under the
+    `<select>`; human seats render none. Added a new `config.spec.ts` test (no prior coverage
+    existed) asserting the blurb tracks the select's value, including hiding on switch-to-human.
+    **Gate: green** — `npx playwright test config.spec.ts` (3 passed); also reran `npm run
+    typecheck && npm run lint` clean.
+
   - P11.2: `App.tsx` gained a `pendingConfig` state and `requestNewGame(config)` — routes through
     `startNewGame` immediately when `canResume` is false, otherwise holds the config and renders
     an inline `confirm-discard-screen` ("Starting a new game will discard your saved game.
@@ -333,7 +341,7 @@ P11.1-P11.2 done.
     exercise a second "new game" action while a save already exists.
 
 ## Next
-- Phase 11, task P11.3: inline tier tooltips in `ConfigScreen`. Phase 11 turns 7 items from
+- Phase 11, task P11.4: standalone "show move hints" settings toggle. Phase 11 turns 7 items from
   `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
   tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
   for what's explicitly out of bounds for this run.
@@ -358,4 +366,4 @@ P11.1-P11.2 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.2 green, P11.3-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.3 green, P11.4-P11.8 remaining

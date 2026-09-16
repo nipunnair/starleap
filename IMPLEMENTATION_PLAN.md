@@ -316,7 +316,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       inline confirm step ("Starting a new game will discard your saved game. Continue?") before
       calling `startNewGame`/`clearSavedGame`, for both the ConfigScreen path and the two
       quick-start buttons. No dialog when there's no save to lose. — `npx playwright test`
-- [ ] P11.3 Inline tier tooltips in `ConfigScreen`: add a `TIER_BLURBS` map (one plain-language
+- [x] P11.3 Inline tier tooltips in `ConfigScreen`: add a `TIER_BLURBS` map (one plain-language
       sentence per tier) and render the selected seat's blurb under its `<select>` when the seat
       isn't `'human'`. — `npx playwright test config.spec.ts`
 - [ ] P11.4 Standalone "show move hints" settings toggle: add `showMoveHints: boolean` (default

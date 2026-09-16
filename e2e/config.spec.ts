@@ -24,4 +24,20 @@ test.describe('Game config (IMPLEMENTATION_PLAN.md P7.2)', () => {
     await page.getByRole('button', { name: 'Back' }).click();
     await expect(page.getByTestId('menu-screen')).toBeVisible();
   });
+
+  test('selecting an AI tier shows its blurb; human seats show none (P11.3)', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'New game' }).click();
+
+    const seat1 = page.getByTestId('seat-config-1');
+    await expect(seat1.getByTestId('tier-blurb-1')).toHaveText(/Nova/);
+
+    await seat1.locator('select').selectOption('Sirius');
+    await expect(seat1.getByTestId('tier-blurb-1')).toHaveText(/Sirius/);
+
+    await seat1.locator('select').selectOption('human');
+    await expect(seat1.getByTestId('tier-blurb-1')).toHaveCount(0);
+  });
 });
