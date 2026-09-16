@@ -330,7 +330,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       mirroring `persistence.ts`'s try/catch pattern), marked seen on finishing the Tutorial or
       starting any game. Menu shows a "New here? Start with the Tutorial" callout when not yet
       seen. — `npm test && npx playwright test`
-- [ ] P11.6 Turn-indicator / thinking-state visual salience fix: style `.turn-indicator` in
+- [x] P11.6 Turn-indicator / thinking-state visual salience fix: style `.turn-indicator` in
       `global.css` (larger, bolder, tinted by the mover's color) and add
       `.starleap-avatar--thinking { transform: scale(1.15); }` — a static size bump only, no
       timing/keyframe-duration changes anywhere (`MIN_THINKING_MS`/`FOUND_IT_DISPLAY_MS` and

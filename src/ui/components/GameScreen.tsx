@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useGameEngine } from '../hooks/useGameEngine';
 import { useAIWorker } from '../hooks/useAIWorker';
 import { useReducedMotion, type ReducedMotionOverride } from '../hooks/useReducedMotion';
@@ -275,7 +275,11 @@ export function GameScreen({
         />
         You are {playerLabel(0)}
       </p>
-      <p data-testid="turn-indicator">
+      <p
+        data-testid="turn-indicator"
+        className="turn-indicator"
+        style={{ '--mover-color': PLAYER_COLORS[engine.game.currentPlayer] } as CSSProperties}
+      >
         {isAITurn
           ? characterState === 'thinking'
             ? `${currentSeat} is thinking...`

@@ -95,6 +95,14 @@ body[data-theme='chhalaang'] {
   }
 }
 
+/* P11.6: turn-indicator visual salience — larger, bolder, tinted by the mover's color (set as
+   the --mover-color custom property inline, since it's per-player data, not a fixed style). */
+.turn-indicator {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--mover-color, inherit);
+}
+
 /* SPEC.md §4.7: AI character states. Personality (per SPEC: "amplitude/frequency of the same
    six states, not different assets") is expressed via the --amplitude/--frequency custom
    properties set per tier in CharacterAvatar. */
@@ -115,6 +123,10 @@ body[data-theme='chhalaang'] {
   50% {
     transform: scale(calc(1 + 0.04 * var(--amplitude, 1)));
   }
+}
+
+.starleap-avatar--thinking {
+  transform: scale(1.15);
 }
 
 .starleap-avatar--thinking .starleap-avatar__thinking-dots {

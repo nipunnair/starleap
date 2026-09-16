@@ -3,7 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.4 done.
+P11.1-P11.6 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -372,8 +372,18 @@ P11.1-P11.4 done.
     unit tests, lint, typecheck, build, and the full 66-spec Playwright suite (~8.5 min, including
     the full `singlefile-offline.spec.ts` Sirius game) all green.
 
+  - P11.6: `.turn-indicator` styled in `global.css` (1.25rem, bold, `color: var(--mover-color,
+    inherit)`); `GameScreen.tsx` sets `--mover-color` inline per render to
+    `PLAYER_COLORS[engine.game.currentPlayer]` (works for both human and AI turns, since
+    `currentPlayer` tracks the mover regardless of seat type). Added
+    `.starleap-avatar--thinking { transform: scale(1.15); }` — a static transform on the outer
+    avatar element, layered alongside (not replacing) the existing `.starleap-avatar__thinking-dots`
+    orbit animation; no timing/keyframe-duration changes anywhere. **Gate: green** —
+    `npx playwright test thinking-within-100ms.spec.ts` (1 passed); also reran the full unit suite
+    (129 passed), lint, and typecheck clean.
+
 ## Next
-- Phase 11, task P11.6: turn-indicator / thinking-state visual salience fix. Phase 11 turns 7
+- Phase 11, task P11.7: chain-hop counter. Phase 11 turns 7
   items from `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review)
   into concrete tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11
   scope guardrail for what's explicitly out of bounds for this run.
@@ -398,4 +408,4 @@ P11.1-P11.4 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.5 green, P11.6-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.6 green, P11.7-P11.8 remaining
