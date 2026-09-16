@@ -45,6 +45,7 @@ export function App() {
   const [screen, setScreen] = useState<Screen>(debugScenario ? 'game' : 'menu');
   const [gameConfig, setGameConfig] = useState<GameConfig | null>(debugScenario);
   const [canResume, setCanResume] = useState(false);
+  const [pendingConfig, setPendingConfig] = useState<GameConfigResult | null>(null);
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -59,6 +60,20 @@ export function App() {
     clearSavedGame();
     setGameConfig(config);
     setScreen('game');
+  }
+
+  function requestNewGame(config: GameConfigResult) {
+    if (canResume) {
+      setPendingConfig(config);
+    } else {
+      startNewGame(config);
+    }
+  }
+
+  function confirmDiscardAndStart() {
+    if (!pendingConfig) return;
+    startNewGame(pendingConfig);
+    setPendingConfig(null);
   }
 
   function resumeGame() {
@@ -77,6 +92,16 @@ export function App() {
     }
   }
 
+  if (pendingConfig) {
+    return (
+      <main data-testid="confirm-discard-screen">
+        <p>Starting a new game will discard your saved game. Continue?</p>
+        <button onClick={confirmDiscardAndStart}>Continue</button>
+        <button onClick={() => setPendingConfig(null)}>Cancel</button>
+      </main>
+    );
+  }
+
   if (screen === 'game' && gameConfig) {
     return (
       <GameScreen
@@ -92,7 +117,7 @@ export function App() {
   }
 
   if (screen === 'config') {
-    return <ConfigScreen onStart={startNewGame} onBack={() => setScreen('menu')} />;
+    return <ConfigScreen onStart={requestNewGame} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'rules') {
@@ -115,8 +140,8 @@ export function App() {
       <button onClick={() => setScreen('rules')}>Rules</button>
       <button onClick={() => setScreen('settings')}>Settings</button>
       <button onClick={() => setScreen('tutorial')}>Tutorial</button>
-      <button onClick={() => startNewGame({ playerCount: 2, seats: ['human', 'Nova'] })}>Play vs Nova</button>
-      <button onClick={() => startNewGame({ playerCount: 2, seats: ['human', 'human'] })}>Human vs Human</button>
+      <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'Nova'] })}>Play vs Nova</button>
+      <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'human'] })}>Human vs Human</button>
     </main>
   );
 }

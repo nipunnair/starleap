@@ -312,7 +312,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       in `ConfigScreen.tsx`'s seat labels, replacing bare `Player N` text. Add an always-visible
       color swatch + "You are Red" label near the turn indicator (seat 0 is always the human). —
       `npm test && npx playwright test win-screen.spec.ts`
-- [ ] P11.2 Confirm-before-discard on "New Game": in `App.tsx`, if `canResume` is true, show an
+- [x] P11.2 Confirm-before-discard on "New Game": in `App.tsx`, if `canResume` is true, show an
       inline confirm step ("Starting a new game will discard your saved game. Continue?") before
       calling `startNewGame`/`clearSavedGame`, for both the ConfigScreen path and the two
       quick-start buttons. No dialog when there's no save to lose. — `npx playwright test`

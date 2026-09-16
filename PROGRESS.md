@@ -3,7 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1 done.
+P11.1-P11.2 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -321,8 +321,19 @@ P11.1 done.
     `npm test && npx playwright test win-screen.spec.ts` (also spot-checked
     pass-and-play/thinking-within-100ms/config/aria-announcements specs).
 
+  - P11.2: `App.tsx` gained a `pendingConfig` state and `requestNewGame(config)` — routes through
+    `startNewGame` immediately when `canResume` is false, otherwise holds the config and renders
+    an inline `confirm-discard-screen` ("Starting a new game will discard your saved game.
+    Continue?" / Continue / Cancel) ahead of every other screen check. Wired into both the
+    ConfigScreen path (`onStart={requestNewGame}`) and the two menu quick-start buttons (Play vs
+    Nova / Human vs Human). Cancel just clears `pendingConfig`, returning to whichever screen
+    (menu or config) the request came from. **Gate: green** — full suite: 126 unit tests, lint,
+    typecheck, build, and all 60 Playwright E2E tests (~8.5 min, including the full
+    `singlefile-offline.spec.ts` Sirius game) — no existing spec needed changes since none of them
+    exercise a second "new game" action while a save already exists.
+
 ## Next
-- Phase 11, task P11.2: confirm-before-discard on "New Game". Phase 11 turns 7 items from
+- Phase 11, task P11.3: inline tier tooltips in `ConfigScreen`. Phase 11 turns 7 items from
   `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
   tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
   for what's explicitly out of bounds for this run.
@@ -347,4 +358,4 @@ P11.1 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1 green, P11.2-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.2 green, P11.3-P11.8 remaining
