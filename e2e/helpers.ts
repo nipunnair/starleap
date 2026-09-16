@@ -1,10 +1,11 @@
 import type { Page } from '@playwright/test';
+import { playerLabel } from '../src/ui/components/boardGeometry';
 
 /**
  * Waits for one full hop-animation cycle: an `[data-testid="animated-peg"]` appears, then
- * disappears. Use this (not a check like "turn indicator says Player 0's turn") to confirm a
- * move actually completed — "Player 0's turn" is also trivially true before any move has ever
- * been made, since player 0 goes first, so asserting on that text alone doesn't prove a
+ * disappears. Use this (not a check like "turn indicator says Red's turn") to confirm a
+ * move actually completed — "Red's turn" is also trivially true before any move has ever
+ * been made, since player 0 (Red) goes first, so asserting on that text alone doesn't prove a
  * round-trip happened (found the hard way — see DECISIONS.md).
  */
 export async function waitForMoveRoundTrip(page: Page, timeout = 10_000): Promise<void> {
@@ -24,15 +25,16 @@ export async function waitForMoveRoundTrip(page: Page, timeout = 10_000): Promis
  * most of its iteration budget on "not ready yet" checks under real hop-animation timing.
  */
 export async function playUntilGameOver(page: Page, maxMoves = 200): Promise<void> {
+  const player0Label = playerLabel(0);
   for (let movesMade = 0; movesMade < maxMoves; movesMade++) {
     const handle = await page.waitForFunction(
-      () => {
+      (label) => {
         if (document.querySelector('[data-testid="win-screen"]')) return 'done';
         if (document.querySelector('[data-testid="animated-peg"]')) return null;
         const turnText = document.querySelector('[data-testid="turn-indicator"]')?.textContent ?? '';
-        return turnText.startsWith('Player 0') ? 'ready' : null;
+        return turnText.startsWith(label) ? 'ready' : null;
       },
-      undefined,
+      player0Label,
       { timeout: 30_000 },
     );
     const outcome = await handle.jsonValue();

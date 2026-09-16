@@ -45,3 +45,11 @@ export const PLAYER_COLORS: readonly string[] = [
   '#b06ee0', // purple
   '#f79a4f', // orange
 ];
+
+/** Per-player color names, same index/order as `PLAYER_COLORS`. */
+export const PLAYER_COLOR_NAMES: readonly string[] = ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'];
+
+/** Player-facing label for a seat, e.g. "Red" instead of "Player 0". */
+export function playerLabel(seat: number): string {
+  return PLAYER_COLOR_NAMES[seat] ?? `Player ${seat}`;
+}

@@ -3,6 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
+P11.1 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -306,8 +307,22 @@ iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPL
   - **The build is complete.** All 10 phases green, every phase gate passed for real (not
     scoped down except where explicitly documented and justified), `BLOCKED.md` is empty.
 
+- **Phase 11 — Feedback iteration, in progress:**
+  - P11.1: `PLAYER_COLOR_NAMES` + `playerLabel(seat)` added to `boardGeometry.ts` (same index/
+    order as `PLAYER_COLORS`). Wired into `GameScreen.tsx`'s turn indicator, win-screen ranking,
+    and pass-and-play prompt, and into `ConfigScreen.tsx`'s seat labels, replacing bare
+    `Player N` text. Added an always-visible color swatch + "You are Red" label near the turn
+    indicator (seat 0 is always the human). Deliberately left the `aria-live` move-announcer text
+    (`describeMove`) as "Player N" — out of this task's explicit scope, and keeps
+    `aria-announcements.spec.ts` valid unchanged. Updated three E2E files that hardcoded the old
+    "Player 0"/"Player 1" turn-indicator/pass-and-play text as a wait condition, not a UI
+    assertion (`e2e/helpers.ts`'s `playUntilGameOver`, `thinking-within-100ms.spec.ts`,
+    `pass-and-play.spec.ts`) — see DECISIONS.md. **Gate: green** —
+    `npm test && npx playwright test win-screen.spec.ts` (also spot-checked
+    pass-and-play/thinking-within-100ms/config/aria-announcements specs).
+
 ## Next
-- Phase 11, task P11.1: player color self-identification. Phase 11 turns 7 items from
+- Phase 11, task P11.2: confirm-before-discard on "New Game". Phase 11 turns 7 items from
   `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
   tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
   for what's explicitly out of bounds for this run.
@@ -332,4 +347,4 @@ iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPL
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): not started
+- Phase 11 (Feedback iteration): in progress — P11.1 green, P11.2-P11.8 remaining

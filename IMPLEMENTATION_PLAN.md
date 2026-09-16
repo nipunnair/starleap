@@ -306,7 +306,7 @@ GATE: `npm test && npm run lint && npm run typecheck && npm run build && npx pla
 all green. Do not start any task or phase beyond P11.8 — see AGENTS.md's Phase 11 scope
 guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for this run.
 
-- [ ] P11.1 Player color self-identification: add `PLAYER_COLOR_NAMES` and a `playerLabel(seat)`
+- [x] P11.1 Player color self-identification: add `PLAYER_COLOR_NAMES` and a `playerLabel(seat)`
       helper to `src/ui/components/boardGeometry.ts` (same index/order as `PLAYER_COLORS`). Use
       it in `GameScreen.tsx`'s turn indicator, win-screen ranking, and pass-and-play prompt, and
       in `ConfigScreen.tsx`'s seat labels, replacing bare `Player N` text. Add an always-visible

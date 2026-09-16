@@ -411,3 +411,11 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   architectural boundary during a final cleanup pass felt like the wrong kind of autonomous call
   to make unilaterally; recorded here so a future maintainer can decide whether to start actually
   routing imports through it, remove it, or leave it as living documentation.
+- **P11.1 kept the move-announcer/`describeMove` text as "Player N", not a color label.** The
+  task line explicitly scopes `playerLabel` to the turn indicator, win-screen ranking, and
+  pass-and-play prompt (plus `ConfigScreen`'s seat labels) — the `aria-live` move announcement
+  wasn't listed, and leaving it alone keeps `aria-announcements.spec.ts`'s existing assertion
+  valid. Changing the turn-indicator/pass-and-play text to color labels did require updating
+  three E2E files that hardcoded the old "Player 0"/"Player 1" text as a wait condition rather
+  than a UI assertion (`e2e/helpers.ts`'s `playUntilGameOver`, `thinking-within-100ms.spec.ts`,
+  `pass-and-play.spec.ts`) — direct fallout of the text change, not a drive-by refactor.

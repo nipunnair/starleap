@@ -12,7 +12,7 @@ test.describe('Pass-and-play (IMPLEMENTATION_PLAN.md P4.7)', () => {
     await destination.click();
 
     await expect(page.getByTestId('pass-and-play-screen')).toBeVisible();
-    await expect(page.getByText('Pass the device to Player 1')).toBeVisible();
+    await expect(page.getByText('Pass the device to Blue')).toBeVisible();
 
     await page.getByRole('button', { name: 'Ready' }).click();
     await expect(page.getByTestId('game-screen')).toBeVisible();

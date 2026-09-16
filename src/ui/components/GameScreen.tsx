@@ -16,7 +16,7 @@ import { describeMove } from '../animation/describeMove';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
 import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
-import { CELL_SPACING } from './boardGeometry';
+import { CELL_SPACING, PLAYER_COLORS, playerLabel } from './boardGeometry';
 
 export type SeatConfig = 'human' | TierName;
 
@@ -216,7 +216,7 @@ export function GameScreen({
         <ol>
           {ranking.map((entry) => (
             <li key={entry.player} data-testid={`ranking-${entry.player}`}>
-              Player {entry.player}: {entry.pegsHome} pegs home, distance {entry.totalDistance}
+              {playerLabel(entry.player)}: {entry.pegsHome} pegs home, distance {entry.totalDistance}
             </li>
           ))}
         </ol>
@@ -238,7 +238,7 @@ export function GameScreen({
   if (needsPassScreen) {
     return (
       <div data-testid="pass-and-play-screen">
-        <p>Pass the device to Player {engine.game.currentPlayer}</p>
+        <p>Pass the device to {playerLabel(engine.game.currentPlayer)}</p>
         <button onClick={() => setDismissedPassScreenFor(engine.game.currentPlayer)}>Ready</button>
       </div>
     );
@@ -258,12 +258,26 @@ export function GameScreen({
           state={characterState === 'celebrate' ? 'celebrate' : isAITurn ? characterState : 'idle'}
         />
       )}
+      <p data-testid="you-are-label">
+        <span
+          data-testid="player-color-swatch"
+          style={{
+            display: 'inline-block',
+            width: 12,
+            height: 12,
+            borderRadius: '50%',
+            backgroundColor: PLAYER_COLORS[0],
+            marginRight: 6,
+          }}
+        />
+        You are {playerLabel(0)}
+      </p>
       <p data-testid="turn-indicator">
         {isAITurn
           ? characterState === 'thinking'
             ? `${currentSeat} is thinking...`
             : `${currentSeat}'s turn`
-          : `Player ${engine.game.currentPlayer}'s turn`}
+          : `${playerLabel(engine.game.currentPlayer)}'s turn`}
       </p>
       <div
         data-testid="board-wrapper"

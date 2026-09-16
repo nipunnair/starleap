@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { PlayerCount } from '../engine/state';
 import type { SeatConfig } from '../ui/components/GameScreen';
 import { TIER_ORDER } from '../ai/tiers';
+import { playerLabel } from '../ui/components/boardGeometry';
 
 export interface GameConfigResult {
   readonly playerCount: PlayerCount;
@@ -58,7 +59,7 @@ export function ConfigScreen({ onStart, onBack }: ConfigScreenProps) {
         {seats.map((seat, i) => (
           <div key={i} data-testid={`seat-config-${i}`}>
             <label>
-              Player {i}
+              {playerLabel(i)}
               <select value={seat} onChange={(e) => changeSeat(i, e.target.value as SeatConfig)}>
                 {SEAT_OPTIONS.map((option) => (
                   <option key={option} value={option}>
