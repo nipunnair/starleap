@@ -336,7 +336,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       timing/keyframe-duration changes anywhere (`MIN_THINKING_MS`/`FOUND_IT_DISPLAY_MS` and
       every `.starleap-avatar--*` animation duration stay exactly as they are). —
       `npx playwright test thinking-within-100ms.spec.ts`
-- [ ] P11.7 Chain-hop counter: in `GameScreen.tsx`'s `handleMoveAnimationComplete`, when
+- [x] P11.7 Chain-hop counter: in `GameScreen.tsx`'s `handleMoveAnimationComplete`, when
       `hopCount >= 2`, show a transient plain-text `data-testid="chain-badge"` (e.g. "Red: 4-hop
       chain!", using P11.1's `playerLabel`) for ~2.5s. Per-move only, not cumulative — the
       leaderboard/score question stays deferred. Plain text, not particles, so no reduced-motion

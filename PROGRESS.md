@@ -3,7 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.6 done.
+P11.1-P11.7 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -382,11 +382,26 @@ P11.1-P11.6 done.
     `npx playwright test thinking-within-100ms.spec.ts` (1 passed); also reran the full unit suite
     (129 passed), lint, and typecheck clean.
 
+  - P11.7: `GameScreen.tsx` gained a `chainBadge` state, set in `handleMoveAnimationComplete`
+    whenever a committed move's hop count is >=2 (`${playerLabel(owner)}: ${hopCount}-hop
+    chain!"`), cleared after `CHAIN_BADGE_DISPLAY_MS` (2.5s) via `setTimeout`. Rendered as a plain
+    `data-testid="chain-badge"` paragraph between the turn indicator and the board — per-move
+    only, no cumulative counting, no reduced-motion special-casing needed since it's plain text.
+    New `e2e/chain-badge.spec.ts` reuses the `?e2eScenario=sevenHopChain` fixture from P5.9.
+    **Found a real interaction, not a bug**: that fixture seats all 6 players as human, so
+    committing the 7-hop move immediately triggers the pass-and-play screen for the next player
+    before the badge can be observed — `GameScreen` itself never unmounts, so `chainBadge` state
+    survives regardless; the test just needs to dismiss the pass screen first (see DECISIONS.md).
+    **Gate: green** — new `chain-badge.spec.ts` passes; also reran the full suite (129 unit tests,
+    lint, typecheck, build, and all 67 Playwright E2E specs, ~8.5 min, including the full
+    `singlefile-offline.spec.ts` Sirius game).
+
 ## Next
-- Phase 11, task P11.7: chain-hop counter. Phase 11 turns 7
-  items from `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review)
-  into concrete tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11
-  scope guardrail for what's explicitly out of bounds for this run.
+- Phase 11, task P11.8: update `HANDOFF.md`'s "Future scope" section and this file's Status/Next/
+  Gate-status sections for Phase 11 — the last task in Phase 11. Phase 11 turns 7 items from
+  `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
+  tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
+  for what's explicitly out of bounds for this run.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -408,4 +423,4 @@ P11.1-P11.6 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.6 green, P11.7-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.7 green, P11.8 remaining

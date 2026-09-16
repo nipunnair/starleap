@@ -54,6 +54,8 @@ const WORRIED_EVAL_DROP_THRESHOLD = 10;
  * screen replaces the avatar before `celebrate` is ever shown. Not spec-mandated (SPEC just says
  * "fires when the AI completes its win condition"); a documented judgment call. */
 const CELEBRATE_BEFORE_WIN_SCREEN_MS = 1200;
+/** How long the chain-hop counter badge (P11.7) stays visible after a 2+-hop move. */
+const CHAIN_BADGE_DISPLAY_MS = 2500;
 
 export function GameScreen({
   playerCount,
@@ -89,6 +91,7 @@ export function GameScreen({
   const longestChainHopsRef = useRef(0);
   const [finalStats, setFinalStats] = useState<GameStats | null>(null);
   const [moveAnnouncement, setMoveAnnouncement] = useState('');
+  const [chainBadge, setChainBadge] = useState<string | null>(null);
 
   const currentSeat = seats[engine.game.currentPlayer];
   const isAITurn = currentSeat !== 'human';
@@ -189,6 +192,10 @@ export function GameScreen({
     plyCountRef.current += 1;
     const hopCount = move.type === 'jump' ? move.hops.length : 0;
     if (hopCount > longestChainHopsRef.current) longestChainHopsRef.current = hopCount;
+    if (hopCount >= 2) {
+      setChainBadge(`${playerLabel(owner)}: ${hopCount}-hop chain!`);
+      setTimeout(() => setChainBadge(null), CHAIN_BADGE_DISPLAY_MS);
+    }
 
     const gameOver = isGameOver(nextState);
     onStateChange?.(nextState, gameOver);
@@ -286,6 +293,11 @@ export function GameScreen({
             : `${currentSeat}'s turn`
           : `${playerLabel(engine.game.currentPlayer)}'s turn`}
       </p>
+      {chainBadge && (
+        <p data-testid="chain-badge" className="chain-badge">
+          {chainBadge}
+        </p>
+      )}
       <div
         data-testid="board-wrapper"
         style={{

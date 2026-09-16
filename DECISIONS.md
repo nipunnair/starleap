@@ -450,3 +450,12 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   `getByRole('button', { name: 'Tutorial' })` locators became ambiguous once the callout can be on
   screen at the same time were given `exact: true` rather than reworded, since they genuinely mean
   the standalone nav button.
+- **P11.7's chain-badge E2E test has to dismiss a pass-and-play screen mid-assertion.** The
+  `?e2eScenario=sevenHopChain` fixture (reused from P5.9) seats all 6 players as human, so
+  committing the 7-hop move immediately satisfies `needsPassScreen` for the next player (who owns
+  the pivot pegs) and `GameScreen` returns the pass-and-play JSX instead of the board on the very
+  next render. The `chainBadge` state itself survives this fine — `GameScreen` never unmounts,
+  only its returned JSX branches — so the fix is just to click "Ready" in the test before
+  asserting on the badge, not a code change. Not worth adding a new single-human-seat fixture
+  just to dodge this, since the existing performance fixture already proves the same 7-hop
+  scenario end to end.
