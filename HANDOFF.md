@@ -55,45 +55,125 @@ violations on any screen.
   but a future maintainer could equally decide to either start routing internal imports through
   it or remove it.
 
-## Future scope (from first-round playtesting)
+## Future scope (first-round playtesting + a 4-reviewer LLM council pass)
 
-Not built, not scheduled — captured here so it isn't lost. Ordered roughly as raised, not by
-priority:
+Not built, not scheduled — captured here so it isn't lost. First-round playtesting raised six
+items (suggested-move visibility, chain rewards, a chain counter, a menu redesign, the thinking
+animation, and a leaderboard). Those went through an independent 4-reviewer critique pass (a
+Game Designer, a UX/onboarding reviewer, a Technical Architect, and a QA/edge-case reviewer, each
+reading the code cold with no shared framing) before anything was built. What follows is that
+critique folded in, organized by confidence level rather than by who raised it first.
 
-- **Make suggested-move highlighting optional**, off by default (or off at higher difficulty
-  selections). Currently every legal destination for a selected peg is always highlighted
-  (`Board`/`PathPreview`) — good for onboarding, but experienced players may want to turn it off.
-- **At higher difficulty settings, replace move suggestions with a reward signal for chaining**
-  instead (e.g. a small "happy stars" burst on a long jump chain) rather than just removing help.
-  Ties into the next item.
-- **Show a counter/score for chained jumps as they happen** — a visible "leveling up" moment when
-  a player pulls off a multi-hop chain, not just the existing screen-shake-on-5+-hops juice.
-  Would likely live in `GameScreen`'s per-move handling alongside `shouldShakeForMove`.
-- **The initial menu flow needs a redesign pass** — flagged as "clunky" in first playtesting.
-  The current menu (`App.tsx`'s bare fallback screen) is functional but was never given a design
-  pass; a first-time player's path through menu → config → rules/tutorial is worth rethinking as
-  a whole rather than patching individual screens.
-- **The AI "thinking" character animation is real but easy to miss in practice.** Diagnosed
-  during the same playtest feedback session: the state machine, CSS animation, and 60px avatar
-  are all present and working (verified: `.starleap-avatar--thinking` has a working orbiting-dots
-  keyframe, `CharacterAvatar` receives the right `data-state`), but at Nova's tier the whole
-  thinking→found-it cycle is only ~600-850ms (250ms search budget + 400ms min-thinking floor +
-  200ms found-it display), and the avatar itself is small with no strong visual anchoring —
-  genuinely easy to not notice mid-game. Worth either slowing it down, making it larger/more
-  prominent, or moving it somewhere a player's eyes are more likely to already be (e.g. nearer
-  the board or the turn indicator) rather than treating it as broken.
-- **A simple leaderboard tracking who's played and their scores**, once the game is hosted
-  somewhere multiple people can reach. The app is currently 100% client-side with zero backend
-  (a deliberate zero-backend design — see `docs/ARCHITECTURE.md`), so this needs *some* shared
-  persistence layer that doesn't exist yet. Cheapest realistic paths, roughly in order of setup
-  effort: (1) a tiny serverless function + KV/Redis store (e.g. Cloudflare Workers + KV, or a
-  Vercel/Netlify function) that the client POSTs a name + final stats to after a game ends,
-  fronted by a simple `/leaderboard` read endpoint; (2) Firebase/Supabase free tier for the same
-  thing with less custom backend code to write; (3) if hosted as a Claude Artifact instead of (or
-  in addition to) GitHub Pages, its built-in shared-database capability would cover this with no
-  separate infrastructure at all. Needs a product decision first (what counts as a "score" —
-  win/loss? fastest win? longest chain? — ties into the chain-counter item above) before picking
-  an implementation.
+### Confirmed bugs (verified in code, not opinion)
+
+- **Nothing tells a human player which peg color is theirs.** Found in second-round playtesting:
+  a player assumed the blue pegs were "them" and it was the opposite. Confirmed in code —
+  `PLAYER_COLORS` in `src/ui/components/boardGeometry.ts` assigns colors purely by seat index
+  (`0` = red, `1` = blue, ...) and the human is always seat 0 (red) in "Play vs Nova," but there
+  is no legend, no "You are red" label, and no color-coded self-identification anywhere in
+  `ConfigScreen` or `GameScreen` — grepped for it, genuinely absent. Likely the single highest-
+  value, lowest-effort fix on this whole list: a color swatch next to "you" on the turn indicator
+  or config screen would resolve it outright.
+- **The AI "thinking" animation is real, working, and easy to miss** — not broken. The state
+  machine, CSS keyframes, and avatar (`CharacterAvatar.tsx`) all fire correctly and pass their
+  tests, but at Nova's tier the whole thinking→found-it cycle is only ~600-850ms (250ms search
+  budget + 400ms min-thinking floor + 200ms found-it display) and the avatar is a small,
+  subtly-animated 64px icon with no strong visual anchoring.
+
+### Consensus recommendations (converged independently across 3-4 reviewers)
+
+- **Don't build a shared/public leaderboard yet — ship a local one first.** Three of four
+  reviewers converged on this without prompting each other. The Architect's core objection: a
+  client-only game can't verify a client-reported score without shipping the engine to a second
+  runtime for server-side replay, which undermines the "one codebase, several build targets"
+  design this project deliberately protects. QA adds the concrete abuse case (devtools-edited
+  scores, name-squatting, no auth). Game Designer's counter-offer: a localStorage personal-best/
+  streak table keyed by (tier, player count) gets most of the motivational value for zero infra.
+  **If a shared version is ever built**, the Architect's ranked take: Cloudflare Workers + KV
+  over Firebase/Supabase (less to babysit) or an Artifact DB (forks the distribution story this
+  project worked to keep unified across dist/starleap.html/Docker) — no free-text names (use
+  generated handles, sidesteps privacy/moderation entirely), rate-limited, TTL'd, top-100 only.
+- **The menu/config redesign is real, but sequence it after gameplay-feel work, and mind the
+  blast radius.** UX gave the sharpest diagnosis: flat, equal-weight buttons with no hierarchy;
+  zero-indexed "Player 0"/"Player 1" seat labels that read as a debug artifact; tier names (Nova/
+  Vega/Rigel/Sirius) with no in-context explanation; `startNewGame` silently wipes an in-progress
+  save via `clearSavedGame()` with no confirmation. Game Designer agrees it matters but ranks it
+  below core-loop items — first impressions hurt retention, but they don't define whether the
+  game is fun once you're in it. QA's caution: existing E2E specs are pinned to current menu
+  selectors, and nothing currently asserts *intended* defaults (only current ones), so a redesign
+  could silently change what a new player sees first without anyone noticing.
+- **Separate the "hint toggle" from "replace hints with a chain-reward system" — they are two
+  differently-sized features.** The Architect explicitly scoped their pick to "toggle only, not
+  the reward-replacement." The reason: `PathPreview` currently does double duty as both the
+  onboarding hint *and* the legality-signaling affordance that the keyboard-navigation and
+  screen-reader-announcer work (Phase 8) already assumes exists. Removing it isn't a settings
+  toggle, it's an interaction redesign that touches accessibility work already gated and shipped.
+  QA separately flags that "difficulty" itself is ambiguous once you're in a multiplayer
+  pass-and-play game with a different AI tier seated at each corner — resolve what "difficulty"
+  means (the human's own preference vs. whichever AI tier happens to be next) before building
+  either the toggle or the reward system.
+- **The chain counter is well-liked but needs two decisions made before it's built.** Game
+  Designer's #1 pick overall — "the long-jump chain is STARLEAP's entire differentiator; right
+  now the only feedback is screen-shake at 5+ hops." But QA flags it's premised on "score"
+  semantics HANDOFF itself hasn't defined yet (per-hop/per-turn/per-game reset boundary; correct
+  attribution to the right seat in pass-and-play), and needs a non-particle equivalent for
+  reduced-motion players (SPEC §4.8 disables particle effects entirely under that setting, so as
+  specified, reduced-motion players would get no reward signal at all under the reward-system
+  version of this idea).
+
+### One real disagreement (worth a decision, not a default)
+
+- **The thinking-animation fix**: UX's suggestion is bigger + a text label + a slower cycle so it
+  has time to register. Game Designer disagrees specifically with "slower" — Nova's speed is its
+  personality, and stretching it fights that identity for no gameplay reason. QA independently
+  arrives at the same objection from a different angle: the ~400ms floor already exists
+  specifically so fast tiers don't read as broken, and any further slowdown raises perceived
+  latency on every Nova/Vega turn. **2-of-3 lean: fix size, position, and labeling; leave
+  duration alone.** Either way, per QA, any prominence fix needs a static-pose reduced-motion
+  equivalent (SPEC §4.8) rather than leaning on more motion to be noticeable.
+
+### New ideas the council surfaced (not in the original six)
+
+- **Anonymous telemetry** (Architect's other top-3 pick) — arguably the single highest-value new
+  idea. Right now there is zero visibility into whether anyone plays, which tier they pick, or
+  whether 3P/4P/6P games actually stalemate in real play (an already-open validation gap — see
+  "What's deferred" above). One fire-and-forget event (tier, player count, result, move count,
+  duration) on the same endpoint a future leaderboard would need anyway, with a far cleaner
+  privacy story than a leaderboard.
+- **A human-calibrated difficulty curve.** The Nova→Sirius ladder is validated by AI-vs-AI win
+  rate (SPEC §3.3's ≥60% monotonic gate), which says nothing about how a *human* perceives the
+  jump between tiers — that's exactly the kind of gap that can read as a difficulty cliff to a
+  person even when it's statistically clean between bots.
+- **Comeback mechanics / kingmaker risk, especially at 3-6 players.** Not discussed anywhere in
+  SPEC today: the eval function's ladder/spread terms reward early strong formations with no
+  stated anti-snowball design, and in 3+ player games a losing player's move choice can decide
+  which of two leaders wins (kingmaker risk) with no mitigation considered.
+- **Confirm-before-discard when starting "New Game" while a save exists** — small effort, and
+  the current silent overwrite is a real (if currently undiscovered) data-loss risk.
+- **First-launch detection to promote the Tutorial** for brand-new players, rather than treating
+  first-time and returning players identically.
+- **Inline tier tooltips in `ConfigScreen`** explaining what Nova/Vega/Rigel/Sirius mean, instead
+  of requiring a detour to Rules.
+- **Version-stamp any future remote/shared record against the ruleset/build version.** The moment
+  anything persists off-device, tier parameters and score definitions become a public contract —
+  retuning Sirius later would silently invalidate every historical record otherwise. Mirrors the
+  versioned-key pattern `persistence.ts` already uses for local saves (`starleap.save.v1`); cheap
+  to do now, not retroactively.
+- **Save/resume interaction with settings changes is undefined.** If hint visibility or a
+  chain-reward toggle changes between saving and resuming a game (plausible given how long a game
+  can run under the 150-round cap), there's no defined behavior for which setting a resumed game
+  honors — a plausible source of confusing bug reports later.
+
+### Reviewers' top-3 picks, for reference
+
+| | #1 | #2 | #3 |
+|---|---|---|---|
+| Game Designer | Chain counter/reward | Human-calibrated difficulty curve | Comeback/kingmaker investigation |
+| UX | Menu/config redesign | Thinking-animation fix (size/position/label) | Confirm-before-discard |
+| Technical Architect | Menu redesign + prominent avatar | Hint toggle (scoped to *just* the toggle) | Anonymous telemetry |
+| QA (framed as "resolve before shipping") | Leaderboard integrity model | Define "difficulty" unambiguously | Reduced-motion parity for any animation/reward change |
+
+Nothing above is scheduled. It's a menu to choose from, not a plan.
 
 ## How to extend
 
