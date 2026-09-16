@@ -8,7 +8,7 @@ test.describe('Main menu (IMPLEMENTATION_PLAN.md P7.1)', () => {
     await expect(page.getByRole('button', { name: 'New game' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Rules' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Settings' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Tutorial' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Tutorial', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Resume' })).toHaveCount(0);
   });
 

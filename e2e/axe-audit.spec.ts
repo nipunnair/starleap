@@ -46,7 +46,7 @@ test.describe('Accessibility audit (IMPLEMENTATION_PLAN.md P8.7)', () => {
 
   test('tutorial screen', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Tutorial' }).click();
+    await page.getByRole('button', { name: 'Tutorial', exact: true }).click();
     await expect(page.getByTestId('tutorial-screen')).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
     expectNoSeriousViolations(results.violations);

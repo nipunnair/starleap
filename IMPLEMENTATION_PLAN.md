@@ -326,7 +326,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       `Board.tsx` — click routing, keyboard focus, and the SR announcer are unaffected by design
       (verified: `onCellClick` doesn't depend on `isDestination`). Never auto-tied to AI tier. —
       `npx playwright test settings.spec.ts`
-- [ ] P11.5 First-launch Tutorial promotion: new `src/app/onboarding.ts` (`starleap.onboarding.v1`,
+- [x] P11.5 First-launch Tutorial promotion: new `src/app/onboarding.ts` (`starleap.onboarding.v1`,
       mirroring `persistence.ts`'s try/catch pattern), marked seen on finishing the Tutorial or
       starting any game. Menu shows a "New here? Start with the Tutorial" callout when not yet
       seen. — `npm test && npx playwright test`

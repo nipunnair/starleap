@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Interactive tutorial (IMPLEMENTATION_PLAN.md P7.5)', () => {
   test('walks through a step and a long jump, then completes', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Tutorial' }).click();
+    await page.getByRole('button', { name: 'Tutorial', exact: true }).click();
     await expect(page.getByTestId('tutorial-screen')).toBeVisible();
 
     // Stage 1: step.
@@ -25,7 +25,7 @@ test.describe('Interactive tutorial (IMPLEMENTATION_PLAN.md P7.5)', () => {
 
   test('Skip tutorial returns to the menu immediately', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Tutorial' }).click();
+    await page.getByRole('button', { name: 'Tutorial', exact: true }).click();
     await page.getByRole('button', { name: 'Skip tutorial' }).click();
     await expect(page.getByTestId('menu-screen')).toBeVisible();
   });

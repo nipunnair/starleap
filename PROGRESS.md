@@ -357,11 +357,26 @@ P11.1-P11.4 done.
     a service-worker MIME-type flake from a manual `npm run build` racing the E2E webServer, not a
     real regression; confirmed by rerunning that spec alone, which passed).
 
+  - P11.5: `src/app/onboarding.ts` — versioned-key (`starleap.onboarding.v1`) localStorage flag,
+    same best-effort try/catch pattern as `persistence.ts`. `App.tsx` shows a
+    `data-testid="onboarding-callout"` ("New here? Start with the Tutorial") on the menu until
+    marked seen; marked seen on `startNewGame`, `resumeGame`, and finishing the real Tutorial
+    (skip counts as finishing). **Found and fixed a real regression the new callout caused**: its
+    "Start with the Tutorial" button's accessible name contains the substring "Tutorial", so every
+    pre-existing `getByRole('button', { name: 'Tutorial' })` locator (non-exact by default) started
+    matching two buttons — broke `menu.spec.ts`, `tutorial.spec.ts` (x2), `axe-audit.spec.ts`, and
+    `keyboard-nav.spec.ts`'s first-Tab-lands-on-New-game assertion (the callout, rendered above
+    "New game", became the first focusable element). Fixed by moving the callout to render after
+    all nav buttons (preserves existing tab order) and adding `exact: true` to the five pre-existing
+    locators that meant the standalone "Tutorial" nav button specifically. **Gate: green** — 129
+    unit tests, lint, typecheck, build, and the full 66-spec Playwright suite (~8.5 min, including
+    the full `singlefile-offline.spec.ts` Sirius game) all green.
+
 ## Next
-- Phase 11, task P11.5: first-launch Tutorial promotion. Phase 11 turns 7 items from
-  `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
-  tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
-  for what's explicitly out of bounds for this run.
+- Phase 11, task P11.6: turn-indicator / thinking-state visual salience fix. Phase 11 turns 7
+  items from `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review)
+  into concrete tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11
+  scope guardrail for what's explicitly out of bounds for this run.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -383,4 +398,4 @@ P11.1-P11.4 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.4 green, P11.5-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.5 green, P11.6-P11.8 remaining

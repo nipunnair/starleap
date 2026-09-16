@@ -441,3 +441,12 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   regardless of the settings toggle — pedagogically correct, since a new player following the
   tutorial shouldn't have their own settings choice hide the exact highlights the tutorial text
   is describing.
+- **P11.5's onboarding callout renders after the other menu buttons, not before.** Its
+  "Start with the Tutorial" button's accessible name contains "Tutorial", colliding with the
+  existing standalone "Tutorial" nav button under Playwright's default substring name matching —
+  and, more importantly, placing it first in the DOM would make it the first Tab stop on a fresh
+  visit, ahead of "New game", changing existing keyboard-nav behavior for no product reason.
+  Rendering it last preserves the pre-existing tab order; the five pre-existing tests whose
+  `getByRole('button', { name: 'Tutorial' })` locators became ambiguous once the callout can be on
+  screen at the same time were given `exact: true` rather than reworded, since they genuinely mean
+  the standalone nav button.

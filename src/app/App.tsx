@@ -6,6 +6,7 @@ import { SettingsScreen } from './SettingsScreen';
 import { TutorialScreen } from './TutorialScreen';
 import { buildSevenHopChainScenario, buildAlmostWonScenario } from './debugScenarios';
 import { saveGame, loadGame, clearSavedGame, hasSavedGame } from './persistence';
+import { hasSeenOnboarding, markOnboardingSeen } from './onboarding';
 import { useSettings } from './settingsStore';
 import type { GameState, PlayerCount } from '../engine/state';
 
@@ -46,10 +47,12 @@ export function App() {
   const [gameConfig, setGameConfig] = useState<GameConfig | null>(debugScenario);
   const [canResume, setCanResume] = useState(false);
   const [pendingConfig, setPendingConfig] = useState<GameConfigResult | null>(null);
+  const [showOnboardingCallout, setShowOnboardingCallout] = useState(false);
   const { settings, update: updateSettings } = useSettings();
 
   useEffect(() => {
     setCanResume(hasSavedGame());
+    setShowOnboardingCallout(!hasSeenOnboarding());
   }, [screen]);
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export function App() {
 
   function startNewGame(config: GameConfigResult) {
     clearSavedGame();
+    markOnboardingSeen();
     setGameConfig(config);
     setScreen('game');
   }
@@ -79,6 +83,7 @@ export function App() {
   function resumeGame() {
     const saved = loadGame();
     if (!saved) return;
+    markOnboardingSeen();
     setGameConfig({ playerCount: saved.playerCount, seats: saved.seats, initialGameState: saved.gameState });
     setScreen('game');
   }
@@ -130,7 +135,14 @@ export function App() {
   }
 
   if (screen === 'tutorial') {
-    return <TutorialScreen onFinish={() => setScreen('menu')} />;
+    return (
+      <TutorialScreen
+        onFinish={() => {
+          markOnboardingSeen();
+          setScreen('menu');
+        }}
+      />
+    );
   }
 
   return (
@@ -143,6 +155,12 @@ export function App() {
       <button onClick={() => setScreen('tutorial')}>Tutorial</button>
       <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'Nova'] })}>Play vs Nova</button>
       <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'human'] })}>Human vs Human</button>
+      {showOnboardingCallout && (
+        <p data-testid="onboarding-callout">
+          New here?{' '}
+          <button onClick={() => setScreen('tutorial')}>Start with the Tutorial</button>
+        </p>
+      )}
     </main>
   );
 }
