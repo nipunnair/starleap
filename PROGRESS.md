@@ -1,7 +1,8 @@
 # PROGRESS
 
 ## Status
-All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md.
+All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
+iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -306,8 +307,10 @@ All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md.
     scoped down except where explicitly documented and justified), `BLOCKED.md` is empty.
 
 ## Next
-- Nothing left in `IMPLEMENTATION_PLAN.md`. See `HANDOFF.md` for deferred (non-blocking) items
-  and extension points for whoever picks this up next.
+- Phase 11, task P11.1: player color self-identification. Phase 11 turns 7 items from
+  `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
+  tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
+  for what's explicitly out of bounds for this run.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -329,3 +332,4 @@ All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
+- Phase 11 (Feedback iteration): not started

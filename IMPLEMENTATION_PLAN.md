@@ -299,3 +299,49 @@ network requests.
       exports. — `npx knip` (or manual grep for `TODO`/`console.log` if knip isn't set up)
 - [x] P10.3 Write `HANDOFF.md`: what's built, what's deferred (see BLOCKED.md), and how to
       extend it (where to add a new AI tier, a new board theme, a new phase). — manual
+
+## Phase 11 — Feedback iteration
+
+GATE: `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test`
+all green. Do not start any task or phase beyond P11.8 — see AGENTS.md's Phase 11 scope
+guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for this run.
+
+- [ ] P11.1 Player color self-identification: add `PLAYER_COLOR_NAMES` and a `playerLabel(seat)`
+      helper to `src/ui/components/boardGeometry.ts` (same index/order as `PLAYER_COLORS`). Use
+      it in `GameScreen.tsx`'s turn indicator, win-screen ranking, and pass-and-play prompt, and
+      in `ConfigScreen.tsx`'s seat labels, replacing bare `Player N` text. Add an always-visible
+      color swatch + "You are Red" label near the turn indicator (seat 0 is always the human). —
+      `npm test && npx playwright test win-screen.spec.ts`
+- [ ] P11.2 Confirm-before-discard on "New Game": in `App.tsx`, if `canResume` is true, show an
+      inline confirm step ("Starting a new game will discard your saved game. Continue?") before
+      calling `startNewGame`/`clearSavedGame`, for both the ConfigScreen path and the two
+      quick-start buttons. No dialog when there's no save to lose. — `npx playwright test`
+- [ ] P11.3 Inline tier tooltips in `ConfigScreen`: add a `TIER_BLURBS` map (one plain-language
+      sentence per tier) and render the selected seat's blurb under its `<select>` when the seat
+      isn't `'human'`. — `npx playwright test config.spec.ts`
+- [ ] P11.4 Standalone "show move hints" settings toggle: add `showMoveHints: boolean` (default
+      `true`) to `Settings`/`DEFAULT_SETTINGS`, a checkbox in `SettingsScreen.tsx` matching the
+      `audioEnabled` pattern, threaded through `App.tsx` → `GameScreen` → `Board` as a new
+      `showHints` prop gating only `isDestination` styling and the `PathPreview` render in
+      `Board.tsx` — click routing, keyboard focus, and the SR announcer are unaffected by design
+      (verified: `onCellClick` doesn't depend on `isDestination`). Never auto-tied to AI tier. —
+      `npx playwright test settings.spec.ts`
+- [ ] P11.5 First-launch Tutorial promotion: new `src/app/onboarding.ts` (`starleap.onboarding.v1`,
+      mirroring `persistence.ts`'s try/catch pattern), marked seen on finishing the Tutorial or
+      starting any game. Menu shows a "New here? Start with the Tutorial" callout when not yet
+      seen. — `npm test && npx playwright test`
+- [ ] P11.6 Turn-indicator / thinking-state visual salience fix: style `.turn-indicator` in
+      `global.css` (larger, bolder, tinted by the mover's color) and add
+      `.starleap-avatar--thinking { transform: scale(1.15); }` — a static size bump only, no
+      timing/keyframe-duration changes anywhere (`MIN_THINKING_MS`/`FOUND_IT_DISPLAY_MS` and
+      every `.starleap-avatar--*` animation duration stay exactly as they are). —
+      `npx playwright test thinking-within-100ms.spec.ts`
+- [ ] P11.7 Chain-hop counter: in `GameScreen.tsx`'s `handleMoveAnimationComplete`, when
+      `hopCount >= 2`, show a transient plain-text `data-testid="chain-badge"` (e.g. "Red: 4-hop
+      chain!", using P11.1's `playerLabel`) for ~2.5s. Per-move only, not cumulative — the
+      leaderboard/score question stays deferred. Plain text, not particles, so no reduced-motion
+      special-casing is needed. Verify with the existing `?e2eScenario=sevenHopChain` fixture. —
+      `npx playwright test` (new spec)
+- [ ] P11.8 Update `HANDOFF.md`'s "Future scope" section to remove/mark-done the 7 items above,
+      leaving every explicitly-deferred item untouched. Update `PROGRESS.md`'s Status/Next/
+      Gate-status sections for Phase 11. — manual review
