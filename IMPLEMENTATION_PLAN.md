@@ -319,7 +319,7 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
 - [x] P11.3 Inline tier tooltips in `ConfigScreen`: add a `TIER_BLURBS` map (one plain-language
       sentence per tier) and render the selected seat's blurb under its `<select>` when the seat
       isn't `'human'`. — `npx playwright test config.spec.ts`
-- [ ] P11.4 Standalone "show move hints" settings toggle: add `showMoveHints: boolean` (default
+- [x] P11.4 Standalone "show move hints" settings toggle: add `showMoveHints: boolean` (default
       `true`) to `Settings`/`DEFAULT_SETTINGS`, a checkbox in `SettingsScreen.tsx` matching the
       `audioEnabled` pattern, threaded through `App.tsx` → `GameScreen` → `Board` as a new
       `showHints` prop gating only `isDestination` styling and the `PathPreview` render in

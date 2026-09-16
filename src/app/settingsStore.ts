@@ -8,6 +8,7 @@ export interface Settings {
   readonly audioEnabled: boolean;
   readonly reducedMotion: ReducedMotionSetting;
   readonly theme: BoardTheme;
+  readonly showMoveHints: boolean;
 }
 
 const SETTINGS_KEY = 'starleap.settings.v1';
@@ -16,6 +17,7 @@ const DEFAULT_SETTINGS: Settings = {
   audioEnabled: true,
   reducedMotion: 'system',
   theme: 'starleap',
+  showMoveHints: true,
 };
 
 function readSettings(): Settings {

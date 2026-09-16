@@ -1,16 +1,15 @@
-import { useSettings, type BoardTheme } from './settingsStore';
-import type { ReducedMotionSetting } from './settingsStore';
+import type { BoardTheme, ReducedMotionSetting, Settings } from './settingsStore';
 
 export interface SettingsScreenProps {
+  readonly settings: Settings;
+  readonly onUpdate: (patch: Partial<Settings>) => void;
   readonly onBack: () => void;
 }
 
 const THEMES: readonly BoardTheme[] = ['starleap', 'nakshatra', 'chhalaang'];
 const REDUCED_MOTION_OPTIONS: readonly ReducedMotionSetting[] = ['system', 'on', 'off'];
 
-export function SettingsScreen({ onBack }: SettingsScreenProps) {
-  const { settings, update } = useSettings();
-
+export function SettingsScreen({ settings, onUpdate: update, onBack }: SettingsScreenProps) {
   return (
     <main data-testid="settings-screen">
       <h1>Settings</h1>
@@ -18,10 +17,21 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
       <label>
         <input
           type="checkbox"
+          name="audioEnabled"
           checked={settings.audioEnabled}
           onChange={(e) => update({ audioEnabled: e.target.checked })}
         />
         Sound
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          name="showMoveHints"
+          checked={settings.showMoveHints}
+          onChange={(e) => update({ showMoveHints: e.target.checked })}
+        />
+        Show move hints
       </label>
 
       <fieldset>

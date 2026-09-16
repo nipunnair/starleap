@@ -38,6 +38,8 @@ export interface GameScreenProps {
   /** Phase 7 settings screen: 'system' (default) follows the OS, 'on'/'off' force it. */
   readonly reducedMotionOverride?: ReducedMotionOverride;
   readonly audioEnabled?: boolean;
+  /** Phase 11 settings toggle (default on): gates destination highlighting and the path preview. */
+  readonly showHints?: boolean;
 }
 
 const SHAKE_DURATION_MS = 300;
@@ -61,6 +63,7 @@ export function GameScreen({
   onStateChange,
   reducedMotionOverride = 'system',
   audioEnabled = true,
+  showHints = true,
 }: GameScreenProps) {
   const engine = useGameEngine(playerCount, initialGameState);
   const ai = useAIWorker();
@@ -294,6 +297,7 @@ export function GameScreen({
           previewMove={previewMove}
           onCellClick={handleCellClick}
           onDestinationHover={setPreviewMove}
+          showHints={showHints}
           animation={
             pendingMove
               ? {

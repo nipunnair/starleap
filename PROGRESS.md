@@ -3,7 +3,7 @@
 ## Status
 All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
 iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.3 done.
+P11.1-P11.4 done.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -340,8 +340,25 @@ P11.1-P11.3 done.
     `singlefile-offline.spec.ts` Sirius game) — no existing spec needed changes since none of them
     exercise a second "new game" action while a save already exists.
 
+  - P11.4: `showMoveHints` (default `true`) added to `Settings`/`DEFAULT_SETTINGS`, a checkbox in
+    `SettingsScreen.tsx`, threaded through `App.tsx` → `GameScreen` → `Board` as a new
+    `showHints` prop gating only `isDestination` styling and the `PathPreview` render in
+    `Board.tsx`. `TutorialScreen`'s own `<Board>` usage doesn't pass it, so tutorial hints stay on
+    regardless of the setting. **Found and fixed a real pre-existing bug along the way**:
+    `SettingsScreen` called its own `useSettings()` instead of taking `settings`/`onUpdate` as
+    props from `App` — since each `useSettings()` call holds independent local state that only
+    reads `localStorage` once on mount, every prior settings toggle (audio/reduced-motion/theme)
+    silently required a full page reload to actually take effect on the already-mounted `App`
+    that feeds `GameScreen`. Fixed by lifting the single `useSettings()` call to `App` and passing
+    it down as props — see DECISIONS.md. **Gate: green** — `npx playwright test settings.spec.ts`
+    (3 passed, including a new test that toggles the setting and checks its same-session effect
+    without a reload); also reran the full suite (126 unit tests, lint, typecheck, build, and all
+    60 Playwright E2E specs green — one `landing-juice.spec.ts` failure on the first full run was
+    a service-worker MIME-type flake from a manual `npm run build` racing the E2E webServer, not a
+    real regression; confirmed by rerunning that spec alone, which passed).
+
 ## Next
-- Phase 11, task P11.4: standalone "show move hints" settings toggle. Phase 11 turns 7 items from
+- Phase 11, task P11.5: first-launch Tutorial promotion. Phase 11 turns 7 items from
   `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
   tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
   for what's explicitly out of bounds for this run.
@@ -366,4 +383,4 @@ P11.1-P11.3 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.3 green, P11.4-P11.8 remaining
+- Phase 11 (Feedback iteration): in progress — P11.1-P11.4 green, P11.5-P11.8 remaining

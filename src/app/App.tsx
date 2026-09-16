@@ -46,7 +46,7 @@ export function App() {
   const [gameConfig, setGameConfig] = useState<GameConfig | null>(debugScenario);
   const [canResume, setCanResume] = useState(false);
   const [pendingConfig, setPendingConfig] = useState<GameConfigResult | null>(null);
-  const { settings } = useSettings();
+  const { settings, update: updateSettings } = useSettings();
 
   useEffect(() => {
     setCanResume(hasSavedGame());
@@ -112,6 +112,7 @@ export function App() {
         onStateChange={handleStateChange}
         reducedMotionOverride={settings.reducedMotion}
         audioEnabled={settings.audioEnabled}
+        showHints={settings.showMoveHints}
       />
     );
   }
@@ -125,7 +126,7 @@ export function App() {
   }
 
   if (screen === 'settings') {
-    return <SettingsScreen onBack={() => setScreen('menu')} />;
+    return <SettingsScreen settings={settings} onUpdate={updateSettings} onBack={() => setScreen('menu')} />;
   }
 
   if (screen === 'tutorial') {

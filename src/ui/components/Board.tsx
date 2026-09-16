@@ -25,6 +25,9 @@ export interface BoardProps {
   readonly onCellClick: (cellKey: string) => void;
   readonly onDestinationHover: (move: Move | null) => void;
   readonly animation?: ActiveAnimation | null;
+  /** Settings screen toggle (default on). Gates only the destination highlight styling and the
+   * path preview — click routing, keyboard focus, and the SR announcer don't depend on it. */
+  readonly showHints?: boolean;
 }
 
 /**
@@ -40,7 +43,16 @@ const ARROW_KEY_DIRECTIONS: Record<string, Cube> = {
   ArrowDown: { x: 0, y: -1, z: 1 },
 };
 
-export function Board({ game, selectedPegId, legalMoves, previewMove, onCellClick, onDestinationHover, animation }: BoardProps) {
+export function Board({
+  game,
+  selectedPegId,
+  legalMoves,
+  previewMove,
+  onCellClick,
+  onDestinationHover,
+  animation,
+  showHints = true,
+}: BoardProps) {
   const legalDestinationsByKey = new Map<string, Move>(legalMoves.map((m) => [key(m.to), m]));
   const pegByCellKey = new Map(game.pegs.map((p) => [key(p.cell), p]));
   const interactive = !animation;
@@ -74,7 +86,7 @@ export function Board({ game, selectedPegId, legalMoves, previewMove, onCellClic
     >
       {PROJECTED_CELLS.map(({ cell, px, py }) => {
         const k = key(cell);
-        const isDestination = interactive && legalDestinationsByKey.has(k);
+        const isDestination = interactive && showHints && legalDestinationsByKey.has(k);
         const isFocused = interactive && k === key(focusedCell);
         return (
           <circle
@@ -103,7 +115,7 @@ export function Board({ game, selectedPegId, legalMoves, previewMove, onCellClic
         );
       })}
 
-      {previewMove && interactive && <PathPreview move={previewMove} />}
+      {previewMove && interactive && showHints && <PathPreview move={previewMove} />}
 
       {game.pegs.map((peg) => {
         if (animation && peg.id === animation.move.pegId) return null; // rendered via AnimatedPeg below

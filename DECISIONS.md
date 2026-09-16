@@ -419,3 +419,25 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   three E2E files that hardcoded the old "Player 0"/"Player 1" text as a wait condition rather
   than a UI assertion (`e2e/helpers.ts`'s `playUntilGameOver`, `thinking-within-100ms.spec.ts`,
   `pass-and-play.spec.ts`) — direct fallout of the text change, not a drive-by refactor.
+- **P11.4 found and fixed a real, pre-existing settings-propagation bug, not just added a new
+  toggle.** `SettingsScreen` called its own `useSettings()` instead of receiving settings via
+  props from `App`; since each `useSettings()` call holds independent local React state that
+  only reads from `localStorage` once on mount, a change made in `SettingsScreen` (e.g. toggling
+  audio, reduced motion, theme, or the new `showMoveHints`) wrote to `localStorage` and updated
+  only *that* component's own state — `App`'s separate `settings` object (the one actually passed
+  down to `GameScreen`) stayed stale until a full page reload. This was latent in every prior
+  Phase 7 settings toggle too; it only surfaced now because P11.4's own E2E test (unlike the
+  existing `settings.spec.ts` cases, which either check post-reload persistence or use a weak
+  "position changed within 1s" assertion that passes regardless of the setting) actually toggles
+  a setting, navigates back to the menu, and checks its effect on the *same-session* board
+  render without reloading. Fixed by lifting `useSettings()` up to `App` and passing
+  `settings`/`onUpdate` into `SettingsScreen` as props, so there's exactly one instance of the
+  state — a minimal, necessary correctness fix for the feature this task actually asked for, not
+  a drive-by refactor. Added `showMoveHints: boolean` (default `true`) to `Settings`; threaded as
+  a new optional `showHints` prop (default `true`) through `GameScreen` into `Board`, gating only
+  the destination-highlight styling and the `PathPreview` render — `onCellClick` routing,
+  keyboard focus, and the SR announcer are untouched, so hints being off never blocks a move.
+  `TutorialScreen`'s own `<Board>` usage doesn't pass `showHints` at all, so hints stay on there
+  regardless of the settings toggle — pedagogically correct, since a new player following the
+  tutorial shouldn't have their own settings choice hide the exact highlights the tutorial text
+  is describing.
