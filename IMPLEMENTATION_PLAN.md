@@ -342,6 +342,6 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
       leaderboard/score question stays deferred. Plain text, not particles, so no reduced-motion
       special-casing is needed. Verify with the existing `?e2eScenario=sevenHopChain` fixture. —
       `npx playwright test` (new spec)
-- [ ] P11.8 Update `HANDOFF.md`'s "Future scope" section to remove/mark-done the 7 items above,
+- [x] P11.8 Update `HANDOFF.md`'s "Future scope" section to remove/mark-done the 7 items above,
       leaving every explicitly-deferred item untouched. Update `PROGRESS.md`'s Status/Next/
       Gate-status sections for Phase 11. — manual review

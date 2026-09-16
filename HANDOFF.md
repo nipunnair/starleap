@@ -66,7 +66,7 @@ critique folded in, organized by confidence level rather than by who raised it f
 
 ### Confirmed bugs (verified in code, not opinion)
 
-- **Nothing tells a human player which peg color is theirs.** Found in second-round playtesting:
+- **[Done — P11.1]** ~~Nothing tells a human player which peg color is theirs.~~ Found in second-round playtesting:
   a player assumed the blue pegs were "them" and it was the opposite. Confirmed in code —
   `PLAYER_COLORS` in `src/ui/components/boardGeometry.ts` assigns colors purely by seat index
   (`0` = red, `1` = blue, ...) and the human is always seat 0 (red) in "Play vs Nova," but there
@@ -102,8 +102,9 @@ critique folded in, organized by confidence level rather than by who raised it f
   game is fun once you're in it. QA's caution: existing E2E specs are pinned to current menu
   selectors, and nothing currently asserts *intended* defaults (only current ones), so a redesign
   could silently change what a new player sees first without anyone noticing.
-- **Separate the "hint toggle" from "replace hints with a chain-reward system" — they are two
-  differently-sized features.** The Architect explicitly scoped their pick to "toggle only, not
+- **[Toggle done — P11.4; the reward-system replacement below remains deferred.]** Separate the
+  "hint toggle" from "replace hints with a chain-reward system" — they are two
+  differently-sized features. The Architect explicitly scoped their pick to "toggle only, not
   the reward-replacement." The reason: `PathPreview` currently does double duty as both the
   onboarding hint *and* the legality-signaling affordance that the keyboard-navigation and
   screen-reader-announcer work (Phase 8) already assumes exists. Removing it isn't a settings
@@ -112,7 +113,8 @@ critique folded in, organized by confidence level rather than by who raised it f
   pass-and-play game with a different AI tier seated at each corner — resolve what "difficulty"
   means (the human's own preference vs. whichever AI tier happens to be next) before building
   either the toggle or the reward system.
-- **The chain counter is well-liked but needs two decisions made before it's built.** Game
+- **[Basic per-move counter done — P11.7; the score/leaderboard semantics below remain
+  deferred.]** The chain counter is well-liked but needs two decisions made before it's built. Game
   Designer's #1 pick overall — "the long-jump chain is STARLEAP's entire differentiator; right
   now the only feedback is screen-shake at 5+ hops." But QA flags it's premised on "score"
   semantics HANDOFF itself hasn't defined yet (per-hop/per-turn/per-game reset boundary; correct
@@ -123,7 +125,8 @@ critique folded in, organized by confidence level rather than by who raised it f
 
 ### One real disagreement (worth a decision, not a default)
 
-- **The thinking-animation fix**: UX's suggestion is bigger + a text label + a slower cycle so it
+- **[Done — P11.6, per the 2-of-3 lean below: size/position/labeling fixed, duration
+  unchanged.]** The thinking-animation fix: UX's suggestion is bigger + a text label + a slower cycle so it
   has time to register. Game Designer disagrees specifically with "slower" — Nova's speed is its
   personality, and stretching it fights that identity for no gameplay reason. QA independently
   arrives at the same objection from a different angle: the ~400ms floor already exists
@@ -148,12 +151,13 @@ critique folded in, organized by confidence level rather than by who raised it f
   SPEC today: the eval function's ladder/spread terms reward early strong formations with no
   stated anti-snowball design, and in 3+ player games a losing player's move choice can decide
   which of two leaders wins (kingmaker risk) with no mitigation considered.
-- **Confirm-before-discard when starting "New Game" while a save exists** — small effort, and
-  the current silent overwrite is a real (if currently undiscovered) data-loss risk.
-- **First-launch detection to promote the Tutorial** for brand-new players, rather than treating
-  first-time and returning players identically.
-- **Inline tier tooltips in `ConfigScreen`** explaining what Nova/Vega/Rigel/Sirius mean, instead
-  of requiring a detour to Rules.
+- **[Done — P11.2]** ~~Confirm-before-discard when starting "New Game" while a save exists~~ —
+  small effort, and the current silent overwrite is a real (if currently undiscovered) data-loss
+  risk.
+- **[Done — P11.5]** ~~First-launch detection to promote the Tutorial~~ for brand-new players,
+  rather than treating first-time and returning players identically.
+- **[Done — P11.3]** ~~Inline tier tooltips in `ConfigScreen`~~ explaining what Nova/Vega/Rigel/
+  Sirius mean, instead of requiring a detour to Rules.
 - **Version-stamp any future remote/shared record against the ruleset/build version.** The moment
   anything persists off-device, tier parameters and score definitions become a public contract —
   retuning Sirius later would silently invalidate every historical record otherwise. Mirrors the

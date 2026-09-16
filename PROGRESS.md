@@ -1,9 +1,9 @@
 # PROGRESS
 
 ## Status
-All 10 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
-iteration) added 2026-09-15, running via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.7 done.
+All 11 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
+iteration) added 2026-09-15, ran via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
+P11.1-P11.8 done. No unchecked tasks remain in IMPLEMENTATION_PLAN.md.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -396,12 +396,25 @@ P11.1-P11.7 done.
     lint, typecheck, build, and all 67 Playwright E2E specs, ~8.5 min, including the full
     `singlefile-offline.spec.ts` Sirius game).
 
+  - P11.8: Updated `HANDOFF.md`'s "Future scope" section to mark the 7 items P11.1-P11.7 built as
+    done (struck through / tagged `[Done — P11.x]` inline, keeping the original critique text as
+    historical record) — the peg-color self-ID bug, confirm-before-discard, inline tier tooltips,
+    the hint-toggle half of the toggle/reward-system item, first-launch Tutorial promotion, the
+    size/position/labeling half of the thinking-animation fix, and the basic per-move chain
+    counter. Left every explicitly-deferred item untouched: the leaderboard, the menu/config
+    redesign, the chain-reward-system replacement, anonymous telemetry, the human-calibrated
+    difficulty curve, comeback/kingmaker mechanics, remote-record version-stamping, and the
+    save/resume-vs-settings-change question. Updated this file's Status/Next/Gate-status sections
+    to reflect Phase 11 complete with no unchecked tasks remaining. **Gate: manual review** — read
+    back both files to confirm every P11.1-P11.7 item is accounted for and no deferred item was
+    altered.
+
 ## Next
-- Phase 11, task P11.8: update `HANDOFF.md`'s "Future scope" section and this file's Status/Next/
-  Gate-status sections for Phase 11 — the last task in Phase 11. Phase 11 turns 7 items from
-  `HANDOFF.md`'s "Future scope" (first-round playtesting + the LLM council review) into concrete
-  tasks — see IMPLEMENTATION_PLAN.md's Phase 11 section and AGENTS.md's Phase 11 scope guardrail
-  for what's explicitly out of bounds for this run.
+- No unchecked tasks remain in `IMPLEMENTATION_PLAN.md`. Per AGENTS.md's Phase 11 scope
+  guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future scope" item that isn't
+  an explicit `- [ ]` line — the remaining items there (leaderboard, menu/config redesign,
+  chain-reward system, anonymous telemetry, human-calibrated difficulty curve, comeback/kingmaker
+  mechanics) need a product decision first.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -423,4 +436,4 @@ P11.1-P11.7 done.
 - Phase 8 (Polish): **GREEN**
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
-- Phase 11 (Feedback iteration): in progress — P11.1-P11.7 green, P11.8 remaining
+- Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
