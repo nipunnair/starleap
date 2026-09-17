@@ -459,3 +459,30 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   asserting on the badge, not a code change. Not worth adding a new single-human-seat fixture
   just to dodge this, since the existing performance fixture already proves the same 7-hop
   scenario end to end.
+- **Phase 12's `cordonNeutralCorners` flag lives on `GameState`, not as a separate parameter
+  threaded through every engine/AI function.** `isLegalRestingCell` already takes `state`, and
+  putting the flag there means the AI worker (which just serializes/deserializes `GameState`
+  across the `postMessage` boundary per `worker-protocol.ts`) and the transposition-table-driven
+  search automatically respect the rule with zero protocol changes — no separate "AI-side" task
+  was needed.
+- **A save/loaded `GameState` from before this field existed deserializes with
+  `cordonNeutralCorners: undefined`, and that's treated as `false` (the original, uncordoned
+  ruleset) rather than coerced to the new default.** `!state.cordonNeutralCorners` in
+  `isLegalRestingCell` makes this fall out for free from JS truthiness — no special-casing
+  needed. Deliberate: an in-progress or already-saved game keeps the ruleset it was actually
+  played under, rather than a mid-game rule change silently altering what's legal. This also
+  resolves the open question HANDOFF.md raised generically ("save/resume interaction with
+  settings changes is undefined") for this specific rule — new games always bake in whatever
+  Settings says at creation time; existing games/saves are untouched by later Settings changes.
+- **Settings' `cordonNeutralCorners` is only read once, at new-game creation (`useGameEngine`'s
+  lazy `useReducer` initializer)** — same pattern as `initialGameState` already used. Changing
+  the Settings toggle mid-game has no effect on the game in progress, only the next new game
+  started. Consistent with the point above.
+- **Did not re-run the Phase 2/3 self-play or tournament gates under the new default.** Those
+  gates validate AI move quality and stalemate rates, not rule legality — `isLegalRestingCell`'s
+  own unit tests (`residency.test.ts`) are the actual verification for this rule change. A full
+  re-run (`npm run selfplay` / `npm run tournament`) under `cordonNeutralCorners: true` would only
+  be worth doing if this rule is suspected of materially changing AI-quality numbers (e.g. new
+  stalemate patterns from cutting off four resting spots per <6P game), which isn't expected since
+  neutral corners were rarely a useful final destination for a self-interested AI eval function
+  anyway — left as optional future validation, not required for this phase's gate.

@@ -40,9 +40,11 @@ export function RulesScreen({ onBack }: RulesScreenProps) {
       <section>
         <h2>Passing through vs. resting</h2>
         <p>
-          Mid-chain, you can hop through anyone's home corner. But when your turn ends, you can only be resting in
-          your own starting corner, your own target corner, or the open middle of the board — never someone else's
-          corner.
+          Mid-chain, you can hop through any corner — yours, an opponent's, or an unclaimed one. But when your turn
+          ends, you can only be resting in your own starting corner, your own target corner, or the open middle of
+          the board. With fewer than six players, the corners nobody's using are waypoints only: you can hop through
+          one, but you can't stop there. (This can be turned off in Settings if you'd rather allow resting in
+          unclaimed corners.)
         </p>
       </section>
 

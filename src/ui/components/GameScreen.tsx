@@ -40,6 +40,10 @@ export interface GameScreenProps {
   readonly audioEnabled?: boolean;
   /** Phase 11 settings toggle (default on): gates destination highlighting and the path preview. */
   readonly showHints?: boolean;
+  /** Phase 12 settings toggle (default on): applied only to a brand-new game (no
+   * `initialGameState`) — a resumed/loaded game keeps whatever value is already baked into its
+   * saved `GameState`. See `useGameEngine` and `DECISIONS.md`. */
+  readonly cordonNeutralCorners?: boolean;
 }
 
 const SHAKE_DURATION_MS = 300;
@@ -66,8 +70,9 @@ export function GameScreen({
   reducedMotionOverride = 'system',
   audioEnabled = true,
   showHints = true,
+  cordonNeutralCorners = true,
 }: GameScreenProps) {
-  const engine = useGameEngine(playerCount, initialGameState);
+  const engine = useGameEngine(playerCount, initialGameState, cordonNeutralCorners);
   const ai = useAIWorker();
   const reducedMotion = useReducedMotion(reducedMotionOverride);
   const toneSequencer = useMemo(

@@ -43,9 +43,13 @@ function reducer(state: EngineState, action: Action): EngineState {
   }
 }
 
-export function useGameEngine(playerCount: PlayerCount, initialGameState?: GameState) {
+export function useGameEngine(
+  playerCount: PlayerCount,
+  initialGameState?: GameState,
+  cordonNeutralCorners: boolean = true,
+) {
   const [state, dispatch] = useReducer(reducer, playerCount, (pc) => ({
-    game: initialGameState ?? createInitialState(pc),
+    game: initialGameState ?? createInitialState(pc, { cordonNeutralCorners }),
     selectedPegId: null,
     previousGame: null,
     canUndo: false,

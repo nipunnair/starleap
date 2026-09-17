@@ -372,13 +372,13 @@ changing the legality of an in-progress game — see DECISIONS.md.
       `Settings`/`DEFAULT_SETTINGS`. `src/app/SettingsScreen.tsx`: add a checkbox ("Cordon
       unclaimed corners (waypoint only)") matching the `showMoveHints` pattern. —
       `npx playwright test settings.spec.ts`
-- [ ] P12.3 Thread the setting into *new* games only (never a resumed one): add
+- [x] P12.3 Thread the setting into *new* games only (never a resumed one): add
       `GameScreenProps.cordonNeutralCorners` (default `true`) → a third `useGameEngine` param →
       `createInitialState(pc, { cordonNeutralCorners })` inside the lazy `useReducer` initializer,
       used only when there's no `initialGameState` (a resumed/loaded game keeps whatever value is
       already baked into its saved `GameState`, per P12.1). Wire `App.tsx` to pass
       `settings.cordonNeutralCorners`. — `npm run typecheck && npx playwright test`
-- [ ] P12.4 Update `docs/SPEC.md` §2.4 to describe the new default (neutral corners are
+- [x] P12.4 Update `docs/SPEC.md` §2.4 to describe the new default (neutral corners are
       waypoint-only) and the Settings opt-out. Update `RulesScreen.tsx`'s "Passing through vs.
       resting" section for players in plain language. — `npx playwright test rules-screen.spec.ts`
 - [ ] P12.5 Full phase gate. Update `DECISIONS.md` (the resumed-save-compatibility judgment call;

@@ -118,6 +118,7 @@ export function App() {
         reducedMotionOverride={settings.reducedMotion}
         audioEnabled={settings.audioEnabled}
         showHints={settings.showMoveHints}
+        cordonNeutralCorners={settings.cordonNeutralCorners}
       />
     );
   }

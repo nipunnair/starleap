@@ -160,14 +160,21 @@ At the **end of a turn** (not mid-chain), a peg may not occupy any corner triang
 
 - Mid-chain, a peg may freely pass through and even land-and-continue-from any corner triangle.
 - Only the **final** resting cell of the turn is checked.
-- With fewer than six players seated, corners with no assigned owner are **neutral** — resting in
-  a neutral corner at the end of a turn **is** allowed.
+- With fewer than six players seated, corners with no assigned owner are **neutral**. **By
+  default** (`cordonNeutralCorners: true`, Settings → "Cordon unclaimed corners"), a neutral
+  corner is a **waypoint only**: a peg may hop through it — and even land-and-continue-from it —
+  mid-chain, but may never end a turn there, exactly as if it belonged to another seated player.
+  Player-reported rule change (Phase 12, 2026-09-17): the original version of this rule allowed
+  resting in a neutral corner, which read as a bug to players unfamiliar with the "your target is
+  the opponent's start" mechanic inherent to fewer-than-six-player seating. Turning the Settings
+  toggle off restores that original behavior.
 
 Consequence: no peg can ever end a turn squatting in another player's target triangle, and no
 peg can ever end a turn blocking someone else's corner permanently. This removes the classic
 Chinese Checkers "opponent parks in your target forever" degenerate case entirely — there is no
 "you win if permanently blocked" special rule in STARLEAP because permanent blocking of a target
-corner by a foreign peg is impossible by construction.
+corner by a foreign peg is impossible by construction. By default this now extends to unclaimed
+corners too: they're cordoned off as pass-through space, not a resting spot, for anyone.
 
 ### 2.5 Anti-backward-block
 
