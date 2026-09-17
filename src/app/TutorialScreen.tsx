@@ -25,6 +25,7 @@ function buildStepScenario(): GameState {
     pegs: [{ id: 'tutorial-peg', owner: 0, cell: { x: 0, y: 0, z: 0 }, hasLeftStart: true }],
     currentPlayer: 0,
     round: 0,
+    cordonNeutralCorners: true,
   };
 }
 
@@ -45,6 +46,7 @@ function buildLongJumpScenario(): GameState {
     ],
     currentPlayer: 0,
     round: 0,
+    cordonNeutralCorners: true,
   };
 }
 

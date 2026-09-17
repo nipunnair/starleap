@@ -57,12 +57,13 @@ step the plan didn't anticipate. Record why in `DECISIONS.md`.
 - **Never run `git push`.** Commit locally after every task, as always, but this run stays
   unpushed — the human reviews the whole batch and pushes it themselves.
 
-## Phase 11 scope guardrail
+## Scope guardrail
 
-`HANDOFF.md`'s "Future scope" section lists items beyond Phase 11's own 8 tasks (full menu/config
-redesign, replacing move hints with a reward system, any leaderboard, anonymous telemetry, a
-human-calibrated difficulty curve, comeback/kingmaker mechanics). These are **out of bounds** for
-an autonomous pass — they need a product decision or real design work first, not just an unclaimed
-task slot. If Phase 11's tasks (`P11.1`-`P11.8`) are all checked off and `IMPLEMENTATION_PLAN.md`
-has no more unchecked lines, stop. Do not invent a new phase or start on a `HANDOFF.md` item that
-isn't already an explicit `- [ ]` line in `IMPLEMENTATION_PLAN.md`.
+`HANDOFF.md`'s "Future scope" section lists ideas (full menu/config redesign, replacing move hints
+with a reward system, any leaderboard, anonymous telemetry, a human-calibrated difficulty curve,
+comeback/kingmaker mechanics) that are **out of bounds** for an autonomous pass — they need a
+product decision or real design work first, not just an unclaimed task slot. Phase 12
+(`P12.1`-`P12.5`) is explicitly in scope, added 2026-09-17 per a direct player-reported rule
+request — treat it like any other phase. If every phase's tasks are checked off and
+`IMPLEMENTATION_PLAN.md` has no more unchecked lines, stop. Do not invent a new phase or start on a
+`HANDOFF.md` item that isn't already an explicit `- [ ]` line in `IMPLEMENTATION_PLAN.md`.

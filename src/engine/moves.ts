@@ -147,7 +147,7 @@ export function isLegalRestingCell(state: GameState, peg: Peg, to: Cube): boolea
 
   const seat = seatOf(state, peg.owner);
   const isAssigned = state.seats.some((s) => s.startCorner === corner || s.targetCorner === corner);
-  if (!isAssigned) return true; // neutral corner (fewer than six players): resting there is fine
+  if (!isAssigned) return !state.cordonNeutralCorners; // neutral corner: waypoint-only by default
 
   if (corner === seat.targetCorner) return true;
   if (corner === seat.startCorner) return !peg.hasLeftStart; // anti-backward-block

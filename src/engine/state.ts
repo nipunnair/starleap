@@ -39,9 +39,22 @@ export interface GameState {
   readonly pegs: readonly Peg[];
   readonly currentPlayer: number;
   readonly round: number;
+  /** SPEC §2.4: when true (the default for new games), an unclaimed/neutral corner (fewer than
+   * six players seated) may be passed through mid-chain but never a turn's final resting cell —
+   * same treatment as a foreign player's corner. A save/loaded `GameState` predating this field
+   * deserializes with it `undefined`, which is falsy and so behaves as `false` (its original,
+   * uncordoned ruleset) — see DECISIONS.md. */
+  readonly cordonNeutralCorners: boolean;
 }
 
-export function createInitialState(playerCount: PlayerCount): GameState {
+export interface CreateInitialStateOptions {
+  readonly cordonNeutralCorners?: boolean;
+}
+
+export function createInitialState(
+  playerCount: PlayerCount,
+  options: CreateInitialStateOptions = {},
+): GameState {
   const plan = SEATING_PLANS[playerCount];
   const seats: Seat[] = plan.map((startCorner, player) => ({
     player,
@@ -57,7 +70,14 @@ export function createInitialState(playerCount: PlayerCount): GameState {
     });
   }
 
-  return { playerCount, seats, pegs, currentPlayer: 0, round: 0 };
+  return {
+    playerCount,
+    seats,
+    pegs,
+    currentPlayer: 0,
+    round: 0,
+    cordonNeutralCorners: options.cordonNeutralCorners ?? true,
+  };
 }
 
 export function seatOf(state: GameState, player: number): Seat {

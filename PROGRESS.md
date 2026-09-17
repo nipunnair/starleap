@@ -1,9 +1,9 @@
 # PROGRESS
 
 ## Status
-All 11 phases COMPLETE, all gates green. Build finished — see HANDOFF.md. Phase 11 (Feedback
-iteration) added 2026-09-15, ran via the Ralph loop (`loop.sh`) — see IMPLEMENTATION_PLAN.md.
-P11.1-P11.8 done. No unchecked tasks remain in IMPLEMENTATION_PLAN.md.
+Phases 1-11 COMPLETE, all gates green. Phase 12 (corner cordoning rule change) added 2026-09-17
+per a direct player-reported request (Ying and Tanya) — see IMPLEMENTATION_PLAN.md. Next unchecked
+task: P12.1.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,

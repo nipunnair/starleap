@@ -41,7 +41,7 @@ export function buildSevenHopChainScenario(): GameState {
     ...pivots.map((cell, i) => ({ id: `pivot-${i}`, owner: 1, cell, hasLeftStart: true })),
   ];
 
-  return { playerCount, seats, pegs, currentPlayer: 0, round: 0 };
+  return { playerCount, seats, pegs, currentPlayer: 0, round: 0, cordonNeutralCorners: true };
 }
 
 /**
@@ -83,5 +83,5 @@ export function buildAlmostWonScenario(): GameState {
     ...player0Cells.map((cell, i) => ({ id: `p0-${i}`, owner: 0, cell, hasLeftStart: true })),
   ];
 
-  return { playerCount, seats, pegs, currentPlayer: 1, round: 10 };
+  return { playerCount, seats, pegs, currentPlayer: 1, round: 10, cordonNeutralCorners: true };
 }

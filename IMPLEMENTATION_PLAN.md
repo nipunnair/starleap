@@ -345,3 +345,45 @@ guardrail for the explicit list of `HANDOFF.md` items that are out of bounds for
 - [x] P11.8 Update `HANDOFF.md`'s "Future scope" section to remove/mark-done the 7 items above,
       leaving every explicitly-deferred item untouched. Update `PROGRESS.md`'s Status/Next/
       Gate-status sections for Phase 11. — manual review
+
+## Phase 12 — Corner cordoning (neutral corners become waypoints only)
+
+Player-reported rule request (Ying and Tanya, 2026-09-17): in a game with fewer than six seated
+players, the unclaimed ("neutral") corners were restable at the end of a turn per SPEC §2.4's
+original wording — legal, but surprising to players who read an unclaimed corner as off-limits
+entirely. New rule: an unclaimed corner may be passed through mid-chain (a waypoint) but may never
+be a turn's final resting cell, same as a foreign player's corner. This is the new **default** for
+every player count (2/3/4/6), with a Settings toggle to restore the old behavior.
+
+GATE: `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test` all
+green. Every new game defaults to `cordonNeutralCorners: true`; a resumed/loaded save with no such
+field on its `GameState` keeps its original (uncordoned) behavior rather than retroactively
+changing the legality of an in-progress game — see DECISIONS.md.
+
+- [x] P12.1 `src/engine/state.ts` / `src/engine/moves.ts`: add `cordonNeutralCorners: boolean` to
+      `GameState`, threaded through `createInitialState(playerCount, options?)` (default `true`).
+      Update `isLegalRestingCell` (SPEC §2.4) so an unassigned/neutral corner is a legal final
+      resting cell only when `state.cordonNeutralCorners` is falsy — mid-chain passage is
+      unaffected (unchanged code path). Update `residency.test.ts`: the existing "neutral corner
+      is restable" case becomes the opt-out (`cordonNeutralCorners: false`) case, plus a new
+      default-on case asserting the same landing is now illegal. —
+      `npx vitest run src/engine/__tests__/residency.test.ts`
+- [ ] P12.2 `src/app/settingsStore.ts`: add `cordonNeutralCorners: boolean` (default `true`) to
+      `Settings`/`DEFAULT_SETTINGS`. `src/app/SettingsScreen.tsx`: add a checkbox ("Cordon
+      unclaimed corners (waypoint only)") matching the `showMoveHints` pattern. —
+      `npx playwright test settings.spec.ts`
+- [ ] P12.3 Thread the setting into *new* games only (never a resumed one): add
+      `GameScreenProps.cordonNeutralCorners` (default `true`) → a third `useGameEngine` param →
+      `createInitialState(pc, { cordonNeutralCorners })` inside the lazy `useReducer` initializer,
+      used only when there's no `initialGameState` (a resumed/loaded game keeps whatever value is
+      already baked into its saved `GameState`, per P12.1). Wire `App.tsx` to pass
+      `settings.cordonNeutralCorners`. — `npm run typecheck && npx playwright test`
+- [ ] P12.4 Update `docs/SPEC.md` §2.4 to describe the new default (neutral corners are
+      waypoint-only) and the Settings opt-out. Update `RulesScreen.tsx`'s "Passing through vs.
+      resting" section for players in plain language. — `npx playwright test rules-screen.spec.ts`
+- [ ] P12.5 Full phase gate. Update `DECISIONS.md` (the resumed-save-compatibility judgment call;
+      confirm the AI worker/search automatically respects the new flag since it reads straight off
+      `GameState` with zero protocol changes needed — no separate AI-side task required; note the
+      Phase 2/3 self-play and tournament gates were not re-run under the new default, out of scope
+      for this phase). Update `HANDOFF.md` and `PROGRESS.md`. —
+      `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test`

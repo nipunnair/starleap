@@ -28,8 +28,16 @@ describe('residency (SPEC.md §2.4) and anti-backward-block (§2.5)', () => {
     expect(isLegalRestingCell(state, mover, foreignCell)).toBe(false);
   });
 
-  it('with fewer than six players, an unassigned corner is neutral and restable', () => {
+  it('by default, an unassigned neutral corner is a waypoint only — not a legal resting cell', () => {
     const state = createInitialState(2); // seats X+ and X- only; Y/Z corners are neutral
+    const mover = state.pegs.find((p) => p.owner === 0)!;
+    const neutralCell = BOARD.corners['Y+'][0]!;
+    expect(state.cordonNeutralCorners).toBe(true);
+    expect(isLegalRestingCell(state, mover, neutralCell)).toBe(false);
+  });
+
+  it('with `cordonNeutralCorners: false`, an unassigned corner is restable (pre-Phase-12 behavior)', () => {
+    const state = createInitialState(2, { cordonNeutralCorners: false });
     const mover = state.pegs.find((p) => p.owner === 0)!;
     const neutralCell = BOARD.corners['Y+'][0]!;
     expect(isLegalRestingCell(state, mover, neutralCell)).toBe(true);
