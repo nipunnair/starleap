@@ -381,7 +381,7 @@ changing the legality of an in-progress game — see DECISIONS.md.
 - [x] P12.4 Update `docs/SPEC.md` §2.4 to describe the new default (neutral corners are
       waypoint-only) and the Settings opt-out. Update `RulesScreen.tsx`'s "Passing through vs.
       resting" section for players in plain language. — `npx playwright test rules-screen.spec.ts`
-- [ ] P12.5 Full phase gate. Update `DECISIONS.md` (the resumed-save-compatibility judgment call;
+- [x] P12.5 Full phase gate. Update `DECISIONS.md` (the resumed-save-compatibility judgment call;
       confirm the AI worker/search automatically respects the new flag since it reads straight off
       `GameState` with zero protocol changes needed — no separate AI-side task required; note the
       Phase 2/3 self-play and tournament gates were not re-run under the new default, out of scope

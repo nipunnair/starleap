@@ -1,9 +1,13 @@
 # PROGRESS
 
 ## Status
-Phases 1-11 COMPLETE, all gates green. Phase 12 (corner cordoning rule change) added 2026-09-17
-per a direct player-reported request (Ying and Tanya) — see IMPLEMENTATION_PLAN.md. Next unchecked
-task: P12.1.
+All 12 phases COMPLETE, all gates green. Phase 12 (corner cordoning rule change) added and
+finished 2026-09-17 per a direct player-reported request (Ying and Tanya): unclaimed corners in
+games with fewer than six players are now waypoint-only by default (`cordonNeutralCorners: true`)
+— a peg may hop through one mid-chain but never end a turn there. Configurable via a new Settings
+toggle ("Cordon unclaimed corners"); a resumed/loaded save predating this field keeps its original
+(uncordoned) behavior rather than being retroactively changed. No unchecked tasks remain in
+IMPLEMENTATION_PLAN.md.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -409,12 +413,46 @@ task: P12.1.
     back both files to confirm every P11.1-P11.7 item is accounted for and no deferred item was
     altered.
 
+- **Phase 12 — Corner cordoning (P12.1-P12.5), all tasks complete:**
+  - P12.1: `GameState` gained a `cordonNeutralCorners: boolean` field, threaded through
+    `createInitialState(playerCount, options?)` (default `true`). `isLegalRestingCell` in
+    `moves.ts` now returns `!state.cordonNeutralCorners` for an unassigned/neutral corner instead
+    of unconditionally `true` — mid-chain passage untouched. `residency.test.ts`'s old
+    "neutral corner is restable" case became the `cordonNeutralCorners: false` opt-out case, with
+    a new sibling test asserting the default (`true`) makes the same landing illegal.
+  - P12.2: `cordonNeutralCorners` (default `true`) added to `Settings`/`DEFAULT_SETTINGS`; a
+    checkbox ("Cordon unclaimed corners (waypoint only)") added to `SettingsScreen.tsx` matching
+    the `showMoveHints` pattern.
+  - P12.3: Threaded through `GameScreenProps.cordonNeutralCorners` → `useGameEngine`'s third
+    param → `createInitialState`'s options, inside the lazy `useReducer` initializer — applied
+    only when there's no `initialGameState`, so a resumed/loaded game keeps whatever value is
+    already baked into its saved `GameState`. `App.tsx` wired to pass
+    `settings.cordonNeutralCorners`.
+  - P12.4: `docs/SPEC.md` §2.4 rewritten to describe the new default and the Settings opt-out;
+    `RulesScreen.tsx`'s "Passing through vs. resting" section rewritten in plain language.
+  - P12.5: Full gate rerun, green. `DECISIONS.md` records: the flag lives on `GameState` (not a
+    separate parameter) so the AI worker/search respect it automatically via the existing
+    serialize/deserialize protocol, zero AI-side code changes needed; an old save missing the
+    field deserializes as `undefined` → falsy → treated as `cordonNeutralCorners: false` (its
+    original ruleset), resolving HANDOFF.md's previously-open "save/resume vs. settings change"
+    question for this specific rule; the Settings toggle is read once at new-game creation only,
+    never affecting a game already in progress; and the Phase 2/3 AI-quality gates were
+    deliberately not re-run under the new default (this is a legality change covered by
+    `residency.test.ts`, not an AI-quality one).
+  - **Gate: green.** `npm test` (26 files / 130 tests, incl. 2 new residency cases), `npm run
+    lint`, `npm run typecheck`, `npm run build`, and the full Playwright E2E suite all pass.
+
 ## Next
-- No unchecked tasks remain in `IMPLEMENTATION_PLAN.md`. Per AGENTS.md's Phase 11 scope
-  guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future scope" item that isn't
-  an explicit `- [ ]` line — the remaining items there (leaderboard, menu/config redesign,
-  chain-reward system, anonymous telemetry, human-calibrated difficulty curve, comeback/kingmaker
-  mechanics) need a product decision first.
+- No unchecked tasks remain in `IMPLEMENTATION_PLAN.md`. Per AGENTS.md's scope guardrail, do not
+  invent a new phase or start on a `HANDOFF.md` "Future scope" item that isn't an explicit
+  `- [ ]` line — the remaining items there (leaderboard, menu/config redesign, chain-reward
+  system, anonymous telemetry, human-calibrated difficulty curve, comeback/kingmaker mechanics)
+  need a product decision first.
+- **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
+  `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
+  materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
+  to, since neutral corners were rarely a useful final destination for a self-interested AI eval
+  function, but never explicitly measured. See DECISIONS.md's Phase 12 entry.
 - **Nice-to-have, not a blocker:** a full 200-games/pairing tournament at real (unscaled) SPEC
   §3.3 time budgets would take ~70+ minutes — good candidate for background/overnight time if
   ever wanted, but the 180-game scaled-budget result already showed a decisive, consistent trend.
@@ -437,3 +475,4 @@ task: P12.1.
 - Phase 9 (Packaging): **GREEN**
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
+- Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done

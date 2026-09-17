@@ -7,11 +7,12 @@ non-obvious judgment call made during the build is there, in chronological order
 
 ## What's built
 
-All ten planned phases are complete and green:
+All twelve planned phases are complete and green:
 
 - **Engine** (`src/engine/`): full rules — cube-coordinate board, arbitrary-span jump chains,
-  residency rule, anti-backward-block, win/stalemate detection. Zero imports outside itself,
-  enforced by `scripts/check-boundaries.mjs`.
+  residency rule (by default, unclaimed corners in <6P games are waypoints only — see
+  `cordonNeutralCorners`, Phase 12), anti-backward-block, win/stalemate detection. Zero imports
+  outside itself, enforced by `scripts/check-boundaries.mjs`.
 - **AI** (`src/ai/`): a weighted evaluation function, iterative-deepening alpha-beta (2P) /
   max^n (3+P) search, and a four-tier difficulty ladder (Nova/Vega/Rigel/Sirius) verified
   monotonic via headless tournament self-play. Runs in a Web Worker off the main thread.
