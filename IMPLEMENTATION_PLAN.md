@@ -368,7 +368,7 @@ changing the legality of an in-progress game — see DECISIONS.md.
       is restable" case becomes the opt-out (`cordonNeutralCorners: false`) case, plus a new
       default-on case asserting the same landing is now illegal. —
       `npx vitest run src/engine/__tests__/residency.test.ts`
-- [ ] P12.2 `src/app/settingsStore.ts`: add `cordonNeutralCorners: boolean` (default `true`) to
+- [x] P12.2 `src/app/settingsStore.ts`: add `cordonNeutralCorners: boolean` (default `true`) to
       `Settings`/`DEFAULT_SETTINGS`. `src/app/SettingsScreen.tsx`: add a checkbox ("Cordon
       unclaimed corners (waypoint only)") matching the `showMoveHints` pattern. —
       `npx playwright test settings.spec.ts`

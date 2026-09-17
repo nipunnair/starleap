@@ -34,6 +34,16 @@ export function SettingsScreen({ settings, onUpdate: update, onBack }: SettingsS
         Show move hints
       </label>
 
+      <label>
+        <input
+          type="checkbox"
+          name="cordonNeutralCorners"
+          checked={settings.cordonNeutralCorners}
+          onChange={(e) => update({ cordonNeutralCorners: e.target.checked })}
+        />
+        Cordon unclaimed corners (waypoint only)
+      </label>
+
       <fieldset>
         <legend>Reduce motion</legend>
         {REDUCED_MOTION_OPTIONS.map((option) => (

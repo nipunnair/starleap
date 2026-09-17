@@ -9,6 +9,9 @@ export interface Settings {
   readonly reducedMotion: ReducedMotionSetting;
   readonly theme: BoardTheme;
   readonly showMoveHints: boolean;
+  /** SPEC §2.4 (Phase 12): default on — a peg may never end a turn in an unclaimed corner, only
+   * pass through it. Applied to new games only; see GameState.cordonNeutralCorners. */
+  readonly cordonNeutralCorners: boolean;
 }
 
 const SETTINGS_KEY = 'starleap.settings.v1';
@@ -18,6 +21,7 @@ const DEFAULT_SETTINGS: Settings = {
   reducedMotion: 'system',
   theme: 'starleap',
   showMoveHints: true,
+  cordonNeutralCorners: true,
 };
 
 function readSettings(): Settings {

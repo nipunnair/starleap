@@ -8,6 +8,7 @@ test.describe('Settings (IMPLEMENTATION_PLAN.md P7.3)', () => {
 
     await page.locator('input[name="audioEnabled"]').uncheck();
     await page.locator('input[name="showMoveHints"]').uncheck();
+    await page.locator('input[name="cordonNeutralCorners"]').uncheck();
     await page.locator('input[name="reducedMotion"][value="on"]').check();
     await page.locator('input[name="theme"][value="nakshatra"]').check();
 
@@ -15,8 +16,15 @@ test.describe('Settings (IMPLEMENTATION_PLAN.md P7.3)', () => {
     await page.getByRole('button', { name: 'Settings' }).click();
     await expect(page.locator('input[name="audioEnabled"]')).not.toBeChecked();
     await expect(page.locator('input[name="showMoveHints"]')).not.toBeChecked();
+    await expect(page.locator('input[name="cordonNeutralCorners"]')).not.toBeChecked();
     await expect(page.locator('input[name="reducedMotion"][value="on"]')).toBeChecked();
     await expect(page.locator('input[name="theme"][value="nakshatra"]')).toBeChecked();
+  });
+
+  test('cordon unclaimed corners is on by default (IMPLEMENTATION_PLAN.md P12.2)', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Settings' }).click();
+    await expect(page.locator('input[name="cordonNeutralCorners"]')).toBeChecked();
   });
 
   test('show move hints is on by default and hides destination highlighting/path preview when turned off, without breaking click routing (IMPLEMENTATION_PLAN.md P11.4)', async ({
