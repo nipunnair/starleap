@@ -417,7 +417,7 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       slot when `canResume`) versus a visually secondary group (Rules/Settings/Tutorial). Styling
       only — no behavior change, no button removed/renamed. — `npx playwright test menu.spec.ts
       responsive-360.spec.ts`
-- [ ] P13.3 Starfield hero: a lightweight CSS/SVG animated star field (twinkling dots, pure
+- [x] P13.3 Starfield hero: a lightweight CSS/SVG animated star field (twinkling dots, pure
       CSS `@keyframes` or an inline SVG — no canvas, no reuse of the gameplay particle system)
       behind the `MenuScreen` header, invoking the STARLEAP name. Must respect
       `prefers-reduced-motion` (static stars, no twinkle animation) following the same pattern as

@@ -1,3 +1,5 @@
+import { StarfieldHero } from './StarfieldHero';
+
 interface MenuScreenProps {
   readonly canResume: boolean;
   readonly showOnboardingCallout: boolean;
@@ -23,7 +25,10 @@ export function MenuScreen({
 }: MenuScreenProps) {
   return (
     <main data-testid="menu-screen">
-      <h1>STARLEAP</h1>
+      <div className="menu-hero">
+        <StarfieldHero />
+        <h1>STARLEAP</h1>
+      </div>
       <div className="menu-primary-actions">
         <button className="menu-cta menu-cta--primary" onClick={onNewGame}>
           New game

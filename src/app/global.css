@@ -134,6 +134,45 @@ body[data-theme='chhalaang'] {
   margin-block: 8px 20px;
 }
 
+/* P13.3: starfield hero behind the menu header — pure CSS/SVG twinkle, no canvas. */
+.menu-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  padding-block: 28px;
+}
+
+.menu-hero h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  text-align: center;
+}
+
+.starleap-starfield {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.starleap-star {
+  fill: #f4f4f8;
+  animation: starleap-twinkle 3s ease-in-out infinite;
+}
+
+@keyframes starleap-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .menu-secondary-actions button {
   font-size: 0.9rem;
   font-weight: 400;

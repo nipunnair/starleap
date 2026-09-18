@@ -2,8 +2,8 @@
 
 ## Status
 Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
-in progress: P13.1 (extracted `MenuScreen.tsx`) and P13.2 (visual hierarchy CSS pass) done. Next
-unchecked task: P13.3 (starfield hero behind the `MenuScreen` header).
+in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pass), and P13.3
+(starfield hero) done. Next unchecked task: P13.4 (AI character showcase row on `MenuScreen`).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -455,9 +455,27 @@ unchecked task: P13.3 (starfield hero behind the `MenuScreen` header).
     button labels, or click handlers changed. **Gate: green** — `npx playwright test menu.spec.ts
     responsive-360.spec.ts` (4 passed); also reran `npm run typecheck && npm run lint` clean.
 
+  - P13.3: `src/app/StarfieldHero.tsx` — inline SVG, 40 stars at deterministic (sine-seeded, not
+    `Math.random`) positions, each a `<circle>` with a CSS `starleap-twinkle` opacity keyframe
+    animation (staggered delay/duration per star). Wrapped in a new `.menu-hero` container
+    (`position: relative`) in `MenuScreen.tsx`, stacked behind the `<h1>` via z-index — no
+    `data-testid`/button/label changes. Reduced motion is handled by the existing blanket
+    `@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.001ms !important } }`
+    rule in `global.css` (same pattern as P5.7/P8.5) — no new override needed, since the twinkle
+    keyframe already goes through the standard `animation` property. **Found a pre-existing
+    issue, not caused by this task**: `axe-audit.spec.ts`'s menu-screen check fails on
+    `.menu-cta--primary`'s color contrast (3.17:1 vs. the 4.5:1 AA bar) — confirmed via
+    `git stash` that this predates P13.3 (introduced by P13.2's CTA styling). Left untouched:
+    P13.6 is the phase's own axe/lighthouse gate task and is the right place to fix it, not a
+    drive-by here. **Gate: green** — `npx playwright test reduced-motion-full.spec.ts` (2
+    passed); also reran the full unit suite (130 passed), lint, and typecheck clean.
+
 ## Next
-- Next unchecked task: **P13.3** — starfield hero (CSS/SVG, no canvas) behind the `MenuScreen`
-  header, respecting `prefers-reduced-motion`.
+- Next unchecked task: **P13.4** — AI character showcase row (Nova/Vega/Rigel/Sirius idle
+  avatars + `TIER_BLURBS` captions) on `MenuScreen`, presentational only.
+- **Carried forward from P13.3, not yet fixed**: `axe-audit.spec.ts`'s menu-screen check fails on
+  `.menu-cta--primary`'s insufficient color contrast (introduced by P13.2). P13.6 (full phase
+  gate, which runs the axe check) is the task that should fix this.
 - Per AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future
   scope" item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
   telemetry/human-calibrated-difficulty-curve/comeback-kingmaker items still need a product
@@ -490,5 +508,5 @@ unchecked task: P13.3 (starfield hero behind the `MenuScreen` header).
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
-- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.2 done, P13.3-P13.6
+- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.3 done, P13.4-P13.6
   remaining
