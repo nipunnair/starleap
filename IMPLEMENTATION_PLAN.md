@@ -405,7 +405,7 @@ GATE: `npm test && npm run lint && npm run typecheck && npm run build && npx pla
 green; axe reports zero critical/serious violations on the new menu screen; `npm run lighthouse`
 stays ≥90 on performance and accessibility (Phase 8's bar).
 
-- [ ] P13.1 Extract `src/app/MenuScreen.tsx` from `App.tsx`'s inline menu JSX (lines ~149-166).
+- [x] P13.1 Extract `src/app/MenuScreen.tsx` from `App.tsx`'s inline menu JSX (lines ~149-166).
       Pure presentational split: `App.tsx` keeps all state/handlers (`canResume`, `resumeGame`,
       `requestNewGame`, `showOnboardingCallout`, screen navigation) and passes them as props.
       Preserve `data-testid="menu-screen"`, every existing button's visible label, and

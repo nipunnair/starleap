@@ -1,13 +1,10 @@
 # PROGRESS
 
 ## Status
-All 12 phases COMPLETE, all gates green. Phase 12 (corner cordoning rule change) added and
-finished 2026-09-17 per a direct player-reported request (Ying and Tanya): unclaimed corners in
-games with fewer than six players are now waypoint-only by default (`cordonNeutralCorners: true`)
-— a peg may hop through one mid-chain but never end a turn there. Configurable via a new Settings
-toggle ("Cordon unclaimed corners"); a resumed/loaded save predating this field keeps its original
-(uncordoned) behavior rather than being retroactively changed. No unchecked tasks remain in
-IMPLEMENTATION_PLAN.md.
+Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
+in progress: P13.1 done (extracted `MenuScreen.tsx` from `App.tsx`'s inline menu JSX — pure
+presentational split, `App.tsx` still owns all state/handlers). Next unchecked task: P13.2
+(visual hierarchy CSS pass on `MenuScreen`).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -442,12 +439,22 @@ IMPLEMENTATION_PLAN.md.
   - **Gate: green.** `npm test` (26 files / 130 tests, incl. 2 new residency cases), `npm run
     lint`, `npm run typecheck`, `npm run build`, and the full Playwright E2E suite all pass.
 
+- **Phase 13 — Home screen & visual identity, in progress:**
+  - P13.1: Extracted `src/app/MenuScreen.tsx` from `App.tsx`'s inline menu JSX. Pure
+    presentational split — `MenuScreen` takes `canResume`/`showOnboardingCallout` plus one
+    callback prop per button; `App.tsx` still owns all screen-navigation state and handlers
+    (`requestNewGame`, `resumeGame`, etc.) and now just renders `<MenuScreen .../>` with them
+    wired in. `data-testid="menu-screen"`/`data-testid="onboarding-callout"` and every button's
+    visible label preserved exactly. **Gate: green** — `npx playwright test menu.spec.ts` (2
+    passed); also reran `npm run typecheck && npm run lint` clean.
+
 ## Next
-- No unchecked tasks remain in `IMPLEMENTATION_PLAN.md`. Per AGENTS.md's scope guardrail, do not
-  invent a new phase or start on a `HANDOFF.md` "Future scope" item that isn't an explicit
-  `- [ ]` line — the remaining items there (leaderboard, menu/config redesign, chain-reward
-  system, anonymous telemetry, human-calibrated difficulty curve, comeback/kingmaker mechanics)
-  need a product decision first.
+- Next unchecked task: **P13.2** — visual hierarchy CSS pass in `global.css` for `MenuScreen`
+  (dominant primary CTA group vs. secondary group), styling only, no behavior change.
+- Per AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future
+  scope" item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
+  telemetry/human-calibrated-difficulty-curve/comeback-kingmaker items still need a product
+  decision first and are out of bounds for Phase 13.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -476,3 +483,4 @@ IMPLEMENTATION_PLAN.md.
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
+- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1 done, P13.2-P13.6 remaining

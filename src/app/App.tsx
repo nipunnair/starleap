@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { GameScreen, type SeatConfig } from '../ui/components/GameScreen';
 import { ConfigScreen, type GameConfigResult } from './ConfigScreen';
+import { MenuScreen } from './MenuScreen';
 import { RulesScreen } from './RulesScreen';
 import { SettingsScreen } from './SettingsScreen';
 import { TutorialScreen } from './TutorialScreen';
@@ -147,21 +148,16 @@ export function App() {
   }
 
   return (
-    <main data-testid="menu-screen">
-      <h1>STARLEAP</h1>
-      <button onClick={() => setScreen('config')}>New game</button>
-      {canResume && <button onClick={resumeGame}>Resume</button>}
-      <button onClick={() => setScreen('rules')}>Rules</button>
-      <button onClick={() => setScreen('settings')}>Settings</button>
-      <button onClick={() => setScreen('tutorial')}>Tutorial</button>
-      <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'Nova'] })}>Play vs Nova</button>
-      <button onClick={() => requestNewGame({ playerCount: 2, seats: ['human', 'human'] })}>Human vs Human</button>
-      {showOnboardingCallout && (
-        <p data-testid="onboarding-callout">
-          New here?{' '}
-          <button onClick={() => setScreen('tutorial')}>Start with the Tutorial</button>
-        </p>
-      )}
-    </main>
+    <MenuScreen
+      canResume={canResume}
+      showOnboardingCallout={showOnboardingCallout}
+      onNewGame={() => setScreen('config')}
+      onResume={resumeGame}
+      onRules={() => setScreen('rules')}
+      onSettings={() => setScreen('settings')}
+      onTutorial={() => setScreen('tutorial')}
+      onPlayVsNova={() => requestNewGame({ playerCount: 2, seats: ['human', 'Nova'] })}
+      onHumanVsHuman={() => requestNewGame({ playerCount: 2, seats: ['human', 'human'] })}
+    />
   );
 }
