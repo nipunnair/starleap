@@ -59,11 +59,14 @@ step the plan didn't anticipate. Record why in `DECISIONS.md`.
 
 ## Scope guardrail
 
-`HANDOFF.md`'s "Future scope" section lists ideas (full menu/config redesign, replacing move hints
-with a reward system, any leaderboard, anonymous telemetry, a human-calibrated difficulty curve,
-comeback/kingmaker mechanics) that are **out of bounds** for an autonomous pass — they need a
-product decision or real design work first, not just an unclaimed task slot. Phase 12
-(`P12.1`-`P12.5`) is explicitly in scope, added 2026-09-17 per a direct player-reported rule
-request — treat it like any other phase. If every phase's tasks are checked off and
-`IMPLEMENTATION_PLAN.md` has no more unchecked lines, stop. Do not invent a new phase or start on a
-`HANDOFF.md` item that isn't already an explicit `- [ ]` line in `IMPLEMENTATION_PLAN.md`.
+`HANDOFF.md`'s "Future scope" section lists ideas (replacing move hints with a reward system, any
+leaderboard, anonymous telemetry, a human-calibrated difficulty curve, comeback/kingmaker
+mechanics) that are **out of bounds** for an autonomous pass — they need a product decision or real
+design work first, not just an unclaimed task slot. Phase 12 (`P12.1`-`P12.5`) is explicitly in
+scope, added 2026-09-17 per a direct player-reported rule request. Phase 13 (`P13.1`-`P13.6`,
+the home-screen/menu visual redesign) is also explicitly in scope, added 2026-09-17 as a
+product-owner-approved pass — scoped to visuals/hierarchy/theme only, not the reward-system or
+leaderboard items still listed above. Treat both like any other phase. If every phase's tasks are
+checked off and `IMPLEMENTATION_PLAN.md` has no more unchecked lines, stop. Do not invent a new
+phase or start on a `HANDOFF.md` item that isn't already an explicit `- [ ]` line in
+`IMPLEMENTATION_PLAN.md`.

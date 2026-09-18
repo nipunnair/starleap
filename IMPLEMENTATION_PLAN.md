@@ -387,3 +387,55 @@ changing the legality of an in-progress game — see DECISIONS.md.
       Phase 2/3 self-play and tournament gates were not re-run under the new default, out of scope
       for this phase). Update `HANDOFF.md` and `PROGRESS.md`. —
       `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test`
+
+## Phase 13 — Home screen & visual identity (gamer-friendly menu redesign)
+
+Product decision (Nipun, 2026-09-17): green-light the menu/config visual redesign that
+`HANDOFF.md`'s "Future scope" section flagged as needing one — it was the UX reviewer's and the
+Technical Architect's independent #1 pick ("menu redesign + prominent avatar"), and the current
+menu (`App.tsx`) is a literal unstyled `<h1>` + flat button list. Scope is visual/structural only:
+real hierarchy, a starfield/constellation hero invoking the STARLEAP theme, and the AI character
+avatars given a prominent showcase slot, plus making the two named board themes (Nakshatra/
+Chhalaang) actually look distinct instead of a background-color swap. This does **not** include
+the leaderboard, chain-reward scoring, anonymous telemetry, human-calibrated difficulty curve, or
+comeback/kingmaker mechanics — those remain deferred in `HANDOFF.md` pending their own product
+decisions.
+
+GATE: `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test` all
+green; axe reports zero critical/serious violations on the new menu screen; `npm run lighthouse`
+stays ≥90 on performance and accessibility (Phase 8's bar).
+
+- [ ] P13.1 Extract `src/app/MenuScreen.tsx` from `App.tsx`'s inline menu JSX (lines ~149-166).
+      Pure presentational split: `App.tsx` keeps all state/handlers (`canResume`, `resumeGame`,
+      `requestNewGame`, `showOnboardingCallout`, screen navigation) and passes them as props.
+      Preserve `data-testid="menu-screen"`, every existing button's visible label, and
+      `data-testid="onboarding-callout"` exactly as-is so `menu.spec.ts` and onboarding-related
+      specs keep passing unmodified — this task is a structural extraction, not a redesign. —
+      `npx playwright test menu.spec.ts`
+- [ ] P13.2 Visual hierarchy pass: real CSS in `global.css` for `MenuScreen` — a visually
+      dominant primary CTA group (the quick-starts / "New game"; "Resume" gets its own prominent
+      slot when `canResume`) versus a visually secondary group (Rules/Settings/Tutorial). Styling
+      only — no behavior change, no button removed/renamed. — `npx playwright test menu.spec.ts
+      responsive-360.spec.ts`
+- [ ] P13.3 Starfield hero: a lightweight CSS/SVG animated star field (twinkling dots, pure
+      CSS `@keyframes` or an inline SVG — no canvas, no reuse of the gameplay particle system)
+      behind the `MenuScreen` header, invoking the STARLEAP name. Must respect
+      `prefers-reduced-motion` (static stars, no twinkle animation) following the same pattern as
+      P5.7/P8.5. — `npx playwright test reduced-motion-full.spec.ts`
+- [ ] P13.4 AI character showcase: render the four `CharacterAvatar` components (Nova/Vega/Rigel/
+      Sirius, idle state) in a labeled row on `MenuScreen`, each captioned with its existing
+      `TIER_BLURBS` sentence from P11.3 (import, don't duplicate). Presentational only — no seat
+      picker, no game-start wiring; `ConfigScreen`'s per-seat picker is unaffected. —
+      `npx playwright test menu.spec.ts`
+- [ ] P13.5 Distinct board theme reskin: extend the `[data-theme='nakshatra']` /
+      `[data-theme='chhalaang']` CSS blocks in `global.css` beyond the current background-color
+      swap to include a distinct peg color palette and board/cell texture per theme (CSS-only, no
+      new image assets or build-step changes), so switching themes visibly changes gameplay
+      rendering, not just the menu backdrop. — `npx playwright test settings.spec.ts`
+- [ ] P13.6 Full phase gate. Run axe against the new `MenuScreen` and `npm run lighthouse`,
+      confirm both still clear Phase 8's ≥90 bar. Update `HANDOFF.md` (mark the "menu/config
+      redesign + prominent avatar" and "board themes are a light accent-color swap" future-scope
+      items done, leaving every other deferred item — leaderboard, reward system, telemetry,
+      difficulty curve, kingmaker — untouched) and `PROGRESS.md`. —
+      `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test &&
+      npm run lighthouse`
