@@ -4,7 +4,7 @@ import type { SeatConfig } from '../ui/components/GameScreen';
 import { TIER_ORDER, type TierName } from '../ai/tiers';
 import { playerLabel } from '../ui/components/boardGeometry';
 
-const TIER_BLURBS: Readonly<Record<TierName, string>> = {
+export const TIER_BLURBS: Readonly<Record<TierName, string>> = {
   Nova: 'Nova plays fast and loose, with plenty of random surprises. Easiest opponent.',
   Vega: 'Vega plans a little further ahead and makes fewer random mistakes than Nova.',
   Rigel: 'Rigel plays a genuinely tactical game with real lookahead. A tough fight.',

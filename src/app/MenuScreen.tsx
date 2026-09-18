@@ -1,4 +1,7 @@
 import { StarfieldHero } from './StarfieldHero';
+import { TIER_BLURBS } from './ConfigScreen';
+import { TIER_ORDER } from '../ai/tiers';
+import { CharacterAvatar } from '../ui/components/CharacterAvatar';
 
 interface MenuScreenProps {
   readonly canResume: boolean;
@@ -49,6 +52,15 @@ export function MenuScreen({
         <button onClick={onRules}>Rules</button>
         <button onClick={onSettings}>Settings</button>
         <button onClick={onTutorial}>Tutorial</button>
+      </div>
+      <div className="menu-character-showcase" data-testid="character-showcase">
+        {TIER_ORDER.map((tier) => (
+          <div key={tier} className="menu-character-showcase__item">
+            <CharacterAvatar tier={tier} state="idle" />
+            <p className="menu-character-showcase__name">{tier}</p>
+            <p className="menu-character-showcase__blurb">{TIER_BLURBS[tier]}</p>
+          </div>
+        ))}
       </div>
       {showOnboardingCallout && (
         <p data-testid="onboarding-callout">

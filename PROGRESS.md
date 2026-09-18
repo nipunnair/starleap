@@ -2,8 +2,9 @@
 
 ## Status
 Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
-in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pass), and P13.3
-(starfield hero) done. Next unchecked task: P13.4 (AI character showcase row on `MenuScreen`).
+in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pass), P13.3
+(starfield hero), and P13.4 (AI character showcase row) done. Next unchecked task: P13.5 (distinct
+board theme reskin).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -470,9 +471,20 @@ in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pas
     drive-by here. **Gate: green** — `npx playwright test reduced-motion-full.spec.ts` (2
     passed); also reran the full unit suite (130 passed), lint, and typecheck clean.
 
+  - P13.4: `MenuScreen.tsx` renders a `data-testid="character-showcase"` row of all four
+    `CharacterAvatar`s (idle state, via `ai/tiers.ts`'s `TIER_ORDER`), each captioned with its
+    existing `TIER_BLURBS` sentence — exported from `ConfigScreen.tsx` (where P11.3 defined it)
+    rather than duplicated, per the task's explicit instruction. New `.menu-character-showcase`/
+    `__item`/`__name`/`__blurb` CSS classes in `global.css` (flex row, wraps on narrow widths, no
+    new interactive elements). No seat picker or game-start wiring — `ConfigScreen` untouched
+    apart from adding the `export` keyword. **Gate: green** — `npx playwright test menu.spec.ts`
+    (2 passed); also reran `npm run typecheck && npm run lint` clean (lint emits one pre-existing-
+    pattern `react-refresh/only-export-components` warning, not an error, from `ConfigScreen.tsx`
+    now exporting a non-component constant).
+
 ## Next
-- Next unchecked task: **P13.4** — AI character showcase row (Nova/Vega/Rigel/Sirius idle
-  avatars + `TIER_BLURBS` captions) on `MenuScreen`, presentational only.
+- Next unchecked task: **P13.5** — extend the Nakshatra/Chhalaang board themes beyond a
+  background-color swap to a distinct peg color palette and board/cell texture (CSS-only).
 - **Carried forward from P13.3, not yet fixed**: `axe-audit.spec.ts`'s menu-screen check fails on
   `.menu-cta--primary`'s insufficient color contrast (introduced by P13.2). P13.6 (full phase
   gate, which runs the axe check) is the task that should fix this.
@@ -508,5 +520,5 @@ in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pas
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
-- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.3 done, P13.4-P13.6
+- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.4 done, P13.5-P13.6
   remaining

@@ -422,7 +422,7 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       behind the `MenuScreen` header, invoking the STARLEAP name. Must respect
       `prefers-reduced-motion` (static stars, no twinkle animation) following the same pattern as
       P5.7/P8.5. — `npx playwright test reduced-motion-full.spec.ts`
-- [ ] P13.4 AI character showcase: render the four `CharacterAvatar` components (Nova/Vega/Rigel/
+- [x] P13.4 AI character showcase: render the four `CharacterAvatar` components (Nova/Vega/Rigel/
       Sirius, idle state) in a labeled row on `MenuScreen`, each captioned with its existing
       `TIER_BLURBS` sentence from P11.3 (import, don't duplicate). Presentational only — no seat
       picker, no game-start wiring; `ConfigScreen`'s per-seat picker is unaffected. —

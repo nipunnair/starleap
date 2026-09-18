@@ -183,6 +183,34 @@ body[data-theme='chhalaang'] {
   border-radius: 6px;
 }
 
+/* P13.4: AI character showcase row — presentational only, no seat picker/game-start wiring. */
+.menu-character-showcase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-block: 24px;
+}
+
+.menu-character-showcase__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 140px;
+}
+
+.menu-character-showcase__name {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.menu-character-showcase__blurb {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: rgba(244, 244, 248, 0.75);
+}
+
 /* P11.6: turn-indicator visual salience — larger, bolder, tinted by the mover's color (set as
    the --mover-color custom property inline, since it's per-player data, not a fixed style). */
 .turn-indicator {
