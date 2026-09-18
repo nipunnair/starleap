@@ -24,13 +24,27 @@ export function MenuScreen({
   return (
     <main data-testid="menu-screen">
       <h1>STARLEAP</h1>
-      <button onClick={onNewGame}>New game</button>
-      {canResume && <button onClick={onResume}>Resume</button>}
-      <button onClick={onRules}>Rules</button>
-      <button onClick={onSettings}>Settings</button>
-      <button onClick={onTutorial}>Tutorial</button>
-      <button onClick={onPlayVsNova}>Play vs Nova</button>
-      <button onClick={onHumanVsHuman}>Human vs Human</button>
+      <div className="menu-primary-actions">
+        <button className="menu-cta menu-cta--primary" onClick={onNewGame}>
+          New game
+        </button>
+        {canResume && (
+          <button className="menu-cta menu-cta--resume" onClick={onResume}>
+            Resume
+          </button>
+        )}
+        <button className="menu-cta menu-cta--quickstart" onClick={onPlayVsNova}>
+          Play vs Nova
+        </button>
+        <button className="menu-cta menu-cta--quickstart" onClick={onHumanVsHuman}>
+          Human vs Human
+        </button>
+      </div>
+      <div className="menu-secondary-actions">
+        <button onClick={onRules}>Rules</button>
+        <button onClick={onSettings}>Settings</button>
+        <button onClick={onTutorial}>Tutorial</button>
+      </div>
       {showOnboardingCallout && (
         <p data-testid="onboarding-callout">
           New here?{' '}

@@ -2,9 +2,8 @@
 
 ## Status
 Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
-in progress: P13.1 done (extracted `MenuScreen.tsx` from `App.tsx`'s inline menu JSX — pure
-presentational split, `App.tsx` still owns all state/handlers). Next unchecked task: P13.2
-(visual hierarchy CSS pass on `MenuScreen`).
+in progress: P13.1 (extracted `MenuScreen.tsx`) and P13.2 (visual hierarchy CSS pass) done. Next
+unchecked task: P13.3 (starfield hero behind the `MenuScreen` header).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -448,9 +447,17 @@ presentational split, `App.tsx` still owns all state/handlers). Next unchecked t
     visible label preserved exactly. **Gate: green** — `npx playwright test menu.spec.ts` (2
     passed); also reran `npm run typecheck && npm run lint` clean.
 
+  - P13.2: `global.css` gained `.menu-primary-actions`/`.menu-cta`/`.menu-cta--resume`/
+    `.menu-cta--quickstart` (New game/Resume/Play vs Nova/Human vs Human: larger, bold, filled
+    buttons) and `.menu-secondary-actions` (Rules/Settings/Tutorial: smaller, outlined, muted).
+    `MenuScreen.tsx` wraps the two button groups in `<div className="menu-primary-actions">` /
+    `<div className="menu-secondary-actions">` and adds the CSS classes above — no `data-testid`,
+    button labels, or click handlers changed. **Gate: green** — `npx playwright test menu.spec.ts
+    responsive-360.spec.ts` (4 passed); also reran `npm run typecheck && npm run lint` clean.
+
 ## Next
-- Next unchecked task: **P13.2** — visual hierarchy CSS pass in `global.css` for `MenuScreen`
-  (dominant primary CTA group vs. secondary group), styling only, no behavior change.
+- Next unchecked task: **P13.3** — starfield hero (CSS/SVG, no canvas) behind the `MenuScreen`
+  header, respecting `prefers-reduced-motion`.
 - Per AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future
   scope" item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
   telemetry/human-calibrated-difficulty-curve/comeback-kingmaker items still need a product
@@ -483,4 +490,5 @@ presentational split, `App.tsx` still owns all state/handlers). Next unchecked t
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
-- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1 done, P13.2-P13.6 remaining
+- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.2 done, P13.3-P13.6
+  remaining

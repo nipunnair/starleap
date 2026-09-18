@@ -412,7 +412,7 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       `data-testid="onboarding-callout"` exactly as-is so `menu.spec.ts` and onboarding-related
       specs keep passing unmodified — this task is a structural extraction, not a redesign. —
       `npx playwright test menu.spec.ts`
-- [ ] P13.2 Visual hierarchy pass: real CSS in `global.css` for `MenuScreen` — a visually
+- [x] P13.2 Visual hierarchy pass: real CSS in `global.css` for `MenuScreen` — a visually
       dominant primary CTA group (the quick-starts / "New game"; "Resume" gets its own prominent
       slot when `canResume`) versus a visually secondary group (Rules/Settings/Tutorial). Styling
       only — no behavior change, no button removed/renamed. — `npx playwright test menu.spec.ts
