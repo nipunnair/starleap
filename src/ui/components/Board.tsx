@@ -84,6 +84,28 @@ export function Board({
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >
+      {/* P13.5: per-theme cell texture patterns, swapped in via CSS `fill: url(#...)` on
+          `.starleap-cell` (see global.css) — defined unconditionally here since patterns are
+          cheap and theme selection is a CSS concern, not a render-time one. Left off destination/
+          focus-highlighted cells (`starleap-cell--highlighted`) so those affordances stay legible
+          under every theme. */}
+      <defs>
+        <pattern id="cell-texture-nakshatra" width="8" height="8" patternUnits="userSpaceOnUse">
+          <rect width="8" height="8" fill="rgba(255,255,255,0.06)" />
+          <circle cx="4" cy="4" r="1.1" fill="rgba(180,150,255,0.45)" />
+        </pattern>
+        <pattern
+          id="cell-texture-chhalaang"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45)"
+        >
+          <rect width="8" height="8" fill="rgba(255,255,255,0.06)" />
+          <rect width="4" height="4" fill="rgba(255,159,79,0.35)" />
+        </pattern>
+      </defs>
+
       {PROJECTED_CELLS.map(({ cell, px, py }) => {
         const k = key(cell);
         const isDestination = interactive && showHints && legalDestinationsByKey.has(k);
@@ -93,6 +115,7 @@ export function Board({
             key={k}
             data-cell={k}
             data-testid={`cell-${k}`}
+            className={`starleap-cell${isDestination || isFocused ? ' starleap-cell--highlighted' : ''}`}
             cx={px}
             cy={py}
             r={HIT_RADIUS}
@@ -124,6 +147,7 @@ export function Board({
             key={peg.id}
             peg={peg}
             color={PLAYER_COLORS[peg.owner % PLAYER_COLORS.length]!}
+            owner={peg.owner % PLAYER_COLORS.length}
             selected={peg.id === selectedPegId}
             onClick={() => {
               if (!interactive) return;
@@ -138,6 +162,7 @@ export function Board({
         <AnimatedPeg
           move={animation.move}
           color={PLAYER_COLORS[animation.owner % PLAYER_COLORS.length]!}
+          owner={animation.owner % PLAYER_COLORS.length}
           reducedMotion={animation.reducedMotion}
           toneSequencer={animation.toneSequencer}
           onComplete={animation.onComplete}

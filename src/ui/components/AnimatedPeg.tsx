@@ -9,6 +9,8 @@ import { CELL_SPACING, CELL_RADIUS } from './boardGeometry';
 export interface AnimatedPegProps {
   readonly move: Move;
   readonly color: string;
+  /** Seat index (0-5), used only as a `data-owner` CSS hook for per-theme peg palettes. */
+  readonly owner: number;
   readonly reducedMotion: boolean;
   readonly toneSequencer: ToneSequencer;
   readonly onComplete: () => void;
@@ -22,7 +24,7 @@ export interface AnimatedPegProps {
  * chain can be many hops long, and re-rendering the whole tree every frame for one peg would be
  * wasteful (matches the "not React state" performance guidance from §5.3's particle canvas).
  */
-export function AnimatedPeg({ move, color, reducedMotion, toneSequencer, onComplete, onHopLanding }: AnimatedPegProps) {
+export function AnimatedPeg({ move, color, owner, reducedMotion, toneSequencer, onComplete, onHopLanding }: AnimatedPegProps) {
   const circleRef = useRef<SVGCircleElement>(null);
   const shadowRef = useRef<SVGEllipseElement>(null);
   const onCompleteRef = useRef(onComplete);
@@ -129,7 +131,17 @@ export function AnimatedPeg({ move, color, reducedMotion, toneSequencer, onCompl
         ry={CELL_RADIUS * 0.25}
         fill="rgba(0,0,0,0.5)"
       />
-      <circle ref={circleRef} cx={startPos.px} cy={startPos.py} r={CELL_RADIUS * 0.72} fill={color} stroke="rgba(0,0,0,0.35)" strokeWidth={1.5} />
+      <circle
+        ref={circleRef}
+        className="starleap-peg"
+        data-owner={owner}
+        cx={startPos.px}
+        cy={startPos.py}
+        r={CELL_RADIUS * 0.72}
+        fill={color}
+        stroke="rgba(0,0,0,0.35)"
+        strokeWidth={1.5}
+      />
     </g>
   );
 }

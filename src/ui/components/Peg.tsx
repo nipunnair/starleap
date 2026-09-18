@@ -5,11 +5,13 @@ import { CELL_SPACING, CELL_RADIUS, HIT_RADIUS } from './boardGeometry';
 export interface PegProps {
   readonly peg: PegModel;
   readonly color: string;
+  /** Seat index (0-5), used only as a `data-owner` CSS hook for per-theme peg palettes. */
+  readonly owner: number;
   readonly selected: boolean;
   readonly onClick: () => void;
 }
 
-export function Peg({ peg, color, selected, onClick }: PegProps) {
+export function Peg({ peg, color, owner, selected, onClick }: PegProps) {
   const { px, py } = project(peg.cell, CELL_SPACING);
   const radius = CELL_RADIUS * 0.72;
 
@@ -22,7 +24,16 @@ export function Peg({ peg, color, selected, onClick }: PegProps) {
       {selected && (
         <circle cx={px} cy={py} r={radius + 4} fill="none" stroke="#ffffff" strokeWidth={2} opacity={0.85} />
       )}
-      <circle cx={px} cy={py} r={radius} fill={color} stroke="rgba(0,0,0,0.35)" strokeWidth={1.5} />
+      <circle
+        className="starleap-peg"
+        data-owner={owner}
+        cx={px}
+        cy={py}
+        r={radius}
+        fill={color}
+        stroke="rgba(0,0,0,0.35)"
+        strokeWidth={1.5}
+      />
     </g>
   );
 }

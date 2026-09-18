@@ -427,7 +427,7 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       `TIER_BLURBS` sentence from P11.3 (import, don't duplicate). Presentational only — no seat
       picker, no game-start wiring; `ConfigScreen`'s per-seat picker is unaffected. —
       `npx playwright test menu.spec.ts`
-- [ ] P13.5 Distinct board theme reskin: extend the `[data-theme='nakshatra']` /
+- [x] P13.5 Distinct board theme reskin: extend the `[data-theme='nakshatra']` /
       `[data-theme='chhalaang']` CSS blocks in `global.css` beyond the current background-color
       swap to include a distinct peg color palette and board/cell texture per theme (CSS-only, no
       new image assets or build-step changes), so switching themes visibly changes gameplay

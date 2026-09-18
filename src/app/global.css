@@ -59,14 +59,77 @@ fieldset {
   border: 0;
 }
 
-/* Board themes (buildkit.md Part 0: STARLEAP default, Nakshatra/Chhalaang fallbacks). A light
-   accent-color swap, not a full reskin — see DECISIONS.md for scope. */
+/* Board themes (buildkit.md Part 0: STARLEAP default, Nakshatra/Chhalaang fallbacks). P13.5
+   extends the original background-only swap to a distinct peg palette and cell texture per
+   theme — see DECISIONS.md for why this is layered on as CSS overrides (targeting `.starleap-peg`/
+   `.starleap-cell` classes + `data-owner`) rather than changing `PLAYER_COLORS`/inline fill values
+   directly: the SVG `fill`/`stroke` attributes stay literal so default-theme (`starleap`) e2e
+   assertions on their exact values are untouched, and a stylesheet rule always outranks an SVG
+   presentation attribute regardless of specificity. */
 body[data-theme='nakshatra'] {
   background: #0d0b20;
 }
 
 body[data-theme='chhalaang'] {
   background: #1a0d20;
+}
+
+/* Nakshatra ("constellation"): cooler, starrier palette + a dotted starfield cell texture. */
+body[data-theme='nakshatra'] .starleap-peg[data-owner='0'] {
+  fill: #ffd166;
+  stroke: #402a00;
+}
+body[data-theme='nakshatra'] .starleap-peg[data-owner='1'] {
+  fill: #6a5acd;
+  stroke: #1f1440;
+}
+body[data-theme='nakshatra'] .starleap-peg[data-owner='2'] {
+  fill: #ff8fa3;
+  stroke: #4a1020;
+}
+body[data-theme='nakshatra'] .starleap-peg[data-owner='3'] {
+  fill: #7fffd4;
+  stroke: #0d4a3a;
+}
+body[data-theme='nakshatra'] .starleap-peg[data-owner='4'] {
+  fill: #c77dff;
+  stroke: #341052;
+}
+body[data-theme='nakshatra'] .starleap-peg[data-owner='5'] {
+  fill: #ffb703;
+  stroke: #4a2e00;
+}
+body[data-theme='nakshatra'] .starleap-cell:not(.starleap-cell--highlighted) {
+  fill: url(#cell-texture-nakshatra);
+}
+
+/* Chhalaang ("leap/jump"): warmer, higher-energy palette + a diagonal checker cell texture. */
+body[data-theme='chhalaang'] .starleap-peg[data-owner='0'] {
+  fill: #ff6b6b;
+  stroke: #4a0e0e;
+}
+body[data-theme='chhalaang'] .starleap-peg[data-owner='1'] {
+  fill: #4ecdc4;
+  stroke: #0d3330;
+}
+body[data-theme='chhalaang'] .starleap-peg[data-owner='2'] {
+  fill: #ffe66d;
+  stroke: #4a3f00;
+}
+body[data-theme='chhalaang'] .starleap-peg[data-owner='3'] {
+  fill: #95e06c;
+  stroke: #234a0d;
+}
+body[data-theme='chhalaang'] .starleap-peg[data-owner='4'] {
+  fill: #a78bfa;
+  stroke: #2c1a52;
+}
+body[data-theme='chhalaang'] .starleap-peg[data-owner='5'] {
+  fill: #ff9f4f;
+  stroke: #4a2600;
+}
+body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
+  fill: url(#cell-texture-chhalaang);
 }
 
 /* SPEC.md §4.6: 3px screen shake on chains of 5+ hops. */

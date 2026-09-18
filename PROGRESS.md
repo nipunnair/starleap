@@ -3,8 +3,8 @@
 ## Status
 Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
 in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pass), P13.3
-(starfield hero), and P13.4 (AI character showcase row) done. Next unchecked task: P13.5 (distinct
-board theme reskin).
+(starfield hero), P13.4 (AI character showcase row), and P13.5 (distinct board theme reskin) done.
+Next unchecked task: P13.6 (full phase gate).
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -482,9 +482,25 @@ board theme reskin).
     pattern `react-refresh/only-export-components` warning, not an error, from `ConfigScreen.tsx`
     now exporting a non-component constant).
 
+  - P13.5: `.starleap-peg`/`.starleap-cell` classes + a `data-owner` attribute added to `Peg.tsx`/
+    `AnimatedPeg.tsx`/`Board.tsx`'s peg and cell circles (attribute values on the elements
+    themselves left untouched). `global.css`'s `[data-theme='nakshatra']`/`[data-theme='chhalaang']`
+    blocks extended with a 6-color peg-fill/stroke override per theme and a cell-texture override
+    (`fill: url(#cell-texture-...)`) referencing two new SVG `<pattern>`s defined unconditionally
+    in `Board.tsx`'s `<defs>` — a dotted starfield pattern for Nakshatra, a diagonal checker for
+    Chhalaang. Destination/focus-highlighted cells are excluded via a `.starleap-cell--highlighted`
+    class so that affordance stays visible under every theme. See DECISIONS.md for why this is a
+    CSS-override layer rather than a change to `PLAYER_COLORS`/inline attribute values (several
+    e2e specs assert those exact literal attribute strings). **Gate: green** —
+    `npx playwright test settings.spec.ts` (4 passed); also reran the full unit suite (130 passed),
+    lint, typecheck, and build clean; manually verified via a throwaway Playwright script (not
+    committed) that switching to the Nakshatra theme changes a rendered peg's computed fill from
+    the default red to the themed gold and a cell's computed fill to the texture pattern URL.
+
 ## Next
-- Next unchecked task: **P13.5** — extend the Nakshatra/Chhalaang board themes beyond a
-  background-color swap to a distinct peg color palette and board/cell texture (CSS-only).
+- Next unchecked task: **P13.6** — full phase gate (axe + Lighthouse on the new `MenuScreen`,
+  `HANDOFF.md`/`PROGRESS.md` updates). Note the carried-forward axe contrast fix below is in scope
+  for this task.
 - **Carried forward from P13.3, not yet fixed**: `axe-audit.spec.ts`'s menu-screen check fails on
   `.menu-cta--primary`'s insufficient color contrast (introduced by P13.2). P13.6 (full phase
   gate, which runs the axe check) is the task that should fix this.
@@ -520,5 +536,5 @@ board theme reskin).
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
-- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.4 done, P13.5-P13.6
+- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.5 done, P13.6
   remaining

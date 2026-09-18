@@ -486,3 +486,17 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   stalemate patterns from cutting off four resting spots per <6P game), which isn't expected since
   neutral corners were rarely a useful final destination for a self-interested AI eval function
   anyway — left as optional future validation, not required for this phase's gate.
+- **P13.5's per-theme peg/cell reskin is applied via CSS overrides targeting new `.starleap-peg`/
+  `.starleap-cell` classes and a `data-owner` attribute, not by changing `PLAYER_COLORS` or the
+  inline `fill`/`stroke` JSX values directly.** Several existing e2e specs assert exact literal
+  attribute values (`circle[stroke="#50c88c"]`, `circle[stroke="rgba(0,0,0,0.35)"]`) via CSS
+  attribute selectors, which match the DOM attribute text verbatim — changing those attributes
+  to `var(...)` expressions would have broken every one of those selectors even under the default
+  theme. A stylesheet rule (however low specificity) always outranks an SVG presentation
+  attribute, so `body[data-theme='...'] .starleap-peg[data-owner='N'] { fill: ...; stroke: ...; }`
+  reskins the rendered color without touching the attribute string, leaving all default-theme
+  (`starleap`) assertions untouched. Cell texture uses the same mechanism: two SVG `<pattern>`s are
+  defined unconditionally in `Board.tsx`'s `<defs>` (cheap, no per-theme branching), and
+  `.starleap-cell:not(.starleap-cell--highlighted) { fill: url(#cell-texture-...) }` swaps them in
+  per theme — destination/focus-highlighted cells keep their existing highlight colors under every
+  theme via the `--highlighted` exclusion, so the affordance stays legible.
