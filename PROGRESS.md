@@ -1,10 +1,12 @@
 # PROGRESS
 
 ## Status
-Phases 1-12 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) is now
-in progress: P13.1 (extracted `MenuScreen.tsx`), P13.2 (visual hierarchy CSS pass), P13.3
-(starfield hero), P13.4 (AI character showcase row), and P13.5 (distinct board theme reskin) done.
-Next unchecked task: P13.6 (full phase gate).
+Phases 1-13 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) finished
+with P13.6 (full phase gate): fixed the carried-forward `.menu-cta--primary` axe contrast failure,
+confirmed axe zero critical/serious and Lighthouse 100/100 perf+a11y on the new `MenuScreen`, and
+updated `HANDOFF.md`'s future-scope table/bullets for the two items this phase completed.
+`IMPLEMENTATION_PLAN.md` has no more unchecked tasks — per AGENTS.md, stop here rather than
+inventing a new phase.
 
 ## Done
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
@@ -497,17 +499,30 @@ Next unchecked task: P13.6 (full phase gate).
     committed) that switching to the Nakshatra theme changes a rendered peg's computed fill from
     the default red to the themed gold and a cell's computed fill to the texture pattern URL.
 
+  - P13.6: Fixed the carried-forward axe failure — `.menu-cta--primary` only cleared 3.17:1
+    contrast against its white label (below the 4.5:1 AA bar, since its 17.6px/700-weight text
+    falls just short of the "large text" 18.66px-bold threshold that would allow 3:1). Darkened
+    the background from `#4f8ff7` to `#3568c9` (~5.28:1, computed by hand against the WCAG
+    relative-luminance formula) — no text/font-size change. Reran `npm run build && npm run
+    lighthouse`: Performance 100/100, Accessibility 100/100 (both well above the ≥90 bar carried
+    from Phase 8). Updated `HANDOFF.md`: marked "board themes are a light accent-color swap" and
+    "menu/config redesign" / "menu redesign + prominent avatar" done (struck through / tagged
+    `[Done — P13.x]`, matching the P11.8 pattern), touching only those two items — every other
+    deferred item (leaderboard, reward-system semantics, telemetry, difficulty curve, kingmaker,
+    version-stamping, save/settings-interaction) left untouched. **Gate: green** —
+    `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test`: 130
+    unit tests, lint (1 pre-existing non-blocking warning), typecheck, build, and all 68 Playwright
+    E2E specs (~8.5 min, including the full `singlefile-offline.spec.ts` Sirius game) all pass;
+    `npx playwright test axe-audit.spec.ts -g "menu screen"` confirms zero critical/serious
+    violations; `npm run lighthouse` 100/100 on both metrics. **Phase 13 is fully complete — all
+    13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
+
 ## Next
-- Next unchecked task: **P13.6** — full phase gate (axe + Lighthouse on the new `MenuScreen`,
-  `HANDOFF.md`/`PROGRESS.md` updates). Note the carried-forward axe contrast fix below is in scope
-  for this task.
-- **Carried forward from P13.3, not yet fixed**: `axe-audit.spec.ts`'s menu-screen check fails on
-  `.menu-cta--primary`'s insufficient color contrast (introduced by P13.2). P13.6 (full phase
-  gate, which runs the axe check) is the task that should fix this.
-- Per AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future
-  scope" item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
+- **`IMPLEMENTATION_PLAN.md` has no unchecked tasks left — all 13 phases are complete.** Per
+  AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future scope"
+  item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
   telemetry/human-calibrated-difficulty-curve/comeback-kingmaker items still need a product
-  decision first and are out of bounds for Phase 13.
+  decision first and are out of bounds for an autonomous pass.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -536,5 +551,4 @@ Next unchecked task: P13.6 (full phase gate).
 - Phase 10 (Final sweep): **GREEN**
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
-- Phase 13 (Home screen & visual identity): **IN PROGRESS** — P13.1-P13.5 done, P13.6
-  remaining
+- Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done

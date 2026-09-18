@@ -177,6 +177,12 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   background: #4f8ff7;
 }
 
+.menu-cta--primary {
+  /* P13.6: darkened from the original #4f8ff7 — that shade only cleared 3.17:1 contrast
+     against the white label text, below the 4.5:1 AA bar for non-large text (axe flagged it). */
+  background: #3568c9;
+}
+
 .menu-cta--resume {
   background: #54c47e;
 }

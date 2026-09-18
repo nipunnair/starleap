@@ -44,11 +44,10 @@ violations on any screen.
   Phase 3 gate itself was only run and verified at 2 players. Worth a `npm run selfplay --
   --players 3` / `4` / `6` pass with real tiered AI players (not greedy) to confirm before
   treating 3+/4+/6-player games as fully validated the way 2-player is.
-- **Board themes are a light accent-color swap** (a `data-theme` attribute swapping background
-  color), not a full visual reskin. `buildkit.md`/`docs/SPEC.md` name two themes (Nakshatra,
-  Chhalaang) without specifying what visually distinguishes them beyond "theme" — a deeper reskin
-  (peg colors, cell styling, board texture) is a reasonable follow-up if the two themes should
-  feel more distinct.
+- **[Done — P13.5]** ~~Board themes are a light accent-color swap~~ (a `data-theme` attribute
+  swapping background color only). Nakshatra/Chhalaang now also override peg fill/stroke per
+  player and swap the board's cell texture via SVG `<pattern>`s, so switching themes visibly
+  changes gameplay rendering, not just the menu backdrop.
 - **`src/engine/index.ts`** is a documented public-API barrel (named in `docs/ARCHITECTURE.md`'s
   module table since before any code existed) that no internal code currently imports through —
   every consumer reaches into engine submodules directly instead. Kept rather than deleted (see
@@ -94,15 +93,15 @@ critique folded in, organized by confidence level rather than by who raised it f
   over Firebase/Supabase (less to babysit) or an Artifact DB (forks the distribution story this
   project worked to keep unified across dist/starleap.html/Docker) — no free-text names (use
   generated handles, sidesteps privacy/moderation entirely), rate-limited, TTL'd, top-100 only.
-- **The menu/config redesign is real, but sequence it after gameplay-feel work, and mind the
-  blast radius.** UX gave the sharpest diagnosis: flat, equal-weight buttons with no hierarchy;
-  zero-indexed "Player 0"/"Player 1" seat labels that read as a debug artifact; tier names (Nova/
-  Vega/Rigel/Sirius) with no in-context explanation; `startNewGame` silently wipes an in-progress
-  save via `clearSavedGame()` with no confirmation. Game Designer agrees it matters but ranks it
-  below core-loop items — first impressions hurt retention, but they don't define whether the
-  game is fun once you're in it. QA's caution: existing E2E specs are pinned to current menu
-  selectors, and nothing currently asserts *intended* defaults (only current ones), so a redesign
-  could silently change what a new player sees first without anyone noticing.
+- **[Done — P13.1-P13.6]** ~~The menu/config redesign is real, but sequence it after gameplay-feel
+  work, and mind the blast radius.~~ UX's diagnosis: flat, equal-weight buttons with no hierarchy;
+  tier names (Nova/Vega/Rigel/Sirius) with no in-context explanation. Zero-indexed seat labels and
+  the no-confirmation `startNewGame` wipe were already fixed in Phase 11 (P11.1/P11.2). Phase 13
+  built real visual hierarchy (primary/secondary CTA groups), a starfield hero, and an AI character
+  showcase row with tier blurbs on `MenuScreen`; QA's pinned-selector concern held up in practice —
+  every touched spec (`menu.spec.ts`, `responsive-360.spec.ts`, `reduced-motion-full.spec.ts`,
+  `axe-audit.spec.ts`) needed zero selector changes since `data-testid`s and button labels were
+  preserved exactly (see P13.1's Done note in PROGRESS.md).
 - **[Toggle done — P11.4; the reward-system replacement below remains deferred.]** Separate the
   "hint toggle" from "replace hints with a chain-reward system" — they are two
   differently-sized features. The Architect explicitly scoped their pick to "toggle only, not
@@ -174,8 +173,8 @@ critique folded in, organized by confidence level rather than by who raised it f
 | | #1 | #2 | #3 |
 |---|---|---|---|
 | Game Designer | Chain counter/reward | Human-calibrated difficulty curve | Comeback/kingmaker investigation |
-| UX | Menu/config redesign | Thinking-animation fix (size/position/label) | Confirm-before-discard |
-| Technical Architect | Menu redesign + prominent avatar | Hint toggle (scoped to *just* the toggle) | Anonymous telemetry |
+| UX | Menu/config redesign **[Done — P13]** | Thinking-animation fix (size/position/label) | Confirm-before-discard |
+| Technical Architect | Menu redesign + prominent avatar **[Done — P13]** | Hint toggle (scoped to *just* the toggle) | Anonymous telemetry |
 | QA (framed as "resolve before shipping") | Leaderboard integrity model | Define "difficulty" unambiguously | Reduced-motion parity for any animation/reward change |
 
 Nothing above is scheduled. It's a menu to choose from, not a plan.

@@ -432,7 +432,7 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       swap to include a distinct peg color palette and board/cell texture per theme (CSS-only, no
       new image assets or build-step changes), so switching themes visibly changes gameplay
       rendering, not just the menu backdrop. — `npx playwright test settings.spec.ts`
-- [ ] P13.6 Full phase gate. Run axe against the new `MenuScreen` and `npm run lighthouse`,
+- [x] P13.6 Full phase gate. Run axe against the new `MenuScreen` and `npm run lighthouse`,
       confirm both still clear Phase 8's ≥90 bar. Update `HANDOFF.md` (mark the "menu/config
       redesign + prominent avatar" and "board themes are a light accent-color swap" future-scope
       items done, leaving every other deferred item — leaderboard, reward system, telemetry,

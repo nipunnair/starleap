@@ -500,3 +500,9 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   `.starleap-cell:not(.starleap-cell--highlighted) { fill: url(#cell-texture-...) }` swaps them in
   per theme — destination/focus-highlighted cells keep their existing highlight colors under every
   theme via the `--highlighted` exclusion, so the affordance stays legible.
+- **P13.6 fixed the carried-forward `.menu-cta--primary` contrast failure by darkening the
+  background** (`#4f8ff7` → `#3568c9`) rather than changing the text color or font size. The
+  button's 17.6px/700-weight label falls just short of WCAG's "large text" threshold (18.66px
+  bold), so it needs the full 4.5:1 AA ratio, not the 3:1 large-text bar; `#4f8ff7` against white
+  only cleared 3.17:1. `#3568c9` clears ~5.28:1, computed by hand against the WCAG relative-
+  luminance formula and confirmed by rerunning `axe-audit.spec.ts`'s menu-screen check (passes).
