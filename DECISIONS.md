@@ -546,3 +546,31 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   over</h2>` to `<h1>` (it's the screen's actual title, not a subheading — was previously the odd
   one out). Verified via axe (all 7 screens), touch-targets, responsive-360, and the full
   config->play->quit->resume->finish gate — no regressions.
+
+- **Bug fix, user-reported: only the first AI seat's avatar ever showed in 3+-player games.**
+  `GameScreen` computed `opponentTier = seats.find(s => s !== 'human')` once and rendered one
+  fixed `CharacterAvatar` — correct for 2P human-vs-AI (the only case with one AI seat) but wrong
+  for 3+ players, where it silently kept showing the first AI's portrait even while a different
+  AI was thinking/moving. Fixed by replacing the single fixed avatar with `SeatBadges`
+  (`ui/components/SeatBadges.tsx`): one identity badge per seat — an AI portrait or a generic
+  human-silhouette icon for human seats — positioned at that seat's own board corner (projected
+  from `CORNER_APEX[startCorner]`, nudged outward so it clears that corner's own peg cluster,
+  converted to a percent position so it tracks the SVG board's responsive scaling with no resize
+  listener), ringed in that seat's `PLAYER_COLORS` entry, glowing when active. This also
+  satisfies the follow-up ask ("the human is also shown as playing in their corner") for free —
+  every seat gets a badge, not just AI ones.
+  `CharacterAvatar` gained an optional `size` prop (default 64, unchanged for existing callers) so
+  badges can render smaller than the old fixed avatar.
+  The celebrate-survives-past-the-winner behavior (SPEC §4.7: `celebrate` must stay visible even
+  after `currentPlayer` advances on the winning commit) no longer works by accident the way the
+  single-avatar version did (`isAITurn` happening to still read true) — with per-seat badges, the
+  wrong seat would start glowing the instant `currentPlayer` advanced. Fixed properly: `GameScreen`
+  now tracks `celebratingPlayer` explicitly (set to the winner's `owner` at the trigger site, not
+  inferred from `currentPlayer`) and `SeatBadges` takes an explicit `activePlayer` prop rather than
+  reading `game.currentPlayer` itself.
+  (The `div`->`main` landmark fix and the win-screen `<h2>`->`<h1>` promotion were already done
+  in the previous cohesion-pass commit; this change only touches the main game-screen branch.)
+  Verified the actual fix by polling each non-human seat's `data-testid="seat-badge-N"` class and
+  its inner `CharacterAvatar`'s `data-state` through a real 3-player game — confirmed seat 1
+  (Sirius) goes active/thinking→found-it→move, then seat 2 (Vega) picks up active/thinking
+  immediately after, not stuck on seat 1.

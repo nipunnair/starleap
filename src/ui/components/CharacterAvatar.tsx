@@ -16,6 +16,8 @@ const CHARACTER_STATES: readonly CharacterState[] = [
 export interface CharacterAvatarProps {
   readonly tier: TierName;
   readonly state: CharacterState;
+  /** Pixel width/height (square). Defaults to 64 — the original single fixed size. */
+  readonly size?: number;
 }
 
 // Nano Banana-generated per-state portraits (art/avatars/<tier>-sheet.png, sliced by
@@ -37,7 +39,7 @@ function hasFullPortraitSet(tier: TierName): boolean {
   return CHARACTER_STATES.every((s) => portraitFor(tier, s) !== undefined);
 }
 
-export function CharacterAvatar({ tier, state }: CharacterAvatarProps) {
+export function CharacterAvatar({ tier, state, size = 64 }: CharacterAvatarProps) {
   const personality = PERSONALITIES[tier];
   const style = {
     '--amplitude': personality.amplitude,
@@ -51,17 +53,17 @@ export function CharacterAvatar({ tier, state }: CharacterAvatarProps) {
         data-testid="character-avatar"
         data-state={state}
         data-tier={tier}
-        style={style}
+        style={{ ...style, width: size, height: size }}
         className={`${className} starleap-avatar--portrait`}
       >
-        <img className="starleap-avatar__face" src={portraitFor(tier, state)} alt="" width={64} height={64} />
+        <img className="starleap-avatar__face" src={portraitFor(tier, state)} alt="" width={size} height={size} />
         {state === 'thinking' && (
           <svg
             className="starleap-avatar__thinking-dots"
             data-testid="avatar-thinking-dots"
             viewBox="0 0 100 100"
-            width={64}
-            height={64}
+            width={size}
+            height={size}
           >
             <circle cx="50" cy="10" r="4" fill="#ffd166" />
             <circle cx="83" cy="50" r="4" fill="#ffd166" />
@@ -78,8 +80,8 @@ export function CharacterAvatar({ tier, state }: CharacterAvatarProps) {
       data-state={state}
       data-tier={tier}
       viewBox="0 0 100 100"
-      width={64}
-      height={64}
+      width={size}
+      height={size}
       style={style}
       className={className}
     >

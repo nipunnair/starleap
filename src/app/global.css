@@ -461,6 +461,55 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   color: var(--mover-color, inherit);
 }
 
+/* SeatBadges: one identity badge per seat, positioned at that player's own corner (replaces the
+   old single fixed "the opponent" avatar, which never updated past the first AI seat in 3+-player
+   games — see DECISIONS.md). Percent-based left/top so it tracks the SVG board's own responsive
+   scaling without any resize listener. */
+.seat-badge {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.seat-badge__ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--slp-panel-bg);
+  border: 2px solid var(--seat-color, var(--slp-panel-border));
+  box-shadow: 0 0 0 2px rgba(6, 10, 24, 0.85), 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.seat-badge--active .seat-badge__ring {
+  box-shadow: 0 0 0 2px rgba(6, 10, 24, 0.85), 0 0 14px var(--seat-color);
+  transform: scale(1.12);
+}
+
+.seat-badge__human {
+  color: var(--seat-color);
+}
+
+.seat-badge__label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  color: var(--slp-text);
+  background: var(--slp-panel-bg);
+  border: 1px solid var(--seat-color, var(--slp-panel-border));
+  white-space: nowrap;
+}
+
 /* SPEC.md §4.7: AI character states. Personality (per SPEC: "amplitude/frequency of the same
    six states, not different assets") is expressed via the --amplitude/--frequency custom
    properties set per tier in CharacterAvatar. */

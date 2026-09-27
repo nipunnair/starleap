@@ -15,7 +15,8 @@ import { shouldShakeForMove } from '../animation/chainAnimation';
 import { describeMove } from '../animation/describeMove';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
-import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
+import type { CharacterState } from './CharacterAvatar';
+import { SeatBadges } from './SeatBadges';
 import { CELL_SPACING, PLAYER_COLORS, playerLabel } from './boardGeometry';
 
 export type SeatConfig = 'human' | TierName;
@@ -83,6 +84,10 @@ export function GameScreen({
   const [previewMove, setPreviewMove] = useState<Move | null>(null);
   const [shaking, setShaking] = useState(false);
   const [celebratingWin, setCelebratingWin] = useState(false);
+  // Which seat SeatBadges should highlight as celebrating — tracked separately from
+  // engine.game.currentPlayer, which advances past the winner the instant their move commits
+  // (see the comment at the celebrate trigger below).
+  const [celebratingPlayer, setCelebratingPlayer] = useState<number | null>(null);
   const [characterState, setCharacterState] = useState<CharacterState>('idle');
   const lastOwnEvalRef = useRef<Map<number, number>>(new Map());
   // The player who configured the game already holds the device for their own first turn — no
@@ -107,8 +112,6 @@ export function GameScreen({
     !pendingMove &&
     humanSeatCount > 1 &&
     dismissedPassScreenFor !== engine.game.currentPlayer;
-  const opponentTier = seats.find((s): s is TierName => s !== 'human') ?? null;
-
   // Trigger AI moves: thinking fires immediately at dispatch time; found-it/move only after the
   // worker resolves AND the minimum visible-thinking floor has elapsed (SPEC §4.7).
   useEffect(() => {
@@ -216,10 +219,16 @@ export function GameScreen({
     setCharacterState(aiWon ? 'celebrate' : 'idle');
     if (aiWon) {
       // Committing the move above already flips engine.gameOver true — without this delay the
-      // win screen would replace the avatar on the very next render and `celebrate` would never
-      // actually be visible (found via manual browser verification, see DECISIONS.md).
+      // win screen would replace the badges on the very next render and `celebrate` would never
+      // actually be visible (found via manual browser verification, see DECISIONS.md). Track
+      // `owner` explicitly rather than relying on engine.game.currentPlayer, which advances past
+      // the winner on this very same commit.
+      setCelebratingPlayer(owner);
       setCelebratingWin(true);
-      setTimeout(() => setCelebratingWin(false), CELEBRATE_BEFORE_WIN_SCREEN_MS);
+      setTimeout(() => {
+        setCelebratingWin(false);
+        setCelebratingPlayer(null);
+      }, CELEBRATE_BEFORE_WIN_SCREEN_MS);
     }
   }
 
@@ -268,15 +277,6 @@ export function GameScreen({
       <div aria-live="polite" className="sr-only" data-testid="move-announcer">
         {moveAnnouncement}
       </div>
-      {opponentTier && (
-        <CharacterAvatar
-          tier={opponentTier}
-          // `celebrate` must survive even after currentPlayer advances past the winner (which
-          // happens the instant the winning move commits) — otherwise isAITurn flips false and
-          // the avatar would snap back to idle before celebrate is ever visible.
-          state={characterState === 'celebrate' ? 'celebrate' : isAITurn ? characterState : 'idle'}
-        />
-      )}
       <p data-testid="you-are-label">
         <span
           data-testid="player-color-swatch"
@@ -337,6 +337,12 @@ export function GameScreen({
           }
         />
         <ParticleCanvas ref={particlesRef} reducedMotion={reducedMotion} />
+        <SeatBadges
+          game={engine.game}
+          seats={seats}
+          activePlayer={celebratingPlayer ?? engine.game.currentPlayer}
+          activeCharacterState={characterState}
+        />
       </div>
       {engine.canUndo && !pendingMove && (
         <button className="btn btn-secondary" data-testid="undo-button" onClick={() => engine.undo()}>
