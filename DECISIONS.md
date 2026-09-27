@@ -655,3 +655,10 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   full round and asserts the finished seat's turn-indicator text and badge state throughout — not
   just at a single snapshot — plus 4 new unit tests for `skipFinishedPlayers` directly
   (`engine/__tests__/apply.test.ts`).
+
+- **Bug fix, user-reported: "You are Red" always showed, even in an all-AI game.** It was also
+  hardcoded to seat 0's color regardless of which seat the human actually occupied (a latent bug,
+  fixed as part of the same change since it's the identical line). Now computed as
+  `soloHumanSeat` — the human's actual seat index, only when there's *exactly one* human seat: an
+  all-AI game has no "you" to label (hidden entirely), and a 2+-human pass-and-play game shares one
+  device across multiple people, so a single fixed "you" would be misleading either way.

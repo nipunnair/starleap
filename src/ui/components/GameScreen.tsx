@@ -106,6 +106,11 @@ export function GameScreen({
   const currentSeat = seats[engine.game.currentPlayer];
   const isAITurn = currentSeat !== 'human';
   const humanSeatCount = seats.filter((s) => s === 'human').length;
+  // "You are <color>" only makes sense with exactly one human seat: none (an all-AI game) has no
+  // "you" to label, and 2+ (pass-and-play) share one device across multiple people, so a single
+  // fixed "you" would be misleading. Also fixes a latent bug — this used to hardcode seat 0's
+  // color regardless of which seat the human actually occupies.
+  const soloHumanSeat = humanSeatCount === 1 ? seats.indexOf('human') : null;
   const needsPassScreen =
     !engine.gameOver &&
     !isAITurn &&
@@ -293,20 +298,22 @@ export function GameScreen({
       <div aria-live="polite" className="sr-only" data-testid="move-announcer">
         {moveAnnouncement}
       </div>
-      <p data-testid="you-are-label">
-        <span
-          data-testid="player-color-swatch"
-          style={{
-            display: 'inline-block',
-            width: 12,
-            height: 12,
-            borderRadius: '50%',
-            backgroundColor: PLAYER_COLORS[0],
-            marginRight: 6,
-          }}
-        />
-        You are {playerLabel(0)}
-      </p>
+      {soloHumanSeat !== null && (
+        <p data-testid="you-are-label">
+          <span
+            data-testid="player-color-swatch"
+            style={{
+              display: 'inline-block',
+              width: 12,
+              height: 12,
+              borderRadius: '50%',
+              backgroundColor: PLAYER_COLORS[soloHumanSeat],
+              marginRight: 6,
+            }}
+          />
+          You are {playerLabel(soloHumanSeat)}
+        </p>
+      )}
       <p
         data-testid="turn-indicator"
         className="turn-indicator"
