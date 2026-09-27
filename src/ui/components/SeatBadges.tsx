@@ -3,14 +3,21 @@ import { CORNER_APEX } from '../../engine/board';
 import { project } from '../../engine/coords';
 import type { GameState } from '../../engine/state';
 import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
-import { BOARD_VIEWBOX, CELL_SPACING, PLAYER_COLORS, playerLabel } from './boardGeometry';
+import { BOARD_VIEWBOX, CELL_SPACING, PLAYER_COLORS } from './boardGeometry';
 import type { SeatConfig } from './GameScreen';
 
-const BADGE_SIZE = 44;
+/** Smaller than the in-game single-avatar's old fixed 64px, deliberately: the badge's own size is
+ * fixed CSS px (unlike the board, which scales with the viewport), so a smaller badge needs less
+ * outward push to clear the corner's topmost peg — and has a smaller footprint to overflow a
+ * narrow viewport with (see OUTWARD_OFFSET; the previous, larger size overflowed at 360px). */
+const BADGE_SIZE = 36;
 /** How far past each corner's outermost cell to push the badge — clears that corner's own peg
- * cluster instead of sitting on top of it, without drifting outside the board's SVG viewBox
- * (which already has generous padding — see boardGeometry.ts). */
-const OUTWARD_OFFSET = 20;
+ * cluster instead of sitting on top of it. The peg at the corner's apex cell has visual radius
+ * `CELL_RADIUS * 0.72` (~9.4 viewBox units, see Peg.tsx); tuned against the actual rendered
+ * result (a smaller starting value visibly overlapped) rather than computed exactly, since the
+ * badge's fixed-px size vs. the board's own responsive scale makes an exact figure viewport-
+ * dependent anyway. */
+const OUTWARD_OFFSET = 28;
 /** The human seat's own character — see characterPersonality.ts. Not a TierName (never
  * selectable as an AI difficulty); just another CharacterId as far as CharacterAvatar cares. */
 const HUMAN_CHARACTER = 'Astro';
@@ -64,7 +71,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
               <CharacterAvatar tier={tier} state={isActive ? activeCharacterState : 'idle'} size={BADGE_SIZE} />
             </div>
             <span className="seat-badge__label" data-testid={`seat-badge-label-${seat.player}`}>
-              {playerLabel(seat.player)}
+              {tier}
             </span>
           </div>
         );

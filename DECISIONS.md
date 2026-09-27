@@ -607,3 +607,21 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   have hit a strict-mode multi-match violation the moment a human seat was on screen — rescoped all
   three to the specific tier under test (`[data-tier="Nova"]` / `[data-tier="Rigel"]`, already an
   attribute `CharacterAvatar` sets in both render modes) rather than leaving them broken.
+
+- **Bug fix, user-reported: seat badges overlapped the corner's topmost peg; labels showed color
+  names instead of character names.** Two fixes to `SeatBadges.tsx`:
+  1. Labels now render `tier` (the character's name — "Vega"/"Astro"/etc.) instead of
+     `playerLabel(seat.player)` (the color name — "Blue"/"Red"/etc.); the color is still conveyed
+     by the ring itself, just no longer duplicated as text people had to reconcile against a
+     differently-named character.
+  2. The overlap: `OUTWARD_OFFSET` (how far past the corner apex the badge is pushed) was
+     measured/tuned but the fix revealed a real tension — the badge is a fixed-CSS-px HTML overlay
+     while the board and its pegs are drawn in SVG viewBox units that scale with the responsive
+     board, so a single offset-in-units doesn't clear the peg by a proportional amount at every
+     viewport (a large offset needed to clear the peg at typical widths overflowed the much
+     narrower 360px board, breaking `responsive-360.spec.ts`, which is itself the tell — the
+     badge's own fixed px footprint is the larger risk at small viewports, not smaller). Fixed by
+     shrinking the badge itself (44px avatar/48px ring -> 36px/40px) rather than only pushing it
+     further out: a smaller badge needs less outward push to clear the peg *and* has a smaller
+     footprint to overflow a narrow viewport with, addressing both constraints from the same
+     change instead of trading one off against the other.
