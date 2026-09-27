@@ -298,22 +298,6 @@ export function GameScreen({
       <div aria-live="polite" className="sr-only" data-testid="move-announcer">
         {moveAnnouncement}
       </div>
-      {soloHumanSeat !== null && (
-        <p data-testid="you-are-label">
-          <span
-            data-testid="player-color-swatch"
-            style={{
-              display: 'inline-block',
-              width: 12,
-              height: 12,
-              borderRadius: '50%',
-              backgroundColor: PLAYER_COLORS[soloHumanSeat],
-              marginRight: 6,
-            }}
-          />
-          You are {playerLabel(soloHumanSeat)}
-        </p>
-      )}
       <p
         data-testid="turn-indicator"
         className="turn-indicator"

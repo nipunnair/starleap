@@ -673,3 +673,9 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   source of truth for the exact string, shared by GameScreen and the e2e tests/helpers that need
   to recognize it (`e2e/helpers.ts`'s `playUntilGameOver`, `thinking-within-100ms.spec.ts`,
   `finished-player.spec.ts`), replacing their previous `playerLabel(0)`/"Red" dependency.
+
+- **Removed "You are <color>" entirely, user-requested.** With "Your turn" now rendering in the
+  mover's own color (`--mover-color`, already existing per-P11.6 styling) and the "You" seat badge
+  right on the board, the separate static line was redundant — color is already conveyed the
+  moment it's actually your turn. `soloHumanSeat` stays (still drives the turn-indicator's
+  "Your turn" branch); only the standalone `<p data-testid="you-are-label">` JSX block is gone.
