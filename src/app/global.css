@@ -384,6 +384,28 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   transform-origin: 50% 50%;
 }
 
+/* Portrait mode (CharacterAvatar: tiers with a full Nano Banana state set) — the wrapper span
+   stands in for the old <svg>, so the same state animations below apply unchanged. */
+.starleap-avatar--portrait {
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+}
+
+.starleap-avatar--portrait .starleap-avatar__face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.starleap-avatar--portrait .starleap-avatar__thinking-dots {
+  position: absolute;
+  inset: 0;
+}
+
 .starleap-avatar--idle .starleap-avatar__face {
   animation: starleap-breathe calc(4s / var(--frequency, 1)) ease-in-out infinite;
   transform-origin: 50% 50%;

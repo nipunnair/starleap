@@ -515,3 +515,15 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Assets are imported through Vite so `--base` for GitHub Pages and singlefile inlining both work.
   Workbox precache extended to `webp` so the PWA stays offline-capable. Hosting unchanged: repo
   is public, so the existing GitHub Pages workflow remains free and sufficient.
+
+- **AI character portraits: Nano Banana-generated per-state sheets, sliced and wired in per-tier,
+  user-directed, outside the phase plan.** `scripts/extract-avatar-sheet.py` (Hough-circle
+  detection, robust to ring color) slices a 3x2 idle/thinking/found-it/move/celebrate/worried
+  preview sheet into `src/assets/avatars/<tier>-<state>.webp`. `CharacterAvatar` picks up a tier's
+  portraits automatically via `import.meta.glob` once all six exist for that tier; tiers without a
+  full set keep rendering the original procedural SVG unchanged. This lets each character graduate
+  independently as its sheet arrives, with no risk to tiers not yet done and no test churn (the
+  `data-testid`/`data-state` contract e2e relies on is identical in both modes). Sirius is the
+  first to graduate. Portrait mode keeps the existing state-driven CSS animations (they already
+  targeted the outer element or `.starleap-avatar__face`/`__thinking-dots` by class, not by tag),
+  so personality amplitude/frequency still applies unchanged.
