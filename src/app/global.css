@@ -1,13 +1,27 @@
 :root {
   color-scheme: light dark;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Shared cosmic palette — every screen draws from these, not just the menu. Values match the
+     landing art (art/landing-source.png) and the menu CTAs built from it. */
+  --slp-bg: #0b1020;
+  --slp-text: #f4f4f8;
+  --slp-accent: #00e5ff;
+  --slp-accent-soft: rgba(0, 229, 255, 0.45);
+  --slp-accent-ink: #04121c;
+  --slp-success: #1dff7a;
+  --slp-success-soft: rgba(29, 255, 122, 0.4);
+  --slp-info: #50aaff;
+  --slp-panel-bg: rgba(10, 16, 40, 0.55);
+  --slp-panel-bg-strong: rgba(20, 84, 140, 0.75);
+  --slp-panel-border: rgba(200, 215, 255, 0.35);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: #0b1020;
-  color: #f4f4f8;
+  background: var(--slp-bg);
+  color: var(--slp-text);
 }
 
 /* SPEC.md P8.1-P8.2: mobile-first responsive layout, >=44px touch targets on every control
@@ -18,6 +32,32 @@ main {
   padding-block: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-bottom, 0px));
   max-width: 640px;
   margin: 0 auto;
+}
+
+/* Every screen reachable from the menu is a <main> landmark with this same cosmic treatment —
+   a quiet starfield (see StarfieldHero) behind panelled content, so nothing feels like a plain
+   unstyled form after the menu's art-directed hero. The menu itself opts out (its own richer,
+   full-bleed layout lives in .menu-screen) via :not(.menu-screen). */
+main:not(.menu-screen) {
+  position: relative;
+}
+
+main:not(.menu-screen) > .starleap-starfield {
+  opacity: 0.6;
+}
+
+main:not(.menu-screen) h1 {
+  position: relative;
+  letter-spacing: 0.02em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--slp-panel-border);
+}
+
+main:not(.menu-screen) h2 {
+  position: relative;
+  color: var(--slp-accent);
+  font-size: 1.05rem;
+  margin-top: 28px;
 }
 
 button,
@@ -31,6 +71,12 @@ input[type='checkbox'] {
 button {
   padding: 10px 16px;
   font-size: 1rem;
+  border-radius: 8px;
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  accent-color: var(--slp-accent);
 }
 
 label {
@@ -40,10 +86,48 @@ label {
   min-height: 44px;
 }
 
-fieldset {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+fieldset,
+main:not(.menu-screen) section {
+  position: relative;
+  background: var(--slp-panel-bg);
+  border: 1px solid var(--slp-panel-border);
+  border-radius: 10px;
+  padding: 14px 16px;
   margin-block: 12px;
+  backdrop-filter: blur(4px);
+}
+
+legend {
+  padding-inline: 6px;
+  color: var(--slp-accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Shared button language, reused by the menu's own .menu-cta and by every other screen. */
+.btn {
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: var(--slp-accent);
+  color: var(--slp-accent-ink);
+  box-shadow: 0 0 18px var(--slp-accent-soft);
+}
+
+.btn-secondary {
+  background: var(--slp-panel-bg);
+  border-color: var(--slp-panel-border);
+  color: var(--slp-text);
+}
+
+.btn:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
 }
 
 /* SPEC.md P8.4: visually hidden but announced by screen readers. */

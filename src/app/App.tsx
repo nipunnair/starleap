@@ -102,8 +102,12 @@ export function App() {
     return (
       <main data-testid="confirm-discard-screen">
         <p>Starting a new game will discard your saved game. Continue?</p>
-        <button onClick={confirmDiscardAndStart}>Continue</button>
-        <button onClick={() => setPendingConfig(null)}>Cancel</button>
+        <button className="btn btn-primary" onClick={confirmDiscardAndStart}>
+          Continue
+        </button>
+        <button className="btn btn-secondary" onClick={() => setPendingConfig(null)}>
+          Cancel
+        </button>
       </main>
     );
   }

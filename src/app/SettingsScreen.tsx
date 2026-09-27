@@ -1,4 +1,5 @@
 import type { BoardTheme, ReducedMotionSetting, Settings } from './settingsStore';
+import { StarfieldHero } from './StarfieldHero';
 
 export interface SettingsScreenProps {
   readonly settings: Settings;
@@ -12,6 +13,7 @@ const REDUCED_MOTION_OPTIONS: readonly ReducedMotionSetting[] = ['system', 'on',
 export function SettingsScreen({ settings, onUpdate: update, onBack }: SettingsScreenProps) {
   return (
     <main data-testid="settings-screen">
+      <StarfieldHero />
       <h1>Settings</h1>
 
       <label>
@@ -76,7 +78,9 @@ export function SettingsScreen({ settings, onUpdate: update, onBack }: SettingsS
         ))}
       </fieldset>
 
-      <button onClick={onBack}>Back</button>
+      <button className="btn btn-secondary" onClick={onBack}>
+        Back
+      </button>
     </main>
   );
 }

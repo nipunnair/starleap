@@ -527,3 +527,22 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   first to graduate. Portrait mode keeps the existing state-driven CSS animations (they already
   targeted the outer element or `.starleap-avatar__face`/`__thinking-dots` by class, not by tag),
   so personality amplitude/frequency still applies unchanged.
+
+- **App-wide visual cohesion pass, user-directed, outside the phase plan.** Only the menu had the
+  P13 treatment; Config/Rules/Settings/Tutorial were unstyled browser defaults and GameScreen's
+  win/pass-and-play/game states rendered as bare `<div>`s (not `<main>`, so they never got the
+  base responsive/safe-area rules every other screen gets). Fixed both: pulled the menu's palette
+  into `:root` custom properties (`--slp-*`) in `global.css` so it's one source of truth instead of
+  menu-only literals; added a shared `main:not(.menu-screen)` treatment (quiet starfield at 0.6
+  opacity — reusing `StarfieldHero`, not the loud landing nebula, to keep dense text like Rules
+  readable; panelled `fieldset`/`section`; accent-colored `h1`/`h2`/legend/native
+  checkbox-radio via `accent-color`); added `.btn`/`.btn-primary`/`.btn-secondary` reused by every
+  screen's buttons including the menu's own CTAs. `GameScreen`'s three div-rooted states became
+  `<main>` (proper landmark, picks up base padding/max-width) — deliberately *not* given the
+  starfield (kept the board's backdrop clean/high-contrast; only its chrome — Quit/Undo/turn text
+  — is themed). `StarfieldHero` lives in `app/`, so it's used by `app/*Screen.tsx` files but not by
+  `GameScreen` (in `ui/`) — importing it there would invert ARCHITECTURE.md's `app/` sits above
+  `ui/` composition direction, and it wasn't needed anyway. Also promoted win-screen's `<h2>Game
+  over</h2>` to `<h1>` (it's the screen's actual title, not a subheading — was previously the odd
+  one out). Verified via axe (all 7 screens), touch-targets, responsive-360, and the full
+  config->play->quit->resume->finish gate — no regressions.

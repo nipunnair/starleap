@@ -3,6 +3,7 @@ import type { PlayerCount } from '../engine/state';
 import type { SeatConfig } from '../ui/components/GameScreen';
 import { TIER_ORDER, type TierName } from '../ai/tiers';
 import { playerLabel } from '../ui/components/boardGeometry';
+import { StarfieldHero } from './StarfieldHero';
 
 export const TIER_BLURBS: Readonly<Record<TierName, string>> = {
   Nova: 'Nova plays fast and loose, with plenty of random surprises. Easiest opponent.',
@@ -43,6 +44,7 @@ export function ConfigScreen({ onStart, onBack }: ConfigScreenProps) {
 
   return (
     <main data-testid="config-screen">
+      <StarfieldHero />
       <h1>New game</h1>
 
       <fieldset>
@@ -82,8 +84,12 @@ export function ConfigScreen({ onStart, onBack }: ConfigScreenProps) {
         ))}
       </fieldset>
 
-      <button onClick={() => onStart({ playerCount, seats })}>Start game</button>
-      <button onClick={onBack}>Back</button>
+      <button className="btn btn-primary" onClick={() => onStart({ playerCount, seats })}>
+        Start game
+      </button>
+      <button className="btn btn-secondary" onClick={onBack}>
+        Back
+      </button>
     </main>
   );
 }

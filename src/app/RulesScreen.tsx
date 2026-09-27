@@ -1,3 +1,5 @@
+import { StarfieldHero } from './StarfieldHero';
+
 export interface RulesScreenProps {
   readonly onBack: () => void;
 }
@@ -9,6 +11,7 @@ export interface RulesScreenProps {
 export function RulesScreen({ onBack }: RulesScreenProps) {
   return (
     <main data-testid="rules-screen">
+      <StarfieldHero />
       <h1>How to play STARLEAP</h1>
 
       <section>
@@ -53,7 +56,9 @@ export function RulesScreen({ onBack }: RulesScreenProps) {
         <p>Once a peg has left your starting corner, it can never rest there again.</p>
       </section>
 
-      <button onClick={onBack}>Back</button>
+      <button className="btn btn-secondary" onClick={onBack}>
+        Back
+      </button>
     </main>
   );
 }

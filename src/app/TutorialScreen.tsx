@@ -4,6 +4,7 @@ import { Board } from '../ui/components/Board';
 import { key } from '../engine/coords';
 import { SEATING_PLANS, type GameState } from '../engine/state';
 import { OPPOSITE_CORNER } from '../engine/board';
+import { StarfieldHero } from './StarfieldHero';
 
 export interface TutorialScreenProps {
   readonly onFinish: () => void;
@@ -84,15 +85,19 @@ export function TutorialScreen({ onFinish }: TutorialScreenProps) {
   if (stage === 'done') {
     return (
       <main data-testid="tutorial-screen">
+        <StarfieldHero />
         <h1>Tutorial complete</h1>
         <p>You've made a step and a long jump. You're ready to play.</p>
-        <button onClick={onFinish}>Done</button>
+        <button className="btn btn-primary" onClick={onFinish}>
+          Done
+        </button>
       </main>
     );
   }
 
   return (
     <main data-testid="tutorial-screen">
+      <StarfieldHero />
       <h1>Tutorial</h1>
       <p data-testid="tutorial-instruction">
         {stage === 'step'
@@ -107,7 +112,9 @@ export function TutorialScreen({ onFinish }: TutorialScreenProps) {
         onCellClick={handleCellClick}
         onDestinationHover={setPreviewMove}
       />
-      <button onClick={onFinish}>Skip tutorial</button>
+      <button className="btn btn-secondary" onClick={onFinish}>
+        Skip tutorial
+      </button>
     </main>
   );
 }

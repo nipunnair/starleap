@@ -226,8 +226,8 @@ export function GameScreen({
   if (engine.gameOver && !celebratingWin) {
     const ranking = rank(engine.game);
     return (
-      <div data-testid="win-screen">
-        <h2>Game over</h2>
+      <main data-testid="win-screen">
+        <h1>Game over</h1>
         <ol>
           {ranking.map((entry) => (
             <li key={entry.player} data-testid={`ranking-${entry.player}`}>
@@ -245,22 +245,26 @@ export function GameScreen({
             <dd data-testid="stat-duration">{Math.round(finalStats.durationMs / 1000)}s</dd>
           </dl>
         )}
-        <button onClick={onExit}>Back to menu</button>
-      </div>
+        <button className="btn btn-primary" onClick={onExit}>
+          Back to menu
+        </button>
+      </main>
     );
   }
 
   if (needsPassScreen) {
     return (
-      <div data-testid="pass-and-play-screen">
+      <main data-testid="pass-and-play-screen">
         <p>Pass the device to {playerLabel(engine.game.currentPlayer)}</p>
-        <button onClick={() => setDismissedPassScreenFor(engine.game.currentPlayer)}>Ready</button>
-      </div>
+        <button className="btn btn-primary" onClick={() => setDismissedPassScreenFor(engine.game.currentPlayer)}>
+          Ready
+        </button>
+      </main>
     );
   }
 
   return (
-    <div data-testid="game-screen">
+    <main data-testid="game-screen">
       <div aria-live="polite" className="sr-only" data-testid="move-announcer">
         {moveAnnouncement}
       </div>
@@ -335,11 +339,13 @@ export function GameScreen({
         <ParticleCanvas ref={particlesRef} reducedMotion={reducedMotion} />
       </div>
       {engine.canUndo && !pendingMove && (
-        <button data-testid="undo-button" onClick={() => engine.undo()}>
+        <button className="btn btn-secondary" data-testid="undo-button" onClick={() => engine.undo()}>
           Undo
         </button>
       )}
-      <button onClick={onExit}>Quit</button>
-    </div>
+      <button className="btn btn-secondary" onClick={onExit}>
+        Quit
+      </button>
+    </main>
   );
 }
