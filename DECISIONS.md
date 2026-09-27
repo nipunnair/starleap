@@ -574,3 +574,36 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   its inner `CharacterAvatar`'s `data-state` through a real 3-player game — confirmed seat 1
   (Sirius) goes active/thinking→found-it→move, then seat 2 (Vega) picks up active/thinking
   immediately after, not stuck on seat 1.
+
+- **Astro (the human player's own character), user-supplied portrait sheet.** Same slicer as the
+  AI tiers (`extract-avatar-sheet.py`, regular 3x2 layout, no `--states` override needed). Rather
+  than special-casing 'human' in `CharacterAvatar`/`SeatBadges`, widened the type: added
+  `CharacterId = TierName | 'Astro'` in `characterPersonality.ts` (with its own idle
+  amplitude/frequency, near-static like Sirius, matching its flavor text), and `CharacterAvatar`'s
+  `tier` prop now takes `CharacterId` instead of `TierName`. `SeatBadges` maps a human seat to
+  `'Astro'` and renders every seat through the exact same `<CharacterAvatar>` call — no more
+  separate hand-drawn SVG-icon branch for humans (deleted, along with its now-dead
+  `.seat-badge__human` CSS rule).
+  `ai/tiers.ts`'s `TierName`/`TIER_ORDER`/`TIER_BLURBS` are untouched — Astro is not a selectable
+  AI difficulty, so ConfigScreen's picker and the menu's character showcase are unaffected.
+  Generalized state-driving logic in `GameScreen` so Astro actually animates, not just idle:
+  `commitMove` (the shared entry point for a human's own move, already used by `handleCellClick`)
+  now sets `'move'` before setting `pendingMove`, mirroring what the AI-dispatch effect already did
+  for AI moves. The win/celebrate check dropped its `seats[owner] !== 'human'` guard, so a human
+  win now also celebrates (and gets the same `celebratingPlayer`-tracked delay before the win
+  screen replaces it) — this was arguably a latent gap once a human character has a celebrate face
+  at all, not really a new feature. Added a `'worried'` check for human moves specifically too,
+  reusing the exact same eval-drop heuristic (`evaluate` + `WORRIED_EVAL_DROP_THRESHOLD`) already
+  trusted for the AI's own worried detection, just applied post-move (a human has no pre-commit
+  "reveal" moment to anticipate from the way the AI's search does) rather than pre-move.
+  Deliberately did *not* wire up `'thinking'` or `'found-it'` for the human seat — both describe an
+  AI's search process (searching many moves deep / the instant a found move is revealed) with no
+  honest non-fabricated equivalent for a human who just clicks their move; inventing a fake
+  "thinking" delay or a fake "decision reveal" pause into human input felt like the kind of
+  fabricated UX behavior worth flagging rather than silently adding.
+  Every seat now renders `data-testid="character-avatar"` (previously only the single AI opponent
+  did), so three existing e2e tests (`celebrate`, `thinking-within-100ms`, `reduced-motion-full`)
+  that used an unscoped `getByTestId('character-avatar')`/`.starleap-avatar__face` locator would
+  have hit a strict-mode multi-match violation the moment a human seat was on screen — rescoped all
+  three to the specific tier under test (`[data-tier="Nova"]` / `[data-tier="Rigel"]`, already an
+  attribute `CharacterAvatar` sets in both render modes) rather than leaving them broken.

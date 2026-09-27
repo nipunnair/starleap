@@ -161,6 +161,9 @@ export function GameScreen({
       setShaking(true);
       setTimeout(() => setShaking(false), SHAKE_DURATION_MS);
     }
+    // Mirrors the AI path (which sets 'move' itself right before its own setPendingMove, above)
+    // so a human's own badge also shows the 'move' expression while their hop animates.
+    setCharacterState('move');
     setPendingMove({ move, owner });
   }
 
@@ -215,9 +218,22 @@ export function GameScreen({
       });
     }
 
-    const aiWon = seats[owner] !== 'human' && hasWon(nextState, owner);
-    setCharacterState(aiWon ? 'celebrate' : 'idle');
-    if (aiWon) {
+    const won = hasWon(nextState, owner);
+    if (won) {
+      setCharacterState('celebrate');
+    } else if (seats[owner] === 'human') {
+      // The AI's own worried check (above, in the search-dispatch effect) is anticipatory — it
+      // fires on the position it's about to move to, before the hop even animates. A human has no
+      // equivalent pre-commit reveal moment (they click, it just happens), so this is the closest
+      // honest analog: react to how the position they just landed in evaluates, after the fact.
+      const newEval = evaluate(nextState, owner);
+      const prevEval = lastOwnEvalRef.current.get(owner);
+      lastOwnEvalRef.current.set(owner, newEval);
+      setCharacterState(prevEval !== undefined && newEval < prevEval - WORRIED_EVAL_DROP_THRESHOLD ? 'worried' : 'idle');
+    } else {
+      setCharacterState('idle');
+    }
+    if (won) {
       // Committing the move above already flips engine.gameOver true — without this delay the
       // win screen would replace the badges on the very next render and `celebrate` would never
       // actually be visible (found via manual browser verification, see DECISIONS.md). Track

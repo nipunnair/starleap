@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { TierName } from '../../ai/tiers';
-import { PERSONALITIES } from './characterPersonality';
+import { PERSONALITIES, type CharacterId } from './characterPersonality';
 
 export type CharacterState = 'idle' | 'thinking' | 'found-it' | 'move' | 'celebrate' | 'worried';
 
@@ -14,7 +13,7 @@ const CHARACTER_STATES: readonly CharacterState[] = [
 ];
 
 export interface CharacterAvatarProps {
-  readonly tier: TierName;
+  readonly tier: CharacterId;
   readonly state: CharacterState;
   /** Pixel width/height (square). Defaults to 64 — the original single fixed size. */
   readonly size?: number;
@@ -29,13 +28,13 @@ const PORTRAIT_MODULES = import.meta.glob<string>('../../assets/avatars/*.webp',
   import: 'default',
 });
 
-function portraitFor(tier: TierName, state: CharacterState): string | undefined {
+function portraitFor(tier: CharacterId, state: CharacterState): string | undefined {
   const suffix = `/${tier.toLowerCase()}-${state}.webp`;
   const key = Object.keys(PORTRAIT_MODULES).find((k) => k.endsWith(suffix));
   return key ? PORTRAIT_MODULES[key] : undefined;
 }
 
-function hasFullPortraitSet(tier: TierName): boolean {
+function hasFullPortraitSet(tier: CharacterId): boolean {
   return CHARACTER_STATES.every((s) => portraitFor(tier, s) !== undefined);
 }
 

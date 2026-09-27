@@ -495,10 +495,6 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   transform: scale(1.12);
 }
 
-.seat-badge__human {
-  color: var(--seat-color);
-}
-
 .seat-badge__label {
   font-size: 0.65rem;
   font-weight: 700;

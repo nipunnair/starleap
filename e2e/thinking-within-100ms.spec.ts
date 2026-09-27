@@ -19,10 +19,13 @@ test.describe('AI thinking state timing (IMPLEMENTATION_PLAN.md P6.6 / SPEC.md Â
     let turnStartedAt: number | null = null;
     let thinkingSeenAt: number | null = null;
 
+    // Scoped to Nova specifically (data-tier) â€” every seat now renders a "character-avatar" (see
+    // DECISIONS.md: SeatBadges), so an unscoped getByTestId would hit a strict-mode violation
+    // with 2 matches (Nova's and the human's own Astro badge).
     for (let i = 0; i < 400; i++) {
       const [turnText, avatarState] = await Promise.all([
         page.getByTestId('turn-indicator').textContent(),
-        page.getByTestId('character-avatar').getAttribute('data-state'),
+        page.locator('[data-testid="character-avatar"][data-tier="Nova"]').getAttribute('data-state'),
       ]);
       const now = Date.now();
 

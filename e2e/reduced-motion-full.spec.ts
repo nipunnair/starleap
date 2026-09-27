@@ -12,9 +12,13 @@ test.describe('prefers-reduced-motion covers Phase 6/7 additions (IMPLEMENTATION
     await page.locator('circle[stroke="#50c88c"]').first().click();
 
     // Wait until it's Nova's turn (the avatar exists and is in the thinking state).
-    await page.waitForSelector('[data-testid="character-avatar"][data-state="thinking"]', { timeout: 5_000 });
+    await page.waitForSelector('[data-testid="character-avatar"][data-tier="Nova"][data-state="thinking"]', {
+      timeout: 5_000,
+    });
 
-    const avatarFace = page.locator('.starleap-avatar__face');
+    // Scoped to Nova specifically — every seat now renders its own ".starleap-avatar__face" (see
+    // DECISIONS.md: SeatBadges), so an unscoped locator would hit a strict-mode violation.
+    const avatarFace = page.locator('[data-testid="character-avatar"][data-tier="Nova"] .starleap-avatar__face');
     const durationSeconds = await avatarFace.evaluate((el) => parseFloat(getComputedStyle(el).animationDuration));
     // The global `* { animation-duration: 0.001ms !important }` rule under reduced motion —
     // the browser normalizes this to seconds (1e-6s), so compare numerically, not by string.

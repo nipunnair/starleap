@@ -11,6 +11,9 @@ const BADGE_SIZE = 44;
  * cluster instead of sitting on top of it, without drifting outside the board's SVG viewBox
  * (which already has generous padding — see boardGeometry.ts). */
 const OUTWARD_OFFSET = 20;
+/** The human seat's own character — see characterPersonality.ts. Not a TierName (never
+ * selectable as an AI difficulty); just another CharacterId as far as CharacterAvatar cares. */
+const HUMAN_CHARACTER = 'Astro';
 
 export interface SeatBadgesProps {
   readonly game: GameState;
@@ -19,13 +22,14 @@ export interface SeatBadgesProps {
    * game.currentPlayer: the caller needs to keep highlighting a just-won seat through the
    * celebrate animation, after currentPlayer has already advanced past them. */
   readonly activePlayer: number;
-  /** State to show for the active seat, if it's AI-controlled; every other seat renders 'idle'.
-   * Ignored for human seats, which have no expression states. */
+  /** State to show for the active seat. GameScreen only ever drives 'thinking'/'found-it' for an
+   * AI-controlled seat (a human doesn't run a search to reveal), but 'move'/'celebrate'/'worried'
+   * apply to either. */
   readonly activeCharacterState: CharacterState;
 }
 
 /**
- * One identity badge per seat (AI portrait or a plain human marker), positioned at that player's
+ * One identity badge per seat (each seat's own character portrait), positioned at that player's
  * own starting corner — replaces the old single fixed "the opponent" avatar, which only ever
  * showed the first AI seat and never updated for the others in 3+-player games (see
  * DECISIONS.md).
@@ -47,6 +51,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
         const top = ((py - minY) / height) * 100;
         const isActive = seat.player === activePlayer;
         const color = PLAYER_COLORS[seat.player % PLAYER_COLORS.length]!;
+        const tier = config === 'human' ? HUMAN_CHARACTER : config;
 
         return (
           <div
@@ -56,16 +61,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
             style={{ left: `${left}%`, top: `${top}%`, '--seat-color': color } as CSSProperties}
           >
             <div className="seat-badge__ring">
-              {config === 'human' ? (
-                <div className="seat-badge__human" data-testid="seat-badge-human">
-                  <svg viewBox="0 0 24 24" width={BADGE_SIZE * 0.55} height={BADGE_SIZE * 0.55} aria-hidden="true">
-                    <circle cx="12" cy="8" r="4" fill="currentColor" />
-                    <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="currentColor" />
-                  </svg>
-                </div>
-              ) : (
-                <CharacterAvatar tier={config} state={isActive ? activeCharacterState : 'idle'} size={BADGE_SIZE} />
-              )}
+              <CharacterAvatar tier={tier} state={isActive ? activeCharacterState : 'idle'} size={BADGE_SIZE} />
             </div>
             <span className="seat-badge__label" data-testid={`seat-badge-label-${seat.player}`}>
               {playerLabel(seat.player)}

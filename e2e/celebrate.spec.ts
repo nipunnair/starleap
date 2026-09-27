@@ -13,10 +13,13 @@ test.describe('Celebrate trigger (IMPLEMENTATION_PLAN.md P6.5 / SPEC.md §4.7)',
     await page.goto('/?e2eScenario=almostWon');
     await expect(page.getByTestId('game-screen')).toBeVisible();
 
+    // Scoped to Rigel specifically (data-tier) — every seat now renders a "character-avatar"
+    // (see DECISIONS.md: SeatBadges), so an unscoped getByTestId would hit a strict-mode
+    // violation with 2+ matches.
     let sawCelebrate = false;
     for (let i = 0; i < 100; i++) {
       if (await page.getByTestId('win-screen').isVisible()) break;
-      const state = await page.getByTestId('character-avatar').getAttribute('data-state');
+      const state = await page.locator('[data-testid="character-avatar"][data-tier="Rigel"]').getAttribute('data-state');
       if (state === 'celebrate') {
         sawCelebrate = true;
         break;
