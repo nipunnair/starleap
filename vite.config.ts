@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
         : [
             VitePWA({
               registerType: 'autoUpdate',
+              workbox: { globPatterns: ['**/*.{js,css,html,svg,webp}'] },
               includeAssets: ['favicon.svg'],
               manifest: {
                 name: 'STARLEAP',

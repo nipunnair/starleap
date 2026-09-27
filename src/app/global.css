@@ -158,72 +158,137 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   }
 }
 
-/* P13.2: menu visual hierarchy — primary CTA group (New game / Resume / quick-starts) visually
-   dominant over the secondary group (Rules/Settings/Tutorial). Styling only, no behavior change. */
+/* Landing page: art-directed from art/landing-source.png (assets sliced by
+   scripts/extract-landing-assets.py). Real buttons/text over the artwork — the baked-in UI in the
+   source image is a mockup only. Palette: cyan #00e5ff / green #1dff7a / navy glass. */
+.menu-screen {
+  position: relative;
+  isolation: isolate;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding-inline: max(16px, 4vw);
+  background-color: #0b1020;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-logo {
+  margin: 8px 0 0;
+  line-height: 0;
+  filter: drop-shadow(0 0 18px rgba(0, 229, 255, 0.45));
+}
+
+.menu-logo img {
+  width: min(375px, 70vw);
+  height: auto;
+}
+
+.menu-stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px 5vw;
+  width: 100%;
+  max-width: 1100px;
+  margin-block: 12px;
+}
+
+.menu-actions {
+  flex: 0 1 280px;
+  min-width: 240px;
+}
+
+.menu-board {
+  flex: 1 1 340px;
+  min-width: 0;
+  max-width: min(575px, 100%);
+  height: auto;
+  filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.6));
+}
+
+/* Primary CTA group dominates the secondary (Rules/Settings/Tutorial) group. */
 .menu-primary-actions {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-block: 24px;
+  margin-block: 8px 20px;
 }
 
 .menu-cta {
   font-size: 1.1rem;
   font-weight: 700;
-  padding: 16px 20px;
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  background: #4f8ff7;
+  padding: 14px 20px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #04121c;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.menu-cta:hover {
+  transform: translateY(-1px);
+}
+
+.menu-cta:focus-visible,
+.menu-secondary-actions button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
 }
 
 .menu-cta--primary {
-  /* P13.6: darkened from the original #4f8ff7 — that shade only cleared 3.17:1 contrast
-     against the white label text, below the 4.5:1 AA bar for non-large text (axe flagged it). */
-  background: #3568c9;
+  background: #00e5ff;
+  box-shadow: 0 0 22px rgba(0, 229, 255, 0.45);
 }
 
 .menu-cta--resume {
-  background: #54c47e;
+  background: #1dff7a;
+  box-shadow: 0 0 22px rgba(29, 255, 122, 0.4);
 }
 
 .menu-cta--quickstart {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
-  padding: 12px 16px;
-  background: rgba(79, 143, 247, 0.18);
-  border: 1px solid rgba(79, 143, 247, 0.6);
-  color: #f4f4f8;
+  background: rgba(20, 84, 140, 0.75);
+  border-color: rgba(80, 170, 255, 0.55);
+  color: #f4f8ff;
+  backdrop-filter: blur(4px);
+}
+
+.menu-cta--quickstart-alt {
+  background: rgba(14, 40, 78, 0.75);
+  border-color: rgba(80, 130, 220, 0.45);
 }
 
 .menu-secondary-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-block: 8px 20px;
 }
 
-/* P13.3: starfield hero behind the menu header — pure CSS/SVG twinkle, no canvas. */
-.menu-hero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 12px;
-  padding-block: 28px;
+.menu-secondary-actions button {
+  flex: 1 1 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 8px 14px;
+  background: rgba(10, 16, 40, 0.55);
+  border: 1px solid rgba(200, 215, 255, 0.35);
+  color: rgba(244, 244, 248, 0.9);
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.menu-hero h1 {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  text-align: center;
-}
-
+/* Twinkling stars layered over the nebula plate (pure CSS/SVG, no canvas). */
 .starleap-starfield {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
 }
 
@@ -242,23 +307,13 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   }
 }
 
-.menu-secondary-actions button {
-  font-size: 0.9rem;
-  font-weight: 400;
-  padding: 8px 14px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: rgba(244, 244, 248, 0.8);
-  border-radius: 6px;
-}
-
-/* P13.4: AI character showcase row — presentational only, no seat picker/game-start wiring. */
+/* AI character showcase — presentational only, no seat picker/game-start wiring. */
 .menu-character-showcase {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
-  margin-block: 24px;
+  gap: 16px 32px;
+  margin-block: 16px;
 }
 
 .menu-character-showcase__item {
@@ -266,18 +321,52 @@ body[data-theme='chhalaang'] .starleap-cell:not(.starleap-cell--highlighted) {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 140px;
+  width: 190px;
+}
+
+.menu-character-showcase__portrait {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+}
+
+.menu-character-showcase__portrait--nova {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.55);
+}
+.menu-character-showcase__portrait--vega {
+  box-shadow: 0 0 20px rgba(176, 124, 255, 0.55);
+}
+.menu-character-showcase__portrait--rigel {
+  box-shadow: 0 0 20px rgba(80, 170, 255, 0.55);
+}
+.menu-character-showcase__portrait--sirius {
+  box-shadow: 0 0 20px rgba(255, 200, 80, 0.55);
 }
 
 .menu-character-showcase__name {
-  margin: 4px 0 0;
+  margin: 8px 0 0;
   font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .menu-character-showcase__blurb {
   margin: 4px 0 0;
   font-size: 0.85rem;
-  color: rgba(244, 244, 248, 0.75);
+  color: rgba(244, 244, 248, 0.85);
+}
+
+.menu-onboarding button {
+  background: rgba(10, 16, 40, 0.7);
+  border: 1px solid rgba(200, 215, 255, 0.4);
+  color: #f4f4f8;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+@media (max-width: 720px) {
+  .menu-actions {
+    flex-basis: 100%;
+  }
 }
 
 /* P11.6: turn-indicator visual salience — larger, bolder, tinted by the mover's color (set as

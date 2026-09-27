@@ -39,17 +39,15 @@ export function StarfieldHero() {
     <svg
       className="starleap-starfield"
       data-testid="starfield-hero"
-      viewBox="0 0 100 100"
-      preserveAspectRatio="none"
       aria-hidden="true"
     >
       {STARS.map((star, i) => (
         <circle
           key={i}
           className="starleap-star"
-          cx={star.x}
-          cy={star.y}
-          r={star.radius}
+          cx={`${star.x}%`}
+          cy={`${star.y}%`}
+          r={star.radius * 1.3}
           style={{
             animationDelay: `${star.delay}s`,
             animationDuration: `${star.duration}s`,

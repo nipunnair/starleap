@@ -506,3 +506,12 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   bold), so it needs the full 4.5:1 AA ratio, not the 3:1 large-text bar; `#4f8ff7` against white
   only cleared 3.17:1. `#3568c9` clears ~5.28:1, computed by hand against the WCAG relative-
   luminance formula and confirmed by rerunning `axe-audit.spec.ts`'s menu-screen check (passes).
+
+- **Landing page rebuilt around commissioned art (`art/landing-source.png`), user-directed, outside
+  the phase plan.** The source image is a mockup with baked-in buttons/text, so it is *not* used
+  as a flat background: `scripts/extract-landing-assets.py` slices it into a UI-free nebula plate
+  (inpainted), the board cutout, logo, and four tier portraits (webp, ~100KB total), and the menu
+  keeps real HTML buttons/text (a11y, tests, blurbs from `TIER_BLURBS`, not the mockup's typos).
+  Assets are imported through Vite so `--base` for GitHub Pages and singlefile inlining both work.
+  Workbox precache extended to `webp` so the PWA stays offline-capable. Hosting unchanged: repo
+  is public, so the existing GitHub Pages workflow remains free and sufficient.
