@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import { createInitialState, type PlayerCount } from '../state';
+import { createInitialState, type GameState, type PlayerCount } from '../state';
 import { generateLegalMoves } from '../moves';
-import { applyMove } from '../apply';
+import { applyMove, skipFinishedPlayers } from '../apply';
 import { onBoard, key } from '../coords';
-import { cornerOf } from '../board';
+import { BOARD, cornerOf } from '../board';
+import { hasWon } from '../terminal';
 
 function noTwoPegsShareACell(pegs: readonly { cell: { x: number; y: number; z: number } }[]): boolean {
   const seen = new Set<string>();
@@ -79,5 +80,48 @@ describe('applyMove (SPEC.md §2.5-2.7)', () => {
       }),
       { numRuns: 50 },
     );
+  });
+});
+
+/** Relocates `player`'s pegs into their own target corner (all 10 cells) — a finished player,
+ * without playing an actual game to reach that position. */
+function finishPlayer(state: GameState, player: number): GameState {
+  const seat = state.seats.find((s) => s.player === player)!;
+  const targetCells = BOARD.corners[seat.targetCorner];
+  let i = 0;
+  const pegs = state.pegs.map((p) => (p.owner === player ? { ...p, cell: targetCells[i++]!, hasLeftStart: true } : p));
+  return { ...state, pegs };
+}
+
+describe('skipFinishedPlayers (SPEC.md §2.6: "the game continues for the remaining players")', () => {
+  it('advances past a finished current player to the next unfinished one, touching no pegs', () => {
+    let state = createInitialState(3);
+    state = { ...finishPlayer(state, 0), currentPlayer: 0 };
+    expect(hasWon(state, 0)).toBe(true);
+
+    const next = skipFinishedPlayers(state);
+    expect(next.currentPlayer).toBe(1);
+    expect(next.pegs).toBe(state.pegs);
+  });
+
+  it('skips multiple consecutive finished players in one call', () => {
+    let state = createInitialState(3);
+    state = finishPlayer(state, 0);
+    state = { ...finishPlayer(state, 1), currentPlayer: 0 };
+
+    expect(skipFinishedPlayers(state).currentPlayer).toBe(2);
+  });
+
+  it('is a no-op (same reference) when the current player has not finished', () => {
+    const state = createInitialState(2);
+    expect(skipFinishedPlayers(state)).toBe(state);
+  });
+
+  it('never spins forever, even in the pathological case where every seated player has finished', () => {
+    let state = createInitialState(2);
+    state = finishPlayer(state, 0);
+    state = { ...finishPlayer(state, 1), currentPlayer: 0 };
+
+    expect(() => skipFinishedPlayers(state)).not.toThrow();
   });
 });

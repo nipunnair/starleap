@@ -5,7 +5,7 @@ import { MenuScreen } from './MenuScreen';
 import { RulesScreen } from './RulesScreen';
 import { SettingsScreen } from './SettingsScreen';
 import { TutorialScreen } from './TutorialScreen';
-import { buildSevenHopChainScenario, buildAlmostWonScenario } from './debugScenarios';
+import { buildSevenHopChainScenario, buildAlmostWonScenario, buildOnePlayerFinishedScenario } from './debugScenarios';
 import { saveGame, loadGame, clearSavedGame, hasSavedGame } from './persistence';
 import { hasSeenOnboarding, markOnboardingSeen } from './onboarding';
 import { useSettings } from './settingsStore';
@@ -37,6 +37,15 @@ function debugScenarioFromUrl(): GameConfig | null {
       playerCount: 2,
       seats: ['human', 'Rigel'],
       initialGameState: buildAlmostWonScenario(),
+    };
+  }
+  if (scenario === 'onePlayerFinished') {
+    // Player 0 (Sirius) is the already-finished seat; distinct from player 2's tier (Rigel) so
+    // e2e assertions can tell the two badges apart unambiguously.
+    return {
+      playerCount: 3,
+      seats: ['Sirius', 'human', 'Rigel'],
+      initialGameState: buildOnePlayerFinishedScenario(),
     };
   }
   return null;

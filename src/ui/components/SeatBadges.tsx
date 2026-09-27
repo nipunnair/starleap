@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { CORNER_APEX } from '../../engine/board';
 import { project } from '../../engine/coords';
 import type { GameState } from '../../engine/state';
+import { hasWon } from '../../engine/terminal';
 import { CharacterAvatar, type CharacterState } from './CharacterAvatar';
 import { BOARD_VIEWBOX, CELL_SPACING, PLAYER_COLORS } from './boardGeometry';
 import type { SeatConfig } from './GameScreen';
@@ -57,8 +58,14 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
         const left = ((px - minX) / width) * 100;
         const top = ((py - minY) / height) * 100;
         const isActive = seat.player === activePlayer;
+        const finished = hasWon(game, seat.player);
         const color = PLAYER_COLORS[seat.player % PLAYER_COLORS.length]!;
         const tier = config === 'human' ? HUMAN_CHARACTER : config;
+        // A finished seat never becomes active again (GameScreen/useGameEngine skip its turns —
+        // see skipFinishedPlayers), but shouldn't wait for that to happen to look happy: lock in
+        // 'celebrate' the instant they finish, permanently, rather than only for the brief
+        // celebrate-then-idle window the *last*-to-finish player gets before the win screen.
+        const state: CharacterState = finished ? 'celebrate' : isActive ? activeCharacterState : 'idle';
 
         return (
           <div
@@ -68,7 +75,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
             style={{ left: `${left}%`, top: `${top}%`, '--seat-color': color } as CSSProperties}
           >
             <div className="seat-badge__ring">
-              <CharacterAvatar tier={tier} state={isActive ? activeCharacterState : 'idle'} size={BADGE_SIZE} />
+              <CharacterAvatar tier={tier} state={state} size={BADGE_SIZE} />
             </div>
             <span className="seat-badge__label" data-testid={`seat-badge-label-${seat.player}`}>
               {tier}

@@ -85,3 +85,31 @@ export function buildAlmostWonScenario(): GameState {
 
   return { playerCount, seats, pegs, currentPlayer: 1, round: 10, cordonNeutralCorners: true };
 }
+
+/**
+ * 3-player game where player 0 has already finished (all 10 pegs resting in their own target
+ * corner) — players 1 (human) and 2 (AI) are still at their normal starting positions.
+ * `currentPlayer` is deliberately set to 0, the finished player, so a test can assert
+ * `skipFinishedPlayers` catches it immediately on mount (via useGameEngine's initializer), not
+ * just mid-game. Regression fixture for the bug a player found in production: a finished player
+ * kept taking normal turns forever, including being forced to move an already-home peg back out
+ * (SPEC.md §2.6 says the game "continues for the remaining players" — a finished one should sit
+ * out, not keep playing). See DECISIONS.md.
+ */
+export function buildOnePlayerFinishedScenario(): GameState {
+  const playerCount: PlayerCount = 3;
+  const plan = SEATING_PLANS[playerCount];
+  const seats = plan.map((startCorner, player) => ({
+    player,
+    startCorner,
+    targetCorner: OPPOSITE_CORNER[startCorner],
+  }));
+
+  const pegs: Peg[] = [
+    ...BOARD.corners[seats[0]!.targetCorner].map((cell, i) => ({ id: `p0-${i}`, owner: 0, cell, hasLeftStart: true })),
+    ...BOARD.corners[seats[1]!.startCorner].map((cell, i) => ({ id: `p1-${i}`, owner: 1, cell, hasLeftStart: false })),
+    ...BOARD.corners[seats[2]!.startCorner].map((cell, i) => ({ id: `p2-${i}`, owner: 2, cell, hasLeftStart: false })),
+  ];
+
+  return { playerCount, seats, pegs, currentPlayer: 0, round: 5, cordonNeutralCorners: true };
+}

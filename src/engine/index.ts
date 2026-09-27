@@ -22,7 +22,7 @@ export {
   MAX_CHAIN_HOPS,
 } from './moves';
 
-export { applyMove, advanceTurnWithoutMove } from './apply';
+export { applyMove, advanceTurnWithoutMove, skipFinishedPlayers } from './apply';
 
 export { ZOBRIST_TABLE, zobristHashOf, zobristUpdateForMove } from './zobrist';
 

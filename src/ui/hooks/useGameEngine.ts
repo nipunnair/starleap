@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useReducer } from 'react';
 import { createInitialState, type GameState, type PlayerCount } from '../../engine/state';
 import { generateLegalMoves, type Move } from '../../engine/moves';
-import { applyMove as engineApplyMove } from '../../engine/apply';
+import { applyMove as engineApplyMove, skipFinishedPlayers } from '../../engine/apply';
 import { isGameOver } from '../../engine/terminal';
 
 interface EngineState {
@@ -28,7 +28,10 @@ function reducer(state: EngineState, action: Action): EngineState {
       return { ...state, selectedPegId: null };
     case 'APPLY_MOVE':
       return {
-        game: engineApplyMove(state.game, action.move),
+        // skipFinishedPlayers only ever changes currentPlayer/round, never peg positions, so
+        // undo (which restores `previousGame`, captured below as the pre-move *and* pre-skip
+        // state) still lands exactly back on the mover's own turn, not a skipped-past one.
+        game: skipFinishedPlayers(engineApplyMove(state.game, action.move)),
         selectedPegId: null,
         previousGame: state.game,
         canUndo: action.isHuman,
@@ -37,7 +40,9 @@ function reducer(state: EngineState, action: Action): EngineState {
       if (!state.canUndo || !state.previousGame) return state;
       return { game: state.previousGame, selectedPegId: null, previousGame: null, canUndo: false };
     case 'LOAD_STATE':
-      return { game: action.game, selectedPegId: null, previousGame: null, canUndo: false };
+      // Defensive: a resumed/loaded save could in principle land on a since-finished player's
+      // turn (e.g. an older save predating this rule). Cheap no-op otherwise.
+      return { game: skipFinishedPlayers(action.game), selectedPegId: null, previousGame: null, canUndo: false };
     default:
       return state;
   }
@@ -49,7 +54,10 @@ export function useGameEngine(
   cordonNeutralCorners: boolean = true,
 ) {
   const [state, dispatch] = useReducer(reducer, playerCount, (pc) => ({
-    game: initialGameState ?? createInitialState(pc, { cordonNeutralCorners }),
+    // A freshly created game never starts on a finished player, but a resumed save or a
+    // hand-built scenario (Tutorial, debug fixtures) bypasses the reducer entirely here, so it
+    // needs the same defensive skipFinishedPlayers the LOAD_STATE case gets.
+    game: skipFinishedPlayers(initialGameState ?? createInitialState(pc, { cordonNeutralCorners })),
     selectedPegId: null,
     previousGame: null,
     canUndo: false,

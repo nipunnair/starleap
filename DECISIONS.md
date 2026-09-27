@@ -625,3 +625,33 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
      further out: a smaller badge needs less outward push to clear the peg *and* has a smaller
      footprint to overflow a narrow viewport with, addressing both constraints from the same
      change instead of trading one off against the other.
+
+- **Bug fix, user-reported: a finished player kept taking turns forever, pulling already-home pegs
+  back out of their target corner.** SPEC.md §2.6 says a multiplayer game "continues for the
+  remaining players" once someone finishes — the implementation never actually acted on that: a
+  finished player kept getting normal turns (STARLEAP defines no "pass" — a player must move some
+  peg every turn), and nothing stopped that move from being a peg leaving the target corner,
+  making `hasWon` false again until they wandered back in. Visually: a "won" corner that kept
+  shedding and regaining pegs, never actually ending the game.
+  Fixed at the engine layer, not as a UI patch: `skipFinishedPlayers` (`engine/apply.ts`) repeatedly
+  advances the turn (reusing `advanceTurnWithoutMove`, previously only used for the zero-legal-
+  moves edge case) past any player who already satisfies `hasWon`, bounded by `playerCount` so it
+  can't spin forever even in the all-finished case `isGameOver` should already have caught one call
+  earlier. Wired into `useGameEngine`'s `APPLY_MOVE` and `LOAD_STATE` cases, *and* into the hook's
+  own initial-state lazy initializer — the latter matters because a resumed save or a hand-built
+  scenario (Tutorial, debug fixtures) bypasses the reducer entirely and would otherwise skip the
+  very first check. `hasWon`/`isGameOver`/`rank` (peg-position-based) are unaffected either way, so
+  no interaction with undo, stats, or the existing "only one player left unfinished" end condition.
+  Deliberately scoped to the live-game engine path only, not `engine/apply.ts`'s core `applyMove`
+  itself (used directly by AI search/self-play) — changing search/self-play's turn semantics here
+  too would be a much larger, uncalled-for blast radius into already-calibrated AI behavior and
+  self-play statistics for a live-gameplay UX bug.
+  Also, per the same report: a finished seat's badge now locks into the `celebrate` (happy)
+  expression permanently the instant they finish (`SeatBadges`, checking `hasWon` per seat every
+  render) rather than only for the brief celebrate-then-idle window the previous code gave the
+  *last*-to-finish player before the win screen appears.
+  Added a permanent regression fixture (`debugScenarios.ts`'s `buildOnePlayerFinishedScenario`,
+  reached via `?e2eScenario=onePlayerFinished`) and `e2e/finished-player.spec.ts`, which drives a
+  full round and asserts the finished seat's turn-indicator text and badge state throughout — not
+  just at a single snapshot — plus 4 new unit tests for `skipFinishedPlayers` directly
+  (`engine/__tests__/apply.test.ts`).
