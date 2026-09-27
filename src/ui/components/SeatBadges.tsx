@@ -44,6 +44,10 @@ export interface SeatBadgesProps {
  */
 export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: SeatBadgesProps) {
   const { minX, minY, width, height } = BOARD_VIEWBOX;
+  // "You" only reads unambiguously with exactly one human seat — a 2+-human pass-and-play game
+  // shares one device across multiple people, so no single seat is unambiguously "you" (falls
+  // back to the character name, same reasoning as GameScreen's soloHumanSeat/YOUR_TURN_LABEL).
+  const soloHumanSeat = seats.filter((s) => s === 'human').length === 1;
 
   return (
     <>
@@ -61,6 +65,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
         const finished = hasWon(game, seat.player);
         const color = PLAYER_COLORS[seat.player % PLAYER_COLORS.length]!;
         const tier = config === 'human' ? HUMAN_CHARACTER : config;
+        const label = config === 'human' && soloHumanSeat ? 'You' : tier;
         // A finished seat never becomes active again (GameScreen/useGameEngine skip its turns —
         // see skipFinishedPlayers), but shouldn't wait for that to happen to look happy: lock in
         // 'celebrate' the instant they finish, permanently, rather than only for the brief
@@ -78,7 +83,7 @@ export function SeatBadges({ game, seats, activePlayer, activeCharacterState }: 
               <CharacterAvatar tier={tier} state={state} size={BADGE_SIZE} />
             </div>
             <span className="seat-badge__label" data-testid={`seat-badge-label-${seat.player}`}>
-              {tier}
+              {label}
             </span>
           </div>
         );

@@ -53,3 +53,8 @@ export const PLAYER_COLOR_NAMES: readonly string[] = ['Red', 'Blue', 'Yellow', '
 export function playerLabel(seat: number): string {
   return PLAYER_COLOR_NAMES[seat] ?? `Player ${seat}`;
 }
+
+/** Turn-indicator text for the one human seat in a solo-human game (see GameScreen's
+ * `soloHumanSeat`) — "Your turn" instead of a color name, since there's only one "you". Shared
+ * with e2e/helpers.ts and e2e/thinking-within-100ms.spec.ts, which need to recognize it too. */
+export const YOUR_TURN_LABEL = 'Your turn';

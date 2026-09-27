@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { YOUR_TURN_LABEL } from '../src/ui/components/boardGeometry';
 
 /**
  * Regression test for a bug a player found in production: a player who had already finished (all
@@ -23,9 +24,9 @@ test.describe('A finished player sits out (regression)', () => {
     await expect(finishedBadge).toHaveAttribute('data-state', 'celebrate');
 
     // The fixture's currentPlayer is 0 (Sirius, finished) — confirm it was skipped immediately on
-    // mount, landing on player 1 (human, "Blue") rather than ever showing Sirius as active.
+    // mount, landing on player 1 (the solo human) rather than ever showing Sirius as active.
     const turnIndicator = page.getByTestId('turn-indicator');
-    await expect(turnIndicator).toContainText('Blue');
+    await expect(turnIndicator).toContainText(YOUR_TURN_LABEL);
     await expect(turnIndicator).not.toContainText('Sirius');
 
     // Play the human's (player 1's) move, then watch a full round cycle through player 2
@@ -43,7 +44,7 @@ test.describe('A finished player sits out (regression)', () => {
       expect(turnText, 'the finished player must never become the active turn again').not.toContain('Sirius');
       expect(badgeState, "the finished player's badge must stay celebrating, not idle/thinking/etc").toBe('celebrate');
       if (turnText?.includes('Rigel')) sawRigelTurn = true;
-      if (sawRigelTurn && turnText?.includes('Blue')) sawReturnToHuman = true;
+      if (sawRigelTurn && turnText?.includes(YOUR_TURN_LABEL)) sawReturnToHuman = true;
       await page.waitForTimeout(50);
     }
 

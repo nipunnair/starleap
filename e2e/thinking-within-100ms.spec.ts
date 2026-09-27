@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { playerLabel } from '../src/ui/components/boardGeometry';
+import { YOUR_TURN_LABEL } from '../src/ui/components/boardGeometry';
 
 test.describe('AI thinking state timing (IMPLEMENTATION_PLAN.md P6.6 / SPEC.md ยง4.7)', () => {
   test('the thinking state appears within 100ms of the AI turn starting', async ({ page }) => {
@@ -15,7 +15,6 @@ test.describe('AI thinking state timing (IMPLEMENTATION_PLAN.md P6.6 / SPEC.md ย
     // applies (currentPlayer only flips then) โ€” so the deadline is measured from the moment the
     // turn indicator first shows something other than the human's own label, not from the click,
     // which would otherwise unfairly include the human's own move animation time.
-    const player0Label = playerLabel(0);
     let turnStartedAt: number | null = null;
     let thinkingSeenAt: number | null = null;
 
@@ -29,7 +28,7 @@ test.describe('AI thinking state timing (IMPLEMENTATION_PLAN.md P6.6 / SPEC.md ย
       ]);
       const now = Date.now();
 
-      if (turnStartedAt === null && turnText && !turnText.startsWith(player0Label)) {
+      if (turnStartedAt === null && turnText && !turnText.startsWith(YOUR_TURN_LABEL)) {
         turnStartedAt = now;
       }
       if (turnStartedAt !== null && avatarState === 'thinking') {

@@ -18,7 +18,7 @@ test.describe('Main menu (IMPLEMENTATION_PLAN.md P7.1)', () => {
     await expect(page.getByTestId('game-screen')).toBeVisible();
 
     // Committing a move triggers an autosave. Wait for the human's move to fully animate and
-    // apply (not just for the turn-indicator text, which also reads "Player 0's turn" before
+    // apply (not just for the turn-indicator text, which also reads "Your turn" before
     // anything has happened, since player 0 moves first).
     const peg = page.locator('[data-testid^="peg-p0-"]').first();
     await peg.click();

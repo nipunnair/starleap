@@ -88,7 +88,7 @@ test.describe('Settings (IMPLEMENTATION_PLAN.md P7.3)', () => {
 
     // Under reduced motion, AnimatedPeg resolves synchronously — well within a normal
     // multi-hundred-ms hop duration — so a short poll for a changed position (not a wait for
-    // turn-indicator text, which also reads "Player 0's turn" before anything has happened)
+    // turn-indicator text, which also reads "Your turn" before anything has happened)
     // both confirms the move completed and that it did so fast.
     await expect
       .poll(

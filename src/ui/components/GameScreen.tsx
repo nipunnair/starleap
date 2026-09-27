@@ -17,7 +17,7 @@ import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
 import type { CharacterState } from './CharacterAvatar';
 import { SeatBadges } from './SeatBadges';
-import { CELL_SPACING, PLAYER_COLORS, playerLabel } from './boardGeometry';
+import { CELL_SPACING, PLAYER_COLORS, playerLabel, YOUR_TURN_LABEL } from './boardGeometry';
 
 export type SeatConfig = 'human' | TierName;
 
@@ -323,7 +323,9 @@ export function GameScreen({
           ? characterState === 'thinking'
             ? `${currentSeat} is thinking...`
             : `${currentSeat}'s turn`
-          : `${playerLabel(engine.game.currentPlayer)}'s turn`}
+          : soloHumanSeat !== null
+            ? YOUR_TURN_LABEL
+            : `${playerLabel(engine.game.currentPlayer)}'s turn`}
       </p>
       {chainBadge && (
         <p data-testid="chain-badge" className="chain-badge">

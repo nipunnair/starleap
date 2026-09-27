@@ -25,7 +25,7 @@ test.describe('prefers-reduced-motion (IMPLEMENTATION_PLAN.md P5.7 / SPEC.md §4
 
     // Under reduced motion, AnimatedPeg resolves synchronously within one animation frame
     // rather than playing a multi-hundred-ms arc — confirmed by a changed peg position within a
-    // short poll (not by turn-indicator text, which also reads "Player 0's turn" before
+    // short poll (not by turn-indicator text, which also reads "Your turn" before
     // anything has happened, since player 0 moves first).
     await expect
       .poll(

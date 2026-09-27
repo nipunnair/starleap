@@ -662,3 +662,14 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   `soloHumanSeat` — the human's actual seat index, only when there's *exactly one* human seat: an
   all-AI game has no "you" to label (hidden entirely), and a 2+-human pass-and-play game shares one
   device across multiple people, so a single fixed "you" would be misleading either way.
+
+- **"Your turn" / "You" instead of the color name, user-requested.** For the solo-human case
+  (exactly one human seat — same scoping as the "You are Red" fix above), the turn-indicator now
+  reads "Your turn" instead of "Red's turn"/"Blue's turn"/etc., and the human's own seat badge is
+  labeled "You" instead of "Astro" (the portrait/expressions are unchanged — only the text label).
+  An AI's own turn still reads "Nova's turn"/"Nova is thinking..." as before; a 2+-human
+  pass-and-play game keeps the color-based label on both, since no single seat is unambiguously
+  "you" when multiple people share the device. `YOUR_TURN_LABEL` (boardGeometry.ts) is the single
+  source of truth for the exact string, shared by GameScreen and the e2e tests/helpers that need
+  to recognize it (`e2e/helpers.ts`'s `playUntilGameOver`, `thinking-within-100ms.spec.ts`,
+  `finished-player.spec.ts`), replacing their previous `playerLabel(0)`/"Red" dependency.
