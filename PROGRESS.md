@@ -1,14 +1,19 @@
 # PROGRESS
 
 ## Status
-Phases 1-13 COMPLETE, all gates green. Phase 13 (home screen & visual identity redesign) finished
-with P13.6 (full phase gate): fixed the carried-forward `.menu-cta--primary` axe contrast failure,
-confirmed axe zero critical/serious and Lighthouse 100/100 perf+a11y on the new `MenuScreen`, and
-updated `HANDOFF.md`'s future-scope table/bullets for the two items this phase completed.
-`IMPLEMENTATION_PLAN.md` has no more unchecked tasks — per AGENTS.md, stop here rather than
-inventing a new phase.
+Phases 1–13 are complete with their recorded gates green. Phases 14–16 are now planned,
+not implemented, following Nipun's request to add gamification to the implementation plan.
+The new scope covers reliable personal records, a Nova journey chapter, and offline daily
+challenges with a local leaderboard. Public rankings and broader chapter expansion stay deferred.
+Next executable task: **P14.1 — typed per-seat session statistics and record eligibility**.
 
 ## Done
+- **Gamification planning pass:** added P14.1–P14.6, P15.1–P15.6, and P16.1–P16.4 with
+  explicit scope, dependencies, reward/record semantics, and verification gates. Updated scope
+  instructions and marked the earlier scoring proposal superseded where conflicting. This was
+  documentation work only; all 16 new implementation tasks remain unchecked. Verification:
+  `git diff --check`, 134 unit tests, typecheck, and lint pass (one existing ConfigScreen
+  fast-refresh warning). No runtime changes; new phase gates have not been run.
 - **Bootstrap** (Step 1): docs/SPEC.md, docs/ARCHITECTURE.md, IMPLEMENTATION_PLAN.md, AGENTS.md,
   PROMPT_build.md, loop.sh, PROGRESS.md/DECISIONS.md/BLOCKED.md.
 - **Scaffold** (Step 2): Vite + React 18 + TypeScript (hand-written — create-vite CLI didn't
@@ -518,11 +523,9 @@ inventing a new phase.
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **`IMPLEMENTATION_PLAN.md` has no unchecked tasks left — all 13 phases are complete.** Per
-  AGENTS.md's scope guardrail, do not invent a new phase or start on a `HANDOFF.md` "Future scope"
-  item that isn't an explicit `- [ ]` line — the leaderboard/chain-reward-system/anonymous
-  telemetry/human-calibrated-difficulty-curve/comeback-kingmaker items still need a product
-  decision first and are out of bounds for an autonomous pass.
+- **P14.1** in `IMPLEMENTATION_PLAN.md`: define session statistics/record eligibility and tests.
+  Follow one-task-per-pass execution. Phases 14–16 are scheduled; none is built or gate-passed.
+  Public leaderboard infrastructure, telemetry, and additional chapters remain unscheduled.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -552,3 +555,7 @@ inventing a new phase.
 - Phase 11 (Feedback iteration): **GREEN** — P11.1-P11.8 all done
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
+
+- Phase 14 (Personal progress): **NOT STARTED**
+- Phase 15 (Nova journey): **NOT STARTED**
+- Phase 16 (Daily challenges): **NOT STARTED**

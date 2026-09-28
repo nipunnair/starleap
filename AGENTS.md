@@ -70,3 +70,14 @@ leaderboard items still listed above. Treat both like any other phase. If every 
 checked off and `IMPLEMENTATION_PLAN.md` has no more unchecked lines, stop. Do not invent a new
 phase or start on a `HANDOFF.md` item that isn't already an explicit `- [ ]` line in
 `IMPLEMENTATION_PLAN.md`.
+
+
+## Gamification scheduling update
+
+Nipun explicitly requested gamification additions to the implementation plan after the playtest.
+Phases 14–16 (`P14.1`–`P16.4`) are now in scope as specified in `IMPLEMENTATION_PLAN.md`:
+personal records, a Nova journey chapter, and offline daily puzzles/local challenge history.
+This is a narrow exception to the earlier future-scope guardrail, not permission to implement
+all of `GAMIFICATION_PLAN.md` or HANDOFF's suggestions. Public leaderboard services, telemetry,
+additional rival chapters, and rule-changing mechanics remain out of scope. The current plan
+supersedes conflicting historical proposal text. Execute one task per pass and stop after P16.4.

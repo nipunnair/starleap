@@ -439,3 +439,183 @@ stays ≥90 on performance and accessibility (Phase 8's bar).
       difficulty curve, kingmaker — untouched) and `PROGRESS.md`. —
       `npm test && npm run lint && npm run typecheck && npm run build && npx playwright test &&
       npm run lighthouse`
+
+## Gamification scope — scheduled after the September 2026 playtest
+
+Nipun requested additions to this implementation plan after the live-game review. Phases 14–16
+below are the bounded implementation scope; this planning pass does not implement them. These
+phases supersede conflicting proposals in `GAMIFICATION_PLAN.md`. Prior completed phases remain
+historical. Execute one unchecked task per pass, in order, with each phase gate blocking the next.
+
+Player loop: learn a chain → solve a short mission → earn a permanent medal → beat Nova → see
+one clear next objective → return for a daily challenge. Reward mastery, not time spent farming
+points. No spendable currency, unlimited hop-score accumulator, punitive attendance streak,
+locked free-play opponents, or replacement of legal-move hints.
+
+Keep React/SVG, the pure engine, worker AI, existing rules, and both build targets. Add pure
+progress/mission logic under `src/progression/` (imports engine only); storage/routing stay in
+`src/app/`. The engine must never import progression. Use existing art plus CSS/SVG treatments;
+no asset-generation dependency or new UI framework. New test files named below are deliverables
+of their respective tasks, not tests assumed to exist today.
+
+## Phase 14 — Trustworthy personal progress and a clearer match
+
+Scope: basic statistics remain per-seat at all player counts; persistent competitive records
+initially cover only standard 2P games with exactly one human and one named AI. Exclude tutorial,
+custom mission, debug-fixture, abandoned, and stalemated games from victory records. Keep hints
+available; do not claim records prove unaided play.
+
+GATE: per-player records survive resume, undo restores statistics, a result awards exactly once,
+legacy saves remain playable without invented historical stats, and no core rules change.
+
+- [ ] P14.1 Define typed session statistics and record eligibility in `src/progression/`:
+      per-seat committed move count, longest chain, long-hop count (`span > 1`), stable session
+      ID, and rules/AI/record version identifiers. Use before/after state plus the actual move
+      owner, never the newly advanced current player. Count only committed moves; undo restores
+      the previous statistics snapshot. Test multi-seat attribution, repeated undo/reapply,
+      terminal eligibility, and legacy sessions with incomplete history. —
+      `npx vitest run src/progression/__tests__/sessionStats.test.ts && npm run lint`
+- [ ] P14.2 Integrate statistics into the game reducer/session lifecycle and versioned save
+      envelope. Save board, stats, mode, session ID, and undo eligibility consistently; preserve
+      legacy v1 games and mark their historical records ineligible instead of resetting them to
+      apparent full-game zeroes. Validate loaded shapes, tolerate storage failure, and persist a
+      pending terminal result so reload between finishing and awarding cannot lose the result.
+      UI animation callbacks must not double-count commits. —
+      `npm test && npx playwright test progress-resume.spec.ts save-resume.spec.ts undo.spec.ts`
+- [ ] P14.3 Add a versioned local progress store and a bounded personal-best table (one best
+      victory per comparison key). Key by rules version, AI version/tier, human starting seat,
+      player count, and mode; freeze these at game start. Compare eligible victories by fewer
+      human moves; retain the existing record on ties. Mark sessions using undo ineligible for
+      the move-efficiency table, while allowing casual completion milestones. Atomically persist
+      records and last-applied session ID in one progress envelope; retry pending results safely.
+      Test duplicate completion/reload, version separation, corrupt/quota storage, and undo flags.
+      Local data is editable/device-local, not a trusted public rank. —
+      `npx vitest run src/progression/__tests__/records.test.ts src/app/__tests__/progressStore.test.ts`
+- [ ] P14.4 Add a compact per-seat “Home: N/10” indicator and target-corner labels/symbols to
+      normal matches. Distinguish waypoint-only corners without blocking chain previews. Reuse
+      existing portraits and add restrained board/peg depth via CSS/SVG, keeping cells, legal
+      destinations, focus, and player colors legible. Do not reintroduce the removed “You are
+      Red” line or shrink the playable board to fit a large HUD. Verify 360px layout and all
+      existing themes, keyboard operation, and reduced-motion text equivalence. —
+      `npx playwright test match-progress.spec.ts responsive-360.spec.ts keyboard-nav.spec.ts settings.spec.ts axe-audit.spec.ts`
+- [ ] P14.5 Upgrade results and add a “Personal records” screen: show the human's own moves and
+      chain record, clearly separate any match totals, distinguish win/loss/stalemate, announce a
+      new personal best once, and offer “Rematch” plus “Try Vega” after a Nova victory (next tier
+      thereafter, no nonexistent tier after Sirius). Use the existing start/discard-save flow.
+      Never present incomplete resumed-game statistics as full-game records. —
+      `npx playwright test personal-records.spec.ts post-game-stats.spec.ts win-screen.spec.ts`
+- [ ] P14.6 Run the full phase gate; cover new screens in axe, test record/save behavior in the
+      single-file build, and update PROGRESS/HANDOFF with actual results and limitations. No new
+      phase may start on a failed gate. —
+      `npm test && npm run typecheck && npm run lint && npm run build && npm run build:singlefile && npx playwright test && npm run lighthouse`
+
+## Phase 15 — Constellation Journey: a complete Nova chapter
+
+Scope: three authored micro-missions plus one standard 2P Nova match, using the existing rules.
+Mission goals are new scenario objectives, not new move legality. Missions have one controllable
+human side and stationary pivot pegs; their adapter advances the human's moves without invoking
+normal multiplayer turn/win handling. Do not modify core applyMove/terminal semantics to make
+puzzles work. Fixed-pivot missions are explicitly labeled puzzles, not ordinary matches.
+
+Medals: one completion medal per mission, plus one efficiency star for completion within an
+explicit authored move budget without undo. Hints do not disqualify either. Replays retain the
+best medal but cannot generate currency or duplicate rewards. Failed attempts can restart freely.
+Complete the three missions to unlock the chapter's Nova encounter; win it to earn the Nova
+constellation badge and a cosmetic portrait frame. All tiers remain available in free play.
+
+GATE: a new player can complete the tutorial → three missions → Nova chapter → reward/results
+loop; progress and active attempts survive quit/reload; repeated completions never duplicate
+rewards. Keyboard and reduced-motion users receive the same information and unlocks.
+
+- [ ] P15.1 Extend the tutorial with a genuine two-hop chain stage and a target-corner lesson.
+      Advance only when the stated objective is actually satisfied (including the existing
+      long-jump stage); clicking a different legal step must not falsely complete a lesson.
+      Reuse Board and engine legality, with a concise explanation of equal gaps around a pivot.
+      Preserve skip/finish onboarding behavior. —
+      `npx playwright test tutorial.spec.ts tutorial-chain.spec.ts`
+- [ ] P15.2 Define mission schemas, pure objective/medal evaluation, and three Nova fixtures:
+      “Link two hops”, “Use a distant pivot”, and “Bring the straggler home”. Each has a stable
+      content version, explicit start state, goal, move budget, and a legal reference solution.
+      Validate each solution by replay through the real engine, check goal failures and budget
+      boundaries, and ensure displayed medals are achievable; do not claim an optimal solution
+      unless exhaustively proven. Keep solution data out of ordinary hint presentation. —
+      `npx vitest run src/progression/__tests__/missions.test.ts`
+- [ ] P15.3 Build a reusable mission session adapter/screen using Board and normal move
+      legality, with stationary pivots, goal text, move count, restart, single-step undo, success,
+      and retry. Persist mode/content version, initial/current board, stats, and undo-used flag;
+      unknown content versions fail gracefully without awarding a medal. Mission saves share
+      the existing single active-save slot and discard confirmation. —
+      `npx playwright test mission-play.spec.ts mission-resume.spec.ts`
+- [ ] P15.4 Add versioned chapter progress and a compact constellation map: three mission nodes
+      then the Nova encounter. Reuse opponent artwork; distinguish current/completed/locked
+      states with text and shape, not color alone. Show why a node is locked and one “Continue
+      journey” action on the menu. Starting a rival match persists its chapter context and uses
+      the real worker AI. Never award a chapter win from a fixture or a stale callback. —
+      `npm test && npx playwright test journey-navigation.spec.ts menu.spec.ts config.spec.ts`
+- [ ] P15.5 Wire permanent medals, the Nova badge, and an optional cosmetic frame through the
+      idempotent progress store. Award completion and efficiency separately, retain best medals
+      on replay, and preserve existing freely available themes. Results show what was earned
+      and the next mission; after Nova, offer a real Vega free-play match, not a button to an
+      unbuilt chapter. Add no attendance penalty or endless points counter. —
+      `npm test && npx playwright test journey-rewards.spec.ts reduced-motion-full.spec.ts`
+- [ ] P15.6 Add end-to-end coverage of the entire chapter, including loss/retry and interrupted
+      attempts. Use authored solutions for puzzle steps and real legal moves against worker Nova
+      for the rival encounter; fixtures may separately exercise rare failure/award boundaries.
+      Manually review desktop/360px clarity and record observations, without presenting agent
+      play as human retention validation. Run the full gate and update PROGRESS/HANDOFF. —
+      `npm test && npm run typecheck && npm run lint && npm run build && npm run build:singlefile && npx playwright test && npm run lighthouse`
+
+## Phase 16 — Daily discovery and a local challenge leaderboard
+
+Scope: a bundled rotation of seven authored puzzles, including the three Nova missions plus
+four new ones. The same UTC date + schedule/content version selects the same puzzle on every
+device with that version, fully offline. Repeats are intentional and disclosed; do not advertise
+an unlimited supply of unique daily content. The first played date is not derived from locale.
+
+Two modes: Practice (undo, ordinary hints, retries) and Daily attempt (ordinary hints, retries,
+no undo). Show that distinction before starting. Daily ranks are local best successful move
+counts per challenge ID/version, not global ranks or elapsed-time races. Best results from
+retries are allowed, with attempt count shown. Keep tied results tied. Persist a capped history
+of the latest 90 daily dates; first-time chapter medals remain permanent. Device clock changes
+must not erase progress; offline date manipulation is not an anti-cheat problem to pretend solved.
+
+GATE: UTC rollover, resume across midnight, content-version updates, retries, and storage failures
+behave predictably; daily attempts run in the offline PWA and file:// build with no API calls.
+
+- [ ] P16.1 Author four additional short chain/long-jump/endgame puzzles and a versioned seven-
+      puzzle schedule. Reuse Phase 15 schema/validation and reference solutions. Implement pure
+      UTC-date selection with an injected clock; freeze date, puzzle ID, and content version at
+      attempt start, including when resumed after midnight or an app update. —
+      `npx vitest run src/progression/__tests__/missions.test.ts src/progression/__tests__/daily.test.ts`
+- [ ] P16.2 Add “Daily challenge” entry and route it through the mission adapter; expose practice
+      and daily-attempt rules, restart, current objective, and next UTC refresh. Persist attempt
+      identity/count and finish rewards exactly once. Daily mode disables undo; legality hints
+      and accessibility assistance stay available. Reuse discard confirmation for an active save.
+      Display a static earned-medal message and update date collection without a breakable streak.
+      — `npx playwright test daily-challenge.spec.ts daily-resume.spec.ts`
+- [ ] P16.3 Add a clearly labeled “On this device” challenge leaderboard/history: best successful
+      move count and attempts per challenge/version, with personal improvements highlighted.
+      Do not compare different puzzles, expose fictional rivals, or label local results as world
+      ranks. Keep storage bounded, successful records monotonic, and show a nonblocking notice
+      when persistence is unavailable. Include a replay/practice action. —
+      `npm test && npx playwright test challenge-records.spec.ts`
+- [ ] P16.4 Extend offline and single-file E2E coverage to a complete daily attempt, persistence,
+      and reload. Run the full regression/accessibility/performance gate and update PROGRESS and
+      HANDOFF. Record the remaining need for real-player evaluation of challenge clarity,
+      completion, voluntary replay, and transition to the next opponent; add no telemetry in this
+      task. —
+      `npm test && npm run typecheck && npm run lint && npm run build && npm run build:singlefile && npx playwright test && npm run lighthouse`
+
+## Later decisions — not executable tasks
+
+A public daily leaderboard remains the intended social extension, not delivered by the local
+history above. It needs a separately approved service/operating scope: replay move transcripts
+using the same engine source, compute scores server-side, version challenges/rules, define retry
+and identity policy, rate-limit submissions, and keep ordinary play independent of the service.
+Replay validates legal results, not unaided human play. GitHub Pages continues serving the client;
+there is no requirement to fork the engine or abandon the offline build.
+
+Full Vega/Rigel/Sirius chapters, new generated artwork, telemetry, human-calibrated AI tuning,
+3–6-player progression, and rule-changing comeback mechanics are not scheduled here. Finish and
+review the Nova chapter before expanding content. After P16.4, stop unless new tasks are explicitly
+added by the user; do not implement this section autonomously.

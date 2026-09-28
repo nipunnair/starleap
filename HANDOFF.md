@@ -64,11 +64,10 @@ Game Designer, a UX/onboarding reviewer, a Technical Architect, and a QA/edge-ca
 reading the code cold with no shared framing) before anything was built. What follows is that
 critique folded in, organized by confidence level rather than by who raised it first.
 
-**2026-09-27: the chain-reward system and leaderboard-integrity questions below now have a real
-design** — see `GAMIFICATION_PLAN.md` at the repo root, commissioned ahead of a first public
-release. It resolves score semantics, the difficulty-ambiguity flag, reduced-motion parity, and
-adds a new single-player "challenge discovery" mechanic not discussed in the original six items.
-Still not scheduled into `IMPLEMENTATION_PLAN.md` — that remains a decision for a human to make.
+**Scheduling update:** Nipun requested gamification additions after the live-game review.
+`IMPLEMENTATION_PLAN.md` now schedules Phases 14–16; see its scope and gates for the authoritative
+plan. `GAMIFICATION_PLAN.md` is the earlier, partially superseded proposal. Nothing in these new
+phases is built yet. Historical recommendations below are retained for context, not authority.
 
 ### Confirmed bugs (verified in code, not opinion)
 
@@ -183,7 +182,10 @@ Still not scheduled into `IMPLEMENTATION_PLAN.md` — that remains a decision fo
 | Technical Architect | Menu redesign + prominent avatar **[Done — P13]** | Hint toggle (scoped to *just* the toggle) | Anonymous telemetry |
 | QA (framed as "resolve before shipping") | Leaderboard integrity model | Define "difficulty" unambiguously | Reduced-motion parity for any animation/reward change |
 
-Nothing above is scheduled. It's a menu to choose from, not a plan.
+The historical suggestions above are not an executable task list. Phases 14–16 in
+`IMPLEMENTATION_PLAN.md` now schedule personal records, the Nova journey, and offline daily
+puzzles/local history. Their explicit scope supersedes conflicting suggestions above. Public
+leaderboards, telemetry, further chapters, and core rule changes remain unscheduled.
 
 ## How to extend
 

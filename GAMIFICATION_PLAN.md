@@ -1,11 +1,18 @@
 # STARLEAP — Scoring & Gamification: Design Plan
 
-**Status: design only, nothing built.** Commissioned 2026-09-27, ahead of a first public release,
-to resolve exactly what `HANDOFF.md`'s "Future scope" section left open: a chain-reward/scoring
-system and (new, this pass) single-player "challenge" discovery mechanics. Nothing here is
-scheduled into `IMPLEMENTATION_PLAN.md` yet — that file only ever gets a new phase when a human
-decides to schedule one (see AGENTS.md's scope guardrail). This document is that decision's input,
-not the decision itself.
+**Status: historical proposal, partially superseded.** Nipun subsequently requested concrete
+implementation-plan additions. `IMPLEMENTATION_PLAN.md` Phases 14–16 now govern scheduled work;
+none of that work is implemented yet. The text below is retained as design history, not an
+alternate task list.
+
+The scheduled plan replaces cumulative chain points with bounded medals and personal records.
+It persists history-dependent statistics, handles undo/resume explicitly, and introduces a Nova
+chapter plus offline daily puzzles. It does not schedule the speculative every-turn chain detector.
+Corrections to the original reasoning below: current GameState cannot reconstruct past chain
+bonuses; legal moves are generated after selection, so turn-wide detection adds work; `(tier,
+playerCount)` alone does not identify comparable records; a long chain need not hurt the AI;
+and a shared service can reuse the engine source without forking the client. Public ranking still
+needs separate service scope and validation design and is not part of Phases 14–16.
 
 ## How this was produced
 

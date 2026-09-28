@@ -679,3 +679,17 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   right on the board, the separate static line was redundant — color is already conveyed the
   moment it's actually your turn. `soloHumanSeat` stays (still drives the turn-indicator's
   "Your turn" branch); only the standalone `<p data-testid="you-are-label">` JSX block is gone.
+
+
+- **Gamification planning, requested by Nipun after live playtest:** schedule three bounded phases
+  (14–16) covering resume-safe per-seat records, a three-mission Nova chapter with cosmetic
+  milestones, and a seven-puzzle offline daily rotation/local history. Prefer bounded mastery
+  rewards over cumulative chain points, which can reward delaying victory. Keep progression
+  outside the pure rules engine and keep all opponents available in free play. Freeze record
+  comparison versions and session context; exclude incomplete legacy history from records,
+  preserve undo semantics, and deduplicate completion across reloads. Daily rankings compare
+  identical puzzle versions by moves, allow retries/ties, and do not use time or device-dependent
+  AI as the competition baseline. A public leaderboard is feasible with shared-engine server
+  replay but remains separately scoped; local records are not advertised as social competition.
+  Updated AGENTS/PROGRESS/HANDOFF and marked the old proposal historical so the next pass starts
+  at P14.1 rather than implementing contradictory scoring assumptions. No runtime changes here.
