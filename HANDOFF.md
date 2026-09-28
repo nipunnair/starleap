@@ -64,6 +64,12 @@ Game Designer, a UX/onboarding reviewer, a Technical Architect, and a QA/edge-ca
 reading the code cold with no shared framing) before anything was built. What follows is that
 critique folded in, organized by confidence level rather than by who raised it first.
 
+**2026-09-27: the chain-reward system and leaderboard-integrity questions below now have a real
+design** — see `GAMIFICATION_PLAN.md` at the repo root, commissioned ahead of a first public
+release. It resolves score semantics, the difficulty-ambiguity flag, reduced-motion parity, and
+adds a new single-player "challenge discovery" mechanic not discussed in the original six items.
+Still not scheduled into `IMPLEMENTATION_PLAN.md` — that remains a decision for a human to make.
+
 ### Confirmed bugs (verified in code, not opinion)
 
 - **[Done — P11.1]** ~~Nothing tells a human player which peg color is theirs.~~ Found in second-round playtesting:
