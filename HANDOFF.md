@@ -5,6 +5,14 @@ the entry point for a human (or another agent) picking up the project afterward.
 detail on *why* things ended up the way they did, `DECISIONS.md` is the authoritative log — every
 non-obvious judgment call made during the build is there, in chronological order, with rationale.
 
+## Current enhancement scope
+
+Family pilot planning supersedes the earlier campaign/daily proposal. See BACKLOG.md for all
+ideas, IMPLEMENTATION_PLAN.md for the only executable queue, and OVERNIGHT_RUNBOOK.md for the
+build → validate → human-review contract. The new work is not built yet. Final handoff will be
+REVIEW_READY.md after qualification, or an explicit NOT_READY report if blocked. No automatic
+push/deploy; the live GitHub Pages site remains unchanged until human approval/publication.
+
 ## What's built
 
 All twelve planned phases are complete and green:
@@ -57,7 +65,7 @@ violations on any screen.
 
 ## Future scope (first-round playtesting + a 4-reviewer LLM council pass)
 
-Not built, not scheduled — captured here so it isn't lost. First-round playtesting raised six
+Historical suggestions — consult the current plan/backlog for scheduling. First-round playtesting raised six
 items (suggested-move visibility, chain rewards, a chain counter, a menu redesign, the thinking
 animation, and a leaderboard). Those went through an independent 4-reviewer critique pass (a
 Game Designer, a UX/onboarding reviewer, a Technical Architect, and a QA/edge-case reviewer, each
@@ -183,8 +191,8 @@ phases is built yet. Historical recommendations below are retained for context, 
 | QA (framed as "resolve before shipping") | Leaderboard integrity model | Define "difficulty" unambiguously | Reduced-motion parity for any animation/reward change |
 
 The historical suggestions above are not an executable task list. Phases 14–16 in
-`IMPLEMENTATION_PLAN.md` now schedule personal records, the Nova journey, and offline daily
-puzzles/local history. Their explicit scope supersedes conflicting suggestions above. Public
+`IMPLEMENTATION_PLAN.md` now schedule personal records, rival badges, five shareable puzzles,
+and final release qualification. Their explicit scope supersedes conflicting suggestions above. Public
 leaderboards, telemetry, further chapters, and core rule changes remain unscheduled.
 
 ## How to extend

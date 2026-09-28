@@ -693,3 +693,15 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   replay but remains separately scoped; local records are not advertised as social competition.
   Updated AGENTS/PROGRESS/HANDOFF and marked the old proposal historical so the next pass starts
   at P14.1 rather than implementing contradictory scoring assumptions. No runtime changes here.
+
+
+- **Family pilot / overnight delivery, explicitly requested by Nipun:** replace the earlier
+  Nova campaign and daily rotation scope with personal bests, four rival badges and five short
+  shareable puzzles on unchanged GitHub Pages hosting. Archive earlier plan; capture all deferred
+  ideas in BACKLOG. Puzzles have one movable peg, stationary pivots, verified move budgets and
+  arbitrary legal solutions; chains count as one move. No new service or public rank. Make
+  autonomous functional/regression/browser qualification a prerequisite for human product testing.
+  One task per heartbeat, one local commit, no push/deploy, stop on completion/blocker or the
+  assumed morning target of 08:00 America/Los_Angeles on 2026-09-28. The target is a cutoff/report
+  time, not permission to weaken acceptance. Use Codex scheduled wakes, not concurrent legacy
+  Claude loop.sh. Final readiness is evidence-based and must state NOT_READY if incomplete.

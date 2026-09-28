@@ -20,18 +20,13 @@ Assume you have no memory of any prior session on this project. This file, `PROG
 
 1. Do exactly the one task you found. Nothing else — no drive-by refactors, no "while I'm here."
 2. Run its verification command (given at the end of the task line).
-3. If it fails: fix and rerun, up to 3 attempts. If still failing after 3 attempts, record the
-   failure in `BLOCKED.md` with what was tried, implement the simplest thing that keeps the build
-   green (may mean a narrower/simpler version of the task), and note the shortcut. Do not leave
-   the repo in a red state.
-4. If a single task is taking more than ~8 tool-use cycles with no end in sight, stop, ship the
-   simplest working version, note the shortcut in `DECISIONS.md`, and move on — per the
-   anti-rabbit-hole rule. Aesthetic refinement is never a blocker.
+3. If it fails: follow OVERNIGHT_RUNBOOK.md. After three failed fix attempts, leave the task
+   unchecked, record BLOCKED and stop; restore green runtime without discarding others’ work.
+4. If a task exceeds ~8 tool-use cycles, simplify or split in-scope work as the runbook allows.
+   Do not weaken acceptance or mark unfinished work complete. Aesthetic refinement is not a blocker.
 5. Check the task off in `IMPLEMENTATION_PLAN.md` (`- [ ]` → `- [x]`).
-6. Commit. One task = one commit, imperative mood (`Add cube coordinate primitives`, not `Added`
-   or `Adding`).
-7. Update `PROGRESS.md`: move the task to "done," name the next unchecked task, and update the
-   phase's gate status if this task was the phase's gate-run task.
+6. Update `PROGRESS.md`: done/next/gate status; update evidence and decisions as needed.
+7. Commit all task changes together. One task = one commit, imperative mood.
 8. Stop. Do not start the next task in the same pass — a fresh context (or the loop runner) picks
    it up next.
 
@@ -57,27 +52,25 @@ step the plan didn't anticipate. Record why in `DECISIONS.md`.
 - **Never run `git push`.** Commit locally after every task, as always, but this run stays
   unpushed — the human reviews the whole batch and pushes it themselves.
 
-## Scope guardrail
+## Family-pilot scope and overnight execution
 
-`HANDOFF.md`'s "Future scope" section lists ideas (replacing move hints with a reward system, any
-leaderboard, anonymous telemetry, a human-calibrated difficulty curve, comeback/kingmaker
-mechanics) that are **out of bounds** for an autonomous pass — they need a product decision or real
-design work first, not just an unclaimed task slot. Phase 12 (`P12.1`-`P12.5`) is explicitly in
-scope, added 2026-09-17 per a direct player-reported rule request. Phase 13 (`P13.1`-`P13.6`,
-the home-screen/menu visual redesign) is also explicitly in scope, added 2026-09-17 as a
-product-owner-approved pass — scoped to visuals/hierarchy/theme only, not the reward-system or
-leaderboard items still listed above. Treat both like any other phase. If every phase's tasks are
-checked off and `IMPLEMENTATION_PLAN.md` has no more unchecked lines, stop. Do not invent a new
-phase or start on a `HANDOFF.md` item that isn't already an explicit `- [ ]` line in
-`IMPLEMENTATION_PLAN.md`.
+Nipun authorized the family-pilot plan and overnight loop. The current Phase 14–16 tasks in
+IMPLEMENTATION_PLAN.md supersede the previously scheduled Nova campaign/daily rotation, now
+archived. BACKLOG.md preserves ideas but grants no execution scope. Only personal bests, four
+rival badges, five shareable puzzles, tutorial clarity and their qualification are in scope.
 
+**Build independently, verify completely, then hand over for human validation.** Read
+OVERNIGHT_RUNBOOK.md and follow its failure/cutoff/readiness contract. It supersedes any older
+instruction suggesting checking off a reduced substitute or moving on after failed acceptance.
+After three failed fix attempts, leave the task unchecked, preserve diagnostics, restore green
+runtime, mark BLOCKED, and stop the loop. Do not weaken tests to hit the morning target.
 
-## Gamification scheduling update
+Update PROGRESS, plan, decisions and evidence BEFORE the one-task commit, not afterward. Verify
+unit tests, typecheck and lint at every code commit, plus the task's tests. Final readiness needs
+full E2E, both builds, offline/Pages sharing checks, axe/Lighthouse and agent browser inspection.
+Human testing is for product acceptance, not first discovery of basic functional failures.
 
-Nipun explicitly requested gamification additions to the implementation plan after the playtest.
-Phases 14–16 (`P14.1`–`P16.4`) are now in scope as specified in `IMPLEMENTATION_PLAN.md`:
-personal records, a Nova journey chapter, and offline daily puzzles/local challenge history.
-This is a narrow exception to the earlier future-scope guardrail, not permission to implement
-all of `GAMIFICATION_PLAN.md` or HANDOFF's suggestions. Public leaderboard services, telemetry,
-additional rival chapters, and rule-changing mechanics remain out of scope. The current plan
-supersedes conflicting historical proposal text. Execute one task per pass and stop after P16.4.
+One task per wake, one local commit per task; never push/deploy. Preserve other user changes,
+including pre-existing untracked .loop.overnight.out. Use the scheduled heartbeat only; do not
+start legacy loop.sh concurrently. Stop after P16.4, on a blocking failure, or at the morning
+cutoff specified in the runbook. Notify with evidence-based READY_FOR_REVIEW or NOT_READY.

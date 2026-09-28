@@ -1,18 +1,14 @@
 # STARLEAP — Scoring & Gamification: Design Plan
 
-**Status: historical proposal, partially superseded.** Nipun subsequently requested concrete
-implementation-plan additions. `IMPLEMENTATION_PLAN.md` Phases 14–16 now govern scheduled work;
-none of that work is implemented yet. The text below is retained as design history, not an
-alternate task list.
+**Status: historical proposal, superseded for execution.** Current IMPLEMENTATION_PLAN.md
+Phases 14–16 govern the family pilot: personal bests, four rival badges, five shareable puzzles
+and complete qualification before human testing. BACKLOG.md preserves campaign/daily/public
+leaderboard ideas for later. No cumulative score economy or per-turn discovery detector is in
+scope. The previous campaign plan is archived under docs/archive/.
 
-The scheduled plan replaces cumulative chain points with bounded medals and personal records.
-It persists history-dependent statistics, handles undo/resume explicitly, and introduces a Nova
-chapter plus offline daily puzzles. It does not schedule the speculative every-turn chain detector.
-Corrections to the original reasoning below: current GameState cannot reconstruct past chain
-bonuses; legal moves are generated after selection, so turn-wide detection adds work; `(tier,
-playerCount)` alone does not identify comparable records; a long chain need not hurt the AI;
-and a shared service can reuse the engine source without forking the client. Public ranking still
-needs separate service scope and validation design and is not part of Phases 14–16.
+Corrections to historical reasoning below: GameState cannot reconstruct past chain bonuses;
+turn-wide discovery adds computation; tier/player count alone is not a full record key; long
+chains need not hurt the AI; server validation can reuse engine source without a code fork.
 
 ## How this was produced
 

@@ -10,3 +10,6 @@ test-results/
 .vite/
 coverage/
 *.tsbuildinfo
+
+# Local validation evidence; summarized in VALIDATION.md
+artifacts/family-pilot/

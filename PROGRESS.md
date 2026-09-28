@@ -1,13 +1,22 @@
 # PROGRESS
 
 ## Status
-Phases 1–13 are complete with their recorded gates green. Phases 14–16 are now planned,
-not implemented, following Nipun's request to add gamification to the implementation plan.
-The new scope covers reliable personal records, a Nova journey chapter, and offline daily
-challenges with a local leaderboard. Public rankings and broader chapter expansion stay deferred.
-Next executable task: **P14.1 — typed per-seat session statistics and record eligibility**.
+Phases 1–13 complete. **Family pilot planned; implementation NOT STARTED.**
+Current Phases 14–16 replace the earlier campaign/daily scope: personal bests, four rival victory
+badges, five shareable puzzles, and automated qualification before human testing. Hosting stays
+GitHub Pages; no backend, accounts, telemetry, campaign or daily scheduler is needed.
+Next: **P14.1 — per-seat session statistics and eligibility.**
+Overnight target: 2026-09-28 08:00 America/Los_Angeles. Follow OVERNIGHT_RUNBOOK.md; report
+NOT_READY if gates do not pass. Heartbeat `starleap-overnight-family-pilot` is ACTIVE, every
+15 minutes in this task; first implementation pass starts at P14.1. No legacy loop is running.
 
 ## Done
+- **Family-pilot replanning:** captured the committed/deferred backlog, rewrote active phases
+  into 17 bounded tasks, archived the previous plan, and added the overnight execution contract.
+  Updated AGENTS/PROMPT to require successful verification before human review and to stop on
+  genuine blockers without checking off reduced substitutes. No game code implemented yet.
+  Plan audit: 17 unique unchecked tasks. Baseline: 134 tests, typecheck and lint pass
+  (one existing ConfigScreen fast-refresh warning); git diff --check passes.
 - **Gamification planning pass:** added P14.1–P14.6, P15.1–P15.6, and P16.1–P16.4 with
   explicit scope, dependencies, reward/record semantics, and verification gates. Updated scope
   instructions and marked the earlier scoring proposal superseded where conflicting. This was
@@ -523,9 +532,8 @@ Next executable task: **P14.1 — typed per-seat session statistics and record e
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.1** in `IMPLEMENTATION_PLAN.md`: define session statistics/record eligibility and tests.
-  Follow one-task-per-pass execution. Phases 14–16 are scheduled; none is built or gate-passed.
-  Public leaderboard infrastructure, telemetry, and additional chapters remain unscheduled.
+- **P14.1** in IMPLEMENTATION_PLAN.md. Execute one task per scheduled pass, test, document and
+  commit locally. BACKLOG ideas are deferred, including the superseded campaign/daily rotation.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -557,5 +565,5 @@ Next executable task: **P14.1 — typed per-seat session statistics and record e
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
 - Phase 14 (Personal progress): **NOT STARTED**
-- Phase 15 (Nova journey): **NOT STARTED**
-- Phase 16 (Daily challenges): **NOT STARTED**
+- Phase 15 (Five shareable puzzles): **NOT STARTED**
+- Phase 16 (Release qualification): **NOT STARTED**
