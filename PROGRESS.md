@@ -3,14 +3,19 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-P14.4 complete: results show human stats, durable personal bests/badges, rematch and next rival;
-secondary collection distinguishes earned badges and explains device-local records.
-Next: **P14.5 — compact per-seat home counts and target-corner guidance.**
-13 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+P14.5 complete: per-seat home counts, lettered target corners and waypoint guidance.
+Next: **P14.6 — phase regression and visual/accessibility qualification.**
+12 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.5:** compact Home N/10 and target letter per seat, six matching board markers,
+  dashed waypoint-only corners and saved-rule-aware guidance. Preserved portraits, hit areas,
+  keyboard navigation and hints. Inspected 360/1280px screenshots and manually used Tab/arrow
+  navigation in the isolated preview. 186 unit tests, typecheck/lint and all 19 task browser
+  tests pass (including axe). Updated settings test to confirm discarding the now-immediate
+  initial save. Phase regression remains P14.6; no full readiness claimed.
 - **P14.4:** connected pending/terminal results to durable records; human stats and improvement
   messages also work on losses. Added earned badge, rematch, next-rival (ending at Sirius),
   and secondary collection with earned/unearned labels. Preserved human seat on next rival;
@@ -568,9 +573,9 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.5**: add compact per-seat Home N/10 and target-corner symbol/label. Preserve themes,
-  legal destinations and existing player labels. Verify specified browser suite and manually
-  inspect desktop/360px and keyboard navigation. P14.6 still owns phase-wide qualification.
+- **P14.6**: execute complete Phase 14 regression, inspect result/collection screenshots and
+  record gate evidence. Include the new collection/results in accessibility checks as needed.
+  P14.5 screenshot evidence is in artifacts/family-pilot/p145-360.png and p145-1280.png.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -601,6 +606,6 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.4 complete; gate pending
+- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.5 complete; gate pending
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**

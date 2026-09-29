@@ -116,3 +116,23 @@ and verify original match statistics/ranking/menu return. Not claiming seeded fi
 actual-game award eligibility; pure eligibility tests and subsequent phase gate cover that.
 Logs: artifacts/family-pilot/p144-unit.log and p144-browser.log. No manual visual or physical
 phone test claimed in this task; responsive/accessibility/visual qualification remains pending.
+
+
+## P14.5 — 2026-09-29T06:47:17Z
+
+Final runtime: checkpoint commit, parent e57b246. Node 24.15.0 via mise throughout.
+- `npm test`: exit 0, 186 tests / 30 files.
+- `npm run typecheck`, `npm run lint`, `git diff --check`: exit 0; existing ConfigScreen warning only.
+- Task Playwright suite (`match-progress`, `responsive-360`, `keyboard-nav`, `settings`,
+  `axe-audit`): exit 0, 19 tests; normal build passes; two workers/strict port 4273.
+Initial suite exposed stale settings-test flow (discard confirmation after initial autosave).
+Second suite had already loaded that test before its edit, so repeated the same failure.
+Final suite with explicit confirmation passes; runtime was not relaxed. Label exports moved
+into cornerGuidance.ts to avoid new Fast Refresh warnings. Final screenshots manually inspected:
+`artifacts/family-pilot/p145-360.png` (360×900) and `p145-1280.png` (1280×900 full page).
+Letters, home counts and legal hints readable; no labels cover portraits/pegs; no horizontal
+page overflow. Agent also used isolated in-app browser at 4275: Tab reached board, Right moved
+visible gold focus ring twice; desktop screenshot checked. Closed its tab and stopped its own
+preview session. No physical phone or screen-reader testing claimed. Automated axe suite passes.
+Logs: p145-unit.log, p145-browser.log in artifacts/family-pilot; prior failure logs retained as
+p145-attempt1.log / p145-attempt2.log (first copy may overlap the running log rewrite).

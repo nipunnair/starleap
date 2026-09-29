@@ -518,7 +518,7 @@ records are clearly local. No functional changes to multiplayer rules or AI sear
       Reuse portraits; all opponents remain selectable. Preserve ordinary game stats and save
       discard flow; show incomplete legacy history honestly. —
       `npx playwright test personal-records.spec.ts rival-badges.spec.ts post-game-stats.spec.ts win-screen.spec.ts`
-- [ ] P14.5 Add compact per-seat Home N/10 and target-corner symbol/label; distinguish waypoint
+- [x] P14.5 Add compact per-seat Home N/10 and target-corner symbol/label; distinguish waypoint
       corners without obscuring legal moves. Use restrained existing CSS/SVG styling, preserving
       themes, touch targets, focus, and the removed redundant color-label decision. Check 360px
       and desktop manually through browser screenshots and keyboard navigation. —

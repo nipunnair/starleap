@@ -17,6 +17,7 @@ import { describeMove } from '../animation/describeMove';
 import { PersonalResults } from './PersonalResults';
 import type { ProgressCommit } from '../../app/progressStore';
 import { RIVALS } from '../../progression/records';
+import { MatchProgress } from './MatchProgress';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
 import type { CharacterState } from './CharacterAvatar';
@@ -372,6 +373,7 @@ export function GameScreen({
           activeCharacterState={characterState}
         />
       </div>
+      <MatchProgress game={engine.game} seats={seats} />
       {engine.canUndo && !pendingMove && (
         <button className="btn btn-secondary" data-testid="undo-button" onClick={() => engine.undo()}>
           Undo

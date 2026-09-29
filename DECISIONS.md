@@ -770,3 +770,13 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   Reuse existing character portraits. Rematch/next rival remount the game and AI worker using
   a new key/session identity; keep the human's original seat. Every rival remains freely
   selectable; next-rival is optional and ends at Sirius. Existing active-save discard flow stays.
+
+
+- **P14.5 board guidance:** use stable A–F corner letters plus a compact per-seat progress strip
+  below the board. Keep existing portraits/labels and interactive geometry unchanged; do not
+  restore the redundant "You are Red" banner. Mark corners unused by any start/target with dashed
+  outlines only under cordoned rules, and explain open stops when the option is off. Position
+  letters tangentially outside the star's pegs, separately from outward portraits. Initial
+  screenshot inspection found two labels too close to portraits; moved them before acceptance.
+  Existing settings test assumed an untouched game was not saved; require its real discard
+  confirmation now that P14.2 persists initial state. No gameplay acceptance weakened.

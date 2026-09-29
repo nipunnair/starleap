@@ -1,9 +1,12 @@
 import { useState, type KeyboardEvent } from 'react';
-import { key, add, onBoard, type Cube } from '../../engine/coords';
+import { key, add, onBoard, project, type Cube } from '../../engine/coords';
 import type { GameState } from '../../engine/state';
 import type { Move } from '../../engine/moves';
 import type { ToneSequencer } from '../audio/tones';
 import { BOARD_VIEWBOX, HIT_RADIUS, PROJECTED_CELLS, PLAYER_COLORS } from './boardGeometry';
+import { CORNER_APEX, CORNER_IDS } from '../../engine/board';
+import { CELL_SPACING } from './boardGeometry';
+import { CORNER_LABELS, waypointCorners } from './cornerGuidance';
 import { Peg } from './Peg';
 import { PathPreview } from './PathPreview';
 import { AnimatedPeg } from './AnimatedPeg';
@@ -106,6 +109,20 @@ export function Board({
         </pattern>
       </defs>
 
+      <g className="corner-guidance" pointerEvents="none" aria-hidden="true">
+        {CORNER_IDS.map(corner => {
+          const { px, py } = project(CORNER_APEX[corner], CELL_SPACING);
+          const d = Math.hypot(px, py);
+          // Tangential offset clears both the apex peg and the outward identity portrait.
+          const x = px + (-px * 16 - py * 48) / d;
+          const y = py + (-py * 16 + px * 48) / d;
+          const waypoint = game.cordonNeutralCorners && waypointCorners(game).includes(corner);
+          return <g key={corner} data-testid={`corner-label-${CORNER_LABELS[corner]}`}>
+            <circle cx={x} cy={y} r={11} fill="none" stroke="currentColor" strokeDasharray={waypoint ? '2 2' : undefined} />
+            <text x={x} y={y} textAnchor="middle" dominantBaseline="central" fill="currentColor" fontSize={16} fontWeight={700}>{CORNER_LABELS[corner]}</text>
+          </g>;
+        })}
+      </g>
       {PROJECTED_CELLS.map(({ cell, px, py }) => {
         const k = key(cell);
         const isDestination = interactive && showHints && legalDestinationsByKey.has(k);

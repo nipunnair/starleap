@@ -49,6 +49,8 @@ test.describe('Settings (IMPLEMENTATION_PLAN.md P7.3)', () => {
     await page.getByRole('button', { name: 'Back' }).click();
 
     await page.getByRole('button', { name: 'Human vs Human' }).click();
+    await expect(page.getByTestId('confirm-discard-screen')).toBeVisible();
+    await page.getByRole('button', { name: 'Continue', exact: true }).click();
     await page.locator('[data-testid^="peg-p0-"]').first().click();
 
     // No destination highlight circle and no path-preview markers should render...
