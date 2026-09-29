@@ -495,7 +495,7 @@ GATE: per-seat accounting is correct; resume/undo and repeated terminal processi
 all four badges are earned from real eligible results; loss can still celebrate improvement;
 records are clearly local. No functional changes to multiplayer rules or AI search.
 
-- [ ] P14.1 Add typed session statistics and pure record eligibility: committed per-seat moves,
+- [x] P14.1 Add typed session statistics and pure record eligibility: committed per-seat moves,
       longest chain, long-hop count, session identity/version context, undo-used and history-
       complete flags. Restore snapshots on undo but keep the attempt's undo-used flag sticky.
       Test human seat 1, AI attribution, multiplayer exclusion, long chains counting as one move,

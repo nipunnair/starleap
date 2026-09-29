@@ -1,23 +1,23 @@
 # PROGRESS
 
 ## Status
-**Live execution ledger:** this is the isolated `codex/starleap-family-pilot` worktree. The shared
-main checkout is for other agents. RUN_LOG.md records each task and tests; no automatic integration.
-**Execution location:** the family-pilot queue is reserved to `codex/starleap-family-pilot`
-in sibling `../starleap-family-pilot`. Read its PROGRESS/RUN_LOG for live status; this checkout
-is available to other agents. See COORDINATION.md.
-
-Phases 1–13 complete. **Family pilot planned; implementation NOT STARTED.**
-Current Phases 14–16 replace the earlier campaign/daily scope: personal bests, four rival victory
-badges, five shareable puzzles, and automated qualification before human testing. Hosting stays
-GitHub Pages; no backend, accounts, telemetry, campaign or daily scheduler is needed.
-Next: **P14.1 — per-seat session statistics and eligibility.**
-Overnight target: 2026-09-29 08:00 America/Los_Angeles. Follow OVERNIGHT_RUNBOOK.md; report
-NOT_READY if gates do not pass. Heartbeat `starleap-overnight-family-pilot` is ACTIVE, every
-15 minutes in this task; first implementation pass starts at P14.1 after isolation setup.
-No legacy loop is running; explicit workdir and pass ownership are mandatory.
+**Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
+other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
+P14.1 complete: pure session statistics and record eligibility, not yet wired into gameplay.
+Next: **P14.2 — integrate statistics with commit/undo/save/resume and terminal persistence.**
+16 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
+one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.1:** added pure `src/progression/sessionStats.ts`, per-seat move/longest-chain/long-hop
+  accounting, copied version/session context, single-level undo snapshots with sticky undo flag,
+  monotonic event sequencing and duplicate/stale-session rejection. Added completed-game record
+  eligibility, separate win/efficiency flags, and rules/AI/tier/seat/version comparison keys.
+  23 focused tests pass; all 157 unit tests, typecheck and lint pass (one existing warning).
+  Tests exercise real engine-generated moves, seat-1 humans, AI/multiplayer attribution, undo/
+  replay/serialization, incomplete histories, nonstandard/unfinished/stalemated games and losses.
+  No gameplay/UI integration, persistence wiring or records storage in this task.
 - **Isolation setup:** this branch has its own dependencies, strict loopback test ports,
   two Playwright workers and token-owned atomic pass lock. RUN_LOG records per-pass outcomes;
   future wakes diagnose stalls and preserve other agents' work. Node 24.15.0 is required via
@@ -545,8 +545,10 @@ No legacy loop is running; explicit workdir and pass ownership are mandatory.
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.1** in IMPLEMENTATION_PLAN.md. Execute one task per scheduled pass, test, document and
-  commit locally. BACKLOG ideas are deferred, including the superseded campaign/daily rotation.
+- **P14.2**: wire the pure session API into the reducer and validated save envelope. Allocate
+  event sequence once per move intent; save its high-water mark with board/stats. Undo restores
+  counters but never resets lastEventSequence or undoUsed. Mark legacy/debug sessions correctly;
+  only invoke undoSessionMove when a real game undo is accepted.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -577,6 +579,6 @@ No legacy loop is running; explicit workdir and pass ownership are mandatory.
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **NOT STARTED**
+- Phase 14 (Personal progress): **IN PROGRESS** — P14.1 complete; gate pending
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**

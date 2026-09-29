@@ -48,3 +48,21 @@ Tested revision: setup code in the commit containing this evidence; parent 43220
 - `git diff --check` and `bash -n scripts/pilot-lock.sh`: pass.
 
 Feature gates remain NOT STARTED. No human testing or combined-main integration validation claimed.
+
+
+## P14.1 — 2026-09-29T01:30:15+00:00
+
+Tested code is in the commit containing this entry, parent 25f0b87; no code changes after checks.
+All npm/npx commands used `mise exec node@24.15.0 --`.
+
+- `npx vitest run src/progression/__tests__/sessionStats.test.ts`: exit 0, 23 tests.
+- `npm test`: exit 0, 157 tests / 27 files.
+- `npm run typecheck`: exit 0.
+- `npm run lint`: exit 0, boundary checks pass, existing ConfigScreen warning only.
+- `git diff --check`: exit 0.
+
+Focused coverage: real engine-generated long-hop chain counts as one move; seat-1 human and AI
+attribution; multiplayer accounting/record exclusion; immutable snapshots; sticky undo and
+monotonic sequence; stale/duplicate/out-of-order events; serialization; legacy partial history;
+completed-loss vs win/efficiency eligibility; stalemate boundary; mode and comparison-key isolation.
+No browser/build gate required for this pure-module task; phase/release gates remain pending.

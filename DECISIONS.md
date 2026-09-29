@@ -719,3 +719,15 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
 - **Worktree runtime:** the new path inherited Node 25.9.0 whereas the existing checkout uses
   Node 24.15.0. Seven storage tests failed due to native localStorage shadowing jsdom; run all
   npm/npx via mise exec node@24.15.0 rather than weakening tests or changing product code.
+
+
+- **P14.1 session accounting:** bounded single-level snapshots match the current game undo;
+  lastEventSequence is a monotonic committed-event high-water mark, not a move count. Undo
+  restores all counters while retaining that mark and a sticky undoUsed flag, so a delayed
+  animation callback cannot resurrect an undone move. The UI must allocate a sequence once
+  per intent and persist it with the board in P14.2. Incomplete legacy history remains marked
+  incomplete after further moves. Record eligibility uses actual engine completion plus an
+  explicit lifecycle/mode, permits completed-loss chain records, and excludes stalemates,
+  multiplayer, fixtures/tutorials/puzzles and abandoned games. Comparison keys include the
+  cordoning option, rules/AI/record versions, tier and human start seat. Progression has no AI,
+  React, clock, randomness or storage imports; session identity is supplied by the app layer.
