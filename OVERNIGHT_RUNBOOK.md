@@ -5,13 +5,30 @@
 ## Runner and boundaries
 
 Use Codex heartbeat `starleap-overnight-family-pilot`, every 15 minutes in this task, one
-implementation task per wake. Pause that automation by ID using automation_update on stop. Do not also
-start `loop.sh`: it is the legacy Claude runner and would create a concurrent writer. No nested
-agent CLI, extra automation, worktree or parallel worker is needed. Work in this checkout and
-make one local commit per task. Preserve pre-existing `.loop.overnight.out` unchanged/untracked.
-Do not push, deploy, publish, send family messages, change hosting, or spend money on services.
+implementation task per wake. Pause that automation by ID on stop. Work ONLY in the dedicated
+sibling worktree `../starleap-family-pilot`, branch `codex/starleap-family-pilot`, forked from
+58305a3 plus coordination notice 4322047. The scheduler task's default cwd may still be the
+shared checkout: explicitly set workdir on EVERY command and use absolute paths for file edits.
+Check `git rev-parse --show-toplevel` and `git branch --show-current` before each pass.
 
-Target review time: **2026-09-28 08:00 America/Los_Angeles (15:00 UTC)**. A deadline never
+Do not edit the original starleap checkout, main, other agents' branches or other worktrees.
+No automatic merge/rebase/cherry-pick/reset/stash/clean, push, deployment, or remote branch work.
+Read main's HEAD only to record divergence for later integration; do not chase concurrent changes.
+Live PROGRESS, RUN_LOG, VALIDATION and REVIEW_READY are maintained in this dedicated tree only.
+COORDINATION.md in main tells other agents this queue is reserved; do not keep updating it.
+
+Use Node 24.15.0 explicitly for every npm/npx command: `mise exec node@24.15.0 -- npm ...`
+or `mise exec node@24.15.0 -- npx ...`. This installed version matches the shared baseline; the
+new directory otherwise inherits Node 25, whose native localStorage conflicts with jsdom tests.
+Use independent node_modules/builds/evidence and fresh browser contexts. Do not symlink another
+checkout's dependencies, delete shared caches, or share browser storage/profiles. Reserved ports:
+4273 Playwright, 4274 Lighthouse, 4275 manual preview. Tests have strict binding/no server reuse;
+if a port is occupied, stop that operation and report conflict, never kill its owner. Use at most
+two test workers and one heavy suite at a time. Stop only processes this pass started; no broad
+pkill/killall. For manual previews use --host 127.0.0.1 --port 4275 --strictPort.
+Do not also start legacy loop.sh or any other runner. No family messages or new paid services.
+
+Target review time: **2026-09-29 08:00 America/Los_Angeles (15:00 UTC)**. A deadline never
 justifies skipping checks. At the first wake at/after cutoff, do not start another implementation
 task: report READY only with completed evidence, otherwise report NOT_READY and the exact next
 task/blocker. A task already running may finish safely; record any overrun. Stop this heartbeat
@@ -20,9 +37,31 @@ on completion, a blocking failure, or cutoff. Resume requires new user direction
 Local scheduled work requires the machine awake, Codex running, repository accessible, and
 available usage. Do not promise completion if execution is interrupted or limits are exhausted.
 
+## Pass ownership and continuous progress
+
+Before any mutation, run `bash scripts/pilot-lock.sh acquire <unique-token>` in this worktree.
+The atomic directory claim refuses overlapping passes. Retain the returned/caller token and
+release only your own claim with `bash scripts/pilot-lock.sh release <same-token>` after all
+checks/commit. A pass lasting more than one schedule interval keeps its lock; a later wake must
+skip writing. Never clear another token or infer abandonment merely from elapsed time. Inspect
+owner/timestamp/processes and a possible interrupted pass; if ownership is uncertain, report a
+stalled lock and pause, preserving edits. Only recover your own confirmed interrupted claim.
+
+On each successful task append to RUN_LOG.md: UTC start/end, task, outcome, tested code revision,
+passed checks, remaining task count and next step (the commit containing the row is found with
+`git log -- RUN_LOG.md`). Update PROGRESS atomically with that task's commit. Attempt/failure
+counts survive wakes in BLOCKED.md. Before each pass compare the current first unchecked task
+and HEAD with the previous checkpoint: repeating the same task without a commit twice is a
+stall requiring diagnosis/notification, not another blind retry. A live long test with owned
+process/log evidence counts as active work, not a stall. Never claim polling itself is progress.
+
+On each wake read shared main's HEAD without modifying it; record divergence in the final review
+report. READY_FOR_REVIEW applies to this isolated branch. Integration with other agents' changes
+and combined regression checks remain a distinct human-controlled step.
+
 ## One pass
 
-1. Read AGENTS, PROGRESS, first unchecked plan task and phase gate; consult relevant SPEC,
+1. Acquire the pass lock and verify worktree/branch. Read AGENTS, PROGRESS, first unchecked plan task and phase gate; consult relevant SPEC,
    ARCHITECTURE, DECISIONS and BLOCKED. Check git status and active work before writing. Never
    discard another writer's changes. If unexpected active changes overlap, stop and report.
 2. If run status is BLOCKED, READY_FOR_REVIEW, or cutoff reached, do not start more work.

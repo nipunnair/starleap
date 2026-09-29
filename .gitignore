@@ -13,3 +13,6 @@ coverage/
 
 # Local validation evidence; summarized in VALIDATION.md
 artifacts/family-pilot/
+
+# Worktree-local pass ownership
+.pilot-lock/

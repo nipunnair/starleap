@@ -82,3 +82,13 @@ heartbeat in the sibling `../starleap-family-pilot` worktree on `codex/starleap-
 Other agents must not pick those tasks from this checkout's scheduling snapshot. The reserved
 runner must not edit this shared checkout or integrate its branch automatically. Live progress
 and validation are in its dedicated worktree. Other unrelated work can continue independently.
+
+
+## Isolation update (latest execution rule)
+
+This branch owns family-pilot implementation only in its dedicated sibling worktree. Follow
+OVERNIGHT_RUNBOOK.md for atomic pass locking, reserved ports, resource limits and RUN_LOG
+checkpoints. Never write in the shared checkout even though the task's default cwd may point
+there. Check branch/path before every pass; use explicit workdir. Do not merge/rebase other
+agents' work. Report branch readiness separately from integration readiness. The user resumed
+the overnight work: current morning cutoff is 2026-09-29 08:00 America/Los_Angeles.

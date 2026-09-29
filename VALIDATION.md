@@ -26,3 +26,25 @@ baseline results above.
 For each phase: tested code revision, time, exact command, exit status/counts, failures and fixes,
 artifact paths, and inspected browser flows/screenshots. Distinguish automated, agent-inspected,
 and human-tested evidence. No human acceptance has taken place.
+
+
+## Isolation setup — 2026-09-29T01:09Z
+
+Scope: dedicated worktree, test-server ownership and pass locking, not feature readiness.
+Tested revision: setup code in the commit containing this evidence; parent 4322047.
+
+- `mise exec node@24.15.0 -- npm test`: exit 0, 134 tests / 26 files.
+- `mise exec node@24.15.0 -- npm run typecheck`: exit 0.
+- `mise exec node@24.15.0 -- npm run lint`: exit 0, existing ConfigScreen warning only.
+- `npx playwright test menu.spec.ts`: exit 0, two tests pass on the isolated server.
+- `npm run lighthouse`: exit 0, 98 performance / 100 accessibility. These two smoke checks
+  ran under the inherited Node 25 before pinning all future commands to Node 24.
+- Atomic-lock probe in a temporary directory: concurrent acquire has exactly one winner;
+  wrong owner cannot release; dry run creates no lock; release is idempotent; bad token refused.
+- Temporary owned HTTP servers on 4273/4274: Playwright and Lighthouse respectively exit nonzero
+  on occupied ports, original server remains alive and unchanged. Probe servers then cleaned up.
+- Initial unit run under inherited Node 25 failed seven native-localStorage/jsdom tests; retry
+  with baseline Node 24.15.0 passes all tests. No product or test logic weakened.
+- `git diff --check` and `bash -n scripts/pilot-lock.sh`: pass.
+
+Feature gates remain NOT STARTED. No human testing or combined-main integration validation claimed.

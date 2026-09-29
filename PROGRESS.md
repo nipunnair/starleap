@@ -1,6 +1,8 @@
 # PROGRESS
 
 ## Status
+**Live execution ledger:** this is the isolated `codex/starleap-family-pilot` worktree. The shared
+main checkout is for other agents. RUN_LOG.md records each task and tests; no automatic integration.
 **Execution location:** the family-pilot queue is reserved to `codex/starleap-family-pilot`
 in sibling `../starleap-family-pilot`. Read its PROGRESS/RUN_LOG for live status; this checkout
 is available to other agents. See COORDINATION.md.
@@ -10,11 +12,18 @@ Current Phases 14–16 replace the earlier campaign/daily scope: personal bests,
 badges, five shareable puzzles, and automated qualification before human testing. Hosting stays
 GitHub Pages; no backend, accounts, telemetry, campaign or daily scheduler is needed.
 Next: **P14.1 — per-seat session statistics and eligibility.**
-Overnight target: 2026-09-28 08:00 America/Los_Angeles. Follow OVERNIGHT_RUNBOOK.md; report
+Overnight target: 2026-09-29 08:00 America/Los_Angeles. Follow OVERNIGHT_RUNBOOK.md; report
 NOT_READY if gates do not pass. Heartbeat `starleap-overnight-family-pilot` is ACTIVE, every
-15 minutes in this task; first implementation pass starts at P14.1. No legacy loop is running.
+15 minutes in this task; first implementation pass starts at P14.1 after isolation setup.
+No legacy loop is running; explicit workdir and pass ownership are mandatory.
 
 ## Done
+- **Isolation setup:** this branch has its own dependencies, strict loopback test ports,
+  two Playwright workers and token-owned atomic pass lock. RUN_LOG records per-pass outcomes;
+  future wakes diagnose stalls and preserve other agents' work. Node 24.15.0 is required via
+  mise. Validation: 134 tests, typecheck/lint, two menu E2Es, Lighthouse 98/100 and occupied-port/
+  lock probes pass. No feature task checked off; next P14.1. Main is unchanged except the
+  coordination notice committed before isolation; no automatic integration is authorized.
 - **Family-pilot replanning:** captured the committed/deferred backlog, rewrote active phases
   into 17 bounded tasks, archived the previous plan, and added the overnight execution contract.
   Updated AGENTS/PROMPT to require successful verification before human review and to stop on

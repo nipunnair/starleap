@@ -705,3 +705,17 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   assumed morning target of 08:00 America/Los_Angeles on 2026-09-28. The target is a cutoff/report
   time, not permission to weaken acceptance. Use Codex scheduled wakes, not concurrent legacy
   Claude loop.sh. Final readiness is evidence-based and must state NOT_READY if incomplete.
+
+
+- **Concurrent-agent isolation, user requested:** reserve a sibling Git worktree on
+  codex/starleap-family-pilot for this heartbeat, leaving main free for other agents. Use independent
+  dependencies/builds, atomic per-pass token locking, 4273/4274/4275 loopback ports with strict
+  binding and no server reuse, two Playwright workers, and durable RUN_LOG checkpoints. Lighthouse
+  now awaits its own Vite server binding rather than polling a possibly unrelated process. Never
+  integrate main automatically; report divergence and retest after later human-controlled integration.
+  User's continuation restarts the cutoff at 2026-09-29 08:00 America/Los_Angeles; missed deadlines
+  never override quality gates. No feature checkbox is completed by this infrastructure change.
+
+- **Worktree runtime:** the new path inherited Node 25.9.0 whereas the existing checkout uses
+  Node 24.15.0. Seven storage tests failed due to native localStorage shadowing jsdom; run all
+  npm/npx via mise exec node@24.15.0 rather than weakening tests or changing product code.
