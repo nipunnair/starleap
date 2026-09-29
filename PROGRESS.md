@@ -3,13 +3,18 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-Phase 14 complete: personal progress regression and accessibility gate GREEN.
-Next: **P15.1 — pure puzzle schema, objectives and five verified fixtures.**
-11 implementation tasks remain. Puzzles and full release qualification remain; not ready for review.
+Phase 14 GREEN. P15.1 complete: pure puzzle adapter and five engine-verified positions.
+Next: **P15.2 — puzzle picker and reusable play screen.**
+10 implementation tasks remain. Puzzle UI/sharing and release qualification remain; not ready for review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P15.1:** typed/versioned five-puzzle catalog and pure one-mover adapter. Normal engine
+  legality, stationary pivots, explicit marked-cell goals, separate moves/hops, single-level
+  sticky undo and completion/efficiency awards. All reference solutions verified (targets
+  1,1,1,2,2); alternative routes and over-target completion accepted. 15 targeted tests and
+  201 full unit tests pass; typecheck/lint green. No puzzle UI/persistence/sharing yet.
 - **P14.6:** Phase 14 gate GREEN. 26 browser checks cover records, all four badges earned
   through actual legal winning commits from near-win saves, reload/undo, multiplayer finished
   seats, reduced motion and axe. Results/collection checked at 360/1280px: no serious/critical
@@ -578,9 +583,11 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P15.1**: implement pure puzzle schema/adapter and five engine-verified positions with
-  reference solutions and 1–4 move targets. One movable peg, stationary pivots, arbitrary legal
-  solutions accepted. Read the Phase 15 contract before choosing positions. No campaign/backend.
+- **P15.2**: use `PUZZLES`, `startPuzzle`, `puzzleMoves`, `applyPuzzleMove`, `puzzleComplete`,
+  `puzzleAward` and `undoPuzzle` for picker/play. `PUZZLE_PEG_ID` identifies the only mover;
+  goal is `puzzle.goal`. Reference destinations are verification data, never an acceptance filter.
+  Guard animation commits once per intent; adapter throws on illegal/stale/completed moves.
+  Restart with startPuzzle resets counters/undo; completion remains possible beyond the target.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -612,5 +619,5 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
 - Phase 14 (Personal progress): **GREEN** — P14.1–P14.6 complete; 26 browser checks and 186 unit tests pass
-- Phase 15 (Five shareable puzzles): **NOT STARTED**
+- Phase 15 (Five shareable puzzles): **IN PROGRESS** — P15.1 complete; gate pending
 - Phase 16 (Release qualification): **NOT STARTED**

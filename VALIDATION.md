@@ -160,3 +160,18 @@ storage, legacy exclusion, undo/reload, AI interruption, debug exclusion, finish
 seats and reduced motion. Pure tests cover rules/AI versions, receipt retirement and eligibility.
 Logs: artifacts/family-pilot/p146-unit.log and p146-browser.log. Phase 14 gate green;
 Phase 15 puzzles and Phase 16 final qualification remain. No READY_FOR_REVIEW claim.
+
+
+## P15.1 — 2026-09-29T07:24:00Z
+
+Tested code in checkpoint commit, parent 14fda9e. Node 24.15.0 via mise throughout.
+`npx vitest run src/progression/__tests__/puzzles.test.ts`: exit 0, 15 tests.
+`npm test`: exit 0, 201 tests / 31 files. Typecheck/lint/diff check: exit 0,
+existing ConfigScreen warning only. No runtime edits after tests.
+References: First Chain two hops/one move; Long Leap span-2 hop/one move; Turn the Corner
+changed-direction two hops/one move; Build the Route step+hop/two moves; Home Stretch
+step+hop/two moves ending in mover's target corner. Tests cover immutable stationary pivots,
+legal references, false/unknown goals and versions, forged moves, illegal resting cells,
+alternative two-move completion, target -1/equal/+1 boundaries, undo/restart and setup necessity.
+Logs: artifacts/family-pilot/p151-targeted.log and p151-unit.log. Pure-module task; no browser
+or UI qualification claimed. Phase 15 gate awaits picker, play, storage and sharing.

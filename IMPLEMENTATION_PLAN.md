@@ -534,7 +534,7 @@ GATE: all five authored puzzles have engine-verified solutions and reachable tar
 a player can discover, solve, retry, resume, earn medals and share each one. A fresh browser
 opening the link gets the same versioned starting position with no login or solution disclosure.
 
-- [ ] P15.1 Define puzzle schema, pure adapter/objectives and five fixtures: First Chain
+- [x] P15.1 Define puzzle schema, pure adapter/objectives and five fixtures: First Chain
       (two hops), Long Leap (distant pivot), Turn the Corner (direction change), Build the Route
       (multi-move planning), and Home Stretch (reach a marked home cell). One movable peg;
       other pegs are stationary pivots. Choose concrete legal positions and modest 1–4 move

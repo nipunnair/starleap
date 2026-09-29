@@ -788,3 +788,14 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   validate commit→statistics→durable awards→reload for every rival; they do not claim four
   full matches or anti-cheat verification. Existing full-game tests passed in P14.4. No game
   rules, AI search or runtime changes were needed for the phase gate.
+
+
+- **P15.1 puzzles:** five fixed version-1 marked-cell goals, with 1/1/1/2/2 move targets and
+  engine-verified reference destinations. Normal board/residency/long-hop rules apply; pivots
+  belong to the stationary seat and only puzzle-mover is selectable. The adapter resets the
+  turn to that mover after each committed engine move, without touching engine or AI rules.
+  Track moves separately from hops; any legal route to the marker completes, even over target.
+  Undo restores one position/counters but permanently removes efficiency eligibility for the
+  attempt; restart creates a fresh attempt. Validate every supplied hop path rather than
+  comparing with reference or the engine's destination-deduplicated animation path. No optimality
+  claim: reference budgets are attainable, and Build the Route explicitly needs a setup move.
