@@ -74,3 +74,11 @@ One task per wake, one local commit per task; never push/deploy. Preserve other 
 including pre-existing untracked .loop.overnight.out. Use the scheduled heartbeat only; do not
 start legacy loop.sh concurrently. Stop after P16.4, on a blocking failure, or at the morning
 cutoff specified in the runbook. Notify with evidence-based READY_FOR_REVIEW or NOT_READY.
+
+## Concurrent-agent ownership
+
+Read COORDINATION.md before starting Phases 14–16. They are reserved to the family-pilot
+heartbeat in the sibling `../starleap-family-pilot` worktree on `codex/starleap-family-pilot`.
+Other agents must not pick those tasks from this checkout's scheduling snapshot. The reserved
+runner must not edit this shared checkout or integrate its branch automatically. Live progress
+and validation are in its dedicated worktree. Other unrelated work can continue independently.

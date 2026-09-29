@@ -1,6 +1,10 @@
 # PROGRESS
 
 ## Status
+**Execution location:** the family-pilot queue is reserved to `codex/starleap-family-pilot`
+in sibling `../starleap-family-pilot`. Read its PROGRESS/RUN_LOG for live status; this checkout
+is available to other agents. See COORDINATION.md.
+
 Phases 1–13 complete. **Family pilot planned; implementation NOT STARTED.**
 Current Phases 14–16 replace the earlier campaign/daily scope: personal bests, four rival victory
 badges, five shareable puzzles, and automated qualification before human testing. Hosting stays
