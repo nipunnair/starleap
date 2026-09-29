@@ -70,3 +70,30 @@ test.describe('Accessibility audit (IMPLEMENTATION_PLAN.md P8.7)', () => {
     expectNoSeriousViolations(results.violations);
   });
 });
+
+for (const width of [360, 1280]) {
+  test(`personal results and collection at ${width}px with reduced motion`, async ({ page }) => {
+    const { outcome } = await import('../src/progression/__tests__/recordFixture');
+    const { mkdir } = await import('node:fs/promises');
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await page.setViewportSize({ width, height: 900 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await page.evaluate(save => localStorage.setItem('starleap.pending-result.v2', JSON.stringify(save)), outcome());
+    await page.reload();
+    await page.getByRole('button', { name: 'Resume', exact: true }).click();
+    await expect(page.getByTestId('earned-badge')).toBeVisible();
+    expectNoSeriousViolations((await new AxeBuilder({ page }).analyze()).violations);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await mkdir('artifacts/family-pilot', { recursive: true });
+    await page.screenshot({ path: `artifacts/family-pilot/p146-results-${width}.png`, fullPage: true });
+    await page.getByRole('button', { name: 'Back to menu' }).click();
+    await page.getByRole('button', { name: 'Rival badges / Personal bests', exact: true }).click();
+    await expect(page.getByTestId('badge-Nova')).toContainText('Earned');
+    expectNoSeriousViolations((await new AxeBuilder({ page }).analyze()).violations);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: `artifacts/family-pilot/p146-collection-${width}.png`, fullPage: true });
+    expect(errors).toEqual([]);
+  });
+}

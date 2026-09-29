@@ -780,3 +780,11 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   screenshot inspection found two labels too close to portraits; moved them before acceptance.
   Existing settings test assumed an untouched game was not saved; require its real discard
   confirmation now that P14.2 persists initial state. No gameplay acceptance weakened.
+
+
+- **P14.6 qualification:** extend axe to populated achievement results and collection at both
+  360px and 1280px with reduced motion. Add four actual winning-commit browser checks using
+  near-win saved positions, rather than relying solely on injected completed outcomes. These
+  validate commit→statistics→durable awards→reload for every rival; they do not claim four
+  full matches or anti-cheat verification. Existing full-game tests passed in P14.4. No game
+  rules, AI search or runtime changes were needed for the phase gate.

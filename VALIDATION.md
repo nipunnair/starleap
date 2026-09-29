@@ -136,3 +136,27 @@ visible gold focus ring twice; desktop screenshot checked. Closed its tab and st
 preview session. No physical phone or screen-reader testing claimed. Automated axe suite passes.
 Logs: p145-unit.log, p145-browser.log in artifacts/family-pilot; prior failure logs retained as
 p145-attempt1.log / p145-attempt2.log (first copy may overlap the running log rewrite).
+
+
+## P14.6 / Phase 14 gate — 2026-09-29T07:05:18Z — PASS
+
+Runtime remains 1c38ef0; gate tests/docs are in this checkpoint commit. Node 24.15.0 via mise.
+- `npm test`: exit 0, 186 tests / 30 files.
+- `npm run typecheck`, `npm run lint`, `git diff --check`: exit 0; only existing ConfigScreen warning.
+- `npx playwright test personal-records.spec.ts rival-badges.spec.ts progress-resume.spec.ts finished-player.spec.ts reduced-motion-full.spec.ts axe-audit.spec.ts`:
+  exit 0, 26 tests in 14 seconds; two workers, strict port 4273, normal production build passes.
+- Extended axe checks: populated results/collection at 360×900 and 1280×900 with reduced motion;
+  zero serious/critical violations, zero page errors, zero horizontal overflow.
+
+Manually viewed all four saved screenshots: artifacts/family-pilot/p146-results-360.png,
+p146-results-1280.png, p146-collection-360.png, p146-collection-1280.png. Text/portraits/earned
+labels and action buttons readable, collection wraps cleanly at phone width. This is resized
+Chromium coverage, not physical-phone testing. Duration on a resumed result remains current
+mount time (0s in these captures), the documented preexisting timer limitation; not an award metric.
+Four badge tests resume seeded near-win standard positions, perform an engine-legal human
+winning move through UI, verify human move count increments and the matching badge is earned,
+then reload to verify one durable receipt. Other tests cover completed losses, corrupt/unavailable
+storage, legacy exclusion, undo/reload, AI interruption, debug exclusion, finished multiplayer
+seats and reduced motion. Pure tests cover rules/AI versions, receipt retirement and eligibility.
+Logs: artifacts/family-pilot/p146-unit.log and p146-browser.log. Phase 14 gate green;
+Phase 15 puzzles and Phase 16 final qualification remain. No READY_FOR_REVIEW claim.

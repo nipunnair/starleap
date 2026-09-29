@@ -523,7 +523,7 @@ records are clearly local. No functional changes to multiplayer rules or AI sear
       themes, touch targets, focus, and the removed redundant color-label decision. Check 360px
       and desktop manually through browser screenshots and keyboard navigation. —
       `npx playwright test match-progress.spec.ts responsive-360.spec.ts keyboard-nav.spec.ts settings.spec.ts axe-audit.spec.ts`
-- [ ] P14.6 Run phase regression for records/badges/resume/multiplayer plus reduced motion and
+- [x] P14.6 Run phase regression for records/badges/resume/multiplayer plus reduced motion and
       accessibility; record commands/results and inspected screenshots in `VALIDATION.md`.
       Fix failures before advancing. —
       `npx playwright test personal-records.spec.ts rival-badges.spec.ts progress-resume.spec.ts finished-player.spec.ts reduced-motion-full.spec.ts axe-audit.spec.ts`

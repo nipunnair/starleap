@@ -38,3 +38,29 @@ test('next rival preserves human seat, and Sirius has no next rival', async ({ p
     }
   }
 });
+
+for (const rival of RIVALS) {
+  test(`a committed human winning move earns the ${rival} badge once`, async ({ page }) => {
+    const { buildAlmostWonScenario } = await import('../src/app/debugScenarios');
+    const { generateLegalMoves } = await import('../src/engine/moves');
+    const { applyMove } = await import('../src/engine/apply');
+    const { hasWon } = await import('../src/engine/terminal');
+    const { key } = await import('../src/engine/coords');
+    const gameState = buildAlmostWonScenario();
+    const saved = outcome(`finish-${rival}`, 1, { controllers: [rival, 'human'] });
+    const active = { ...saved, gameState, snapshot: { ...saved.snapshot, game: gameState } };
+    const winning = generateLegalMoves(gameState, 1).find(move => hasWon(applyMove(gameState, move), 1))!;
+    await page.goto('/');
+    await page.evaluate(save => localStorage.setItem('starleap.save.v2', JSON.stringify(save)), active);
+    await page.reload();
+    await page.getByRole('button', { name: 'Resume', exact: true }).click();
+    await page.getByTestId(`peg-${winning.pegId}`).click();
+    await page.getByTestId(`cell-${key(winning.to)}`).click();
+    await expect(page.getByTestId('earned-badge')).toContainText(rival);
+    await expect(page.getByTestId('personal-results')).toContainText('Your moves: 21');
+    await page.reload();
+    await page.getByRole('button', { name: 'Resume', exact: true }).click();
+    await expect(page.getByTestId('earned-badge')).toContainText(rival);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('starleap.progress.v1')!).receipts.length)).toBe(1);
+  });
+}

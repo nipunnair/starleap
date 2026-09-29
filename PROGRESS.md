@@ -3,13 +3,18 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-P14.5 complete: per-seat home counts, lettered target corners and waypoint guidance.
-Next: **P14.6 — phase regression and visual/accessibility qualification.**
-12 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+Phase 14 complete: personal progress regression and accessibility gate GREEN.
+Next: **P15.1 — pure puzzle schema, objectives and five verified fixtures.**
+11 implementation tasks remain. Puzzles and full release qualification remain; not ready for review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.6:** Phase 14 gate GREEN. 26 browser checks cover records, all four badges earned
+  through actual legal winning commits from near-win saves, reload/undo, multiplayer finished
+  seats, reduced motion and axe. Results/collection checked at 360/1280px: no serious/critical
+  axe violations, no page errors or horizontal overflow. Four screenshots manually inspected.
+  All 186 unit tests, typecheck/lint and normal build pass. No runtime changes in this gate.
 - **P14.5:** compact Home N/10 and target letter per seat, six matching board markers,
   dashed waypoint-only corners and saved-rule-aware guidance. Preserved portraits, hit areas,
   keyboard navigation and hints. Inspected 360/1280px screenshots and manually used Tab/arrow
@@ -573,9 +578,9 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.6**: execute complete Phase 14 regression, inspect result/collection screenshots and
-  record gate evidence. Include the new collection/results in accessibility checks as needed.
-  P14.5 screenshot evidence is in artifacts/family-pilot/p145-360.png and p145-1280.png.
+- **P15.1**: implement pure puzzle schema/adapter and five engine-verified positions with
+  reference solutions and 1–4 move targets. One movable peg, stationary pivots, arbitrary legal
+  solutions accepted. Read the Phase 15 contract before choosing positions. No campaign/backend.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -606,6 +611,6 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.5 complete; gate pending
+- Phase 14 (Personal progress): **GREEN** — P14.1–P14.6 complete; 26 browser checks and 186 unit tests pass
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**
