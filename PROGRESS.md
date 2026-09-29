@@ -3,13 +3,20 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-P14.3 complete: versioned local records, permanent rival badges and bounded outcome receipts.
-Next: **P14.4 — wire result processing into the results/collection UI and show persistence status.**
-14 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+P14.4 complete: results show human stats, durable personal bests/badges, rematch and next rival;
+secondary collection distinguishes earned badges and explains device-local records.
+Next: **P14.5 — compact per-seat home counts and target-corner guidance.**
+13 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.4:** connected pending/terminal results to durable records; human stats and improvement
+  messages also work on losses. Added earned badge, rematch, next-rival (ending at Sirius),
+  and secondary collection with earned/unearned labels. Preserved human seat on next rival;
+  rematch remounts with new identity/worker. Legacy and storage failures explained without
+  blocking play. All 186 unit tests, typecheck/lint and 7 task browser checks pass, including
+  two complete games through the existing UI. Full visual/accessibility regression remains P14.6.
 - **P14.3:** pure records reducer and validated local progress store. Human win efficiency,
   completed-match chain improvement (including losses), four permanent first-win badges,
   versioned comparison keys and atomic record/receipt persistence. Ties never re-award.
@@ -561,13 +568,9 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.4**: use `processPendingResult`/`commitProgress` and `loadProgress` for results and
-  collection. A receipt atomically acknowledges an outcome; retain pending board for resume.
-  `duplicate` returns its original award receipt for reload presentation, not a new award.
-  Surface unavailable/corrupt/capacity statuses without blocking play or claiming saved awards.
-  Session `startedAt` is fixed at creation and persisted; never regenerate it on save/resume.
-  Receipt compaction rejects unreceipted sessions at/before the retirement watermark; explain
-  stale outcomes honestly. Existing legacy sessions use zero, never a newly invented timestamp.
+- **P14.5**: add compact per-seat Home N/10 and target-corner symbol/label. Preserve themes,
+  legal destinations and existing player labels. Verify specified browser suite and manually
+  inspect desktop/360px and keyboard navigation. P14.6 still owns phase-wide qualification.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -598,6 +601,6 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.3 complete; gate pending
+- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.4 complete; gate pending
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**

@@ -1,7 +1,7 @@
 # Family-pilot run checkpoints
 
 This branch is the live execution ledger. Main is not modified by the heartbeat.
-Base: 58305a3 plus coordination notice 4322047. Feature tasks remaining: 14; next P14.4.
+Base: 58305a3 plus coordination notice 4322047. Feature tasks remaining: 13; next P14.5.
 
 Each task adds UTC start/end, task ID, outcome, tested revision, verification evidence and next
 step in the same commit as implementation. A repeated task without a commit across two wakes
@@ -56,3 +56,13 @@ lock, verified unchanged modifications/test results and finished the checkpoint.
 other lock removal or overlapping pass. User notified of the delay; no unresolved blocker.
 Remaining tasks: 14; next P14.4. Main HEAD 4322047 unchanged. Release own lock after commit.
 No push/deploy/integration. Full review readiness remains pending.
+
+
+## P14.4 — 2026-09-29T06:27:14Z
+
+Start: 2026-09-29T06:21:22Z. End: 2026-09-29T06:27:14Z. Outcome: COMPLETE, first attempt green.
+Tested runtime: code in checkpoint commit (parent 23d6b48). 186 unit tests / 30 files,
+typecheck/lint/diff pass, normal build and 7 browser tests pass (3.1 minutes, two full games).
+No failed fix attempts. Remaining tasks 13; next P14.5. Main read-only HEAD 4322047 unchanged.
+Local commit only; release this pass's lock afterward. No push/deploy/integration. Not ready
+for human review until phase and release gates pass. No overlapping tasks started.

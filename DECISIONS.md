@@ -759,3 +759,14 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   P14.4 integrates processing/status presentation with results/collection; no fabricated saved
   award is returned on storage failure. This store assumes the existing single active game flow;
   it does not claim cross-tab transactional merging or cross-device synchronization.
+
+
+- **P14.4 results and collection:** process persisted pending outcomes on navigation/startup and
+  commit the completed snapshot on the results path, displaying only durable receipt awards.
+  Duplicate receipts restore the same results after reload without granting another award.
+  Show human-only counters alongside existing match-wide statistics; explicitly explain legacy
+  partial history, undo efficiency exclusion, practice exclusion and save failures. Keep the
+  collection on a secondary screen, with explicit earned/unearned labels and device-local scope.
+  Reuse existing character portraits. Rematch/next rival remount the game and AI worker using
+  a new key/session identity; keep the human's original seat. Every rival remains freely
+  selectable; next-rival is optional and ends at Sirius. Existing active-save discard flow stays.

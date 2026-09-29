@@ -100,3 +100,19 @@ legacy/nonstandard/multiplayer/abandoned/stalemated exclusion, receipt retiremen
 capacity, reload/retry, corrupt/unknown storage, disabled storage and failed atomic writes.
 Logs: artifacts/family-pilot/p143-targeted.log and p143-unit.log (ignored).
 No browser/manual/build evidence claimed for this store task; UI integration is P14.4.
+
+
+## P14.4 — 2026-09-29T06:27:14Z
+
+Tested runtime is in this checkpoint commit, parent 23d6b48; no runtime edits after checks.
+All commands use mise Node 24.15.0. `npm test`: exit 0, 186 tests / 30 files.
+`npm run typecheck`, `npm run lint`, `git diff --check`: exit 0 (existing ConfigScreen warning).
+`npx playwright test personal-records.spec.ts rival-badges.spec.ts post-game-stats.spec.ts win-screen.spec.ts`:
+exit 0, 7 tests, 3.1 minutes, two workers, strict port 4273; pre-test normal build passes.
+New tests use seeded terminal envelopes to isolate award presentation/reload, loss chain reward,
+legacy honesty, quota failure, collection earned/unearned state, rematch identity and next-rival
+seat preservation/Sirius boundary. Existing two full-game UI tests independently reach game over
+and verify original match statistics/ranking/menu return. Not claiming seeded fixtures prove
+actual-game award eligibility; pure eligibility tests and subsequent phase gate cover that.
+Logs: artifacts/family-pilot/p144-unit.log and p144-browser.log. No manual visual or physical
+phone test claimed in this task; responsive/accessibility/visual qualification remains pending.

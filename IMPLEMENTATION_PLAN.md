@@ -512,7 +512,7 @@ records are clearly local. No functional changes to multiplayer rules or AI sear
       Test repeated load/commit, ties, losses, ineligible sessions, AI changes and storage failure.
       Do not mistake the visual seat portraits already present for earned victory badges. —
       `npx vitest run src/progression/__tests__/records.test.ts src/app/__tests__/progressStore.test.ts`
-- [ ] P14.4 Upgrade results: human-specific stats, new-personal-best text (also on eligible
+- [x] P14.4 Upgrade results: human-specific stats, new-personal-best text (also on eligible
       losses), earned badge, rematch and next-rival action; no tier beyond Sirius. Add a small
       accessible “Rival badges / Personal bests” collection on the menu or a secondary screen.
       Reuse portraits; all opponents remain selectable. Preserve ordinary game stats and save

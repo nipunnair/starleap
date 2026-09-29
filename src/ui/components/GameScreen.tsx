@@ -14,6 +14,9 @@ import { evaluate } from '../../ai/eval';
 import { createWebAudioToneSequencer, SILENT_TONE_SEQUENCER } from '../audio/tones';
 import { shouldShakeForMove } from '../animation/chainAnimation';
 import { describeMove } from '../animation/describeMove';
+import { PersonalResults } from './PersonalResults';
+import type { ProgressCommit } from '../../app/progressStore';
+import { RIVALS } from '../../progression/records';
 import { Board } from './Board';
 import { ParticleCanvas, type ParticleCanvasHandle } from './ParticleCanvas';
 import type { CharacterState } from './CharacterAvatar';
@@ -32,6 +35,8 @@ export interface GameScreenProps {
   readonly playerCount: PlayerCount;
   readonly seats: readonly SeatConfig[];
   readonly onExit: () => void;
+  readonly progressResult?: ProgressCommit | null;
+  readonly onRematch?: (seats: readonly SeatConfig[]) => void;
   /** Test-only: see src/app/debugScenarios.ts. */
   readonly initialGameState?: GameState;
   /** Persist the initial state and each committed move/undo as one coherent snapshot. */
@@ -67,6 +72,8 @@ export function GameScreen({
   playerCount,
   seats,
   onExit,
+  progressResult,
+  onRematch,
   initialGameState,
   onStateChange,
   initialSnapshot,
@@ -262,6 +269,8 @@ export function GameScreen({
 
   if (engine.gameOver && !celebratingWin) {
     const ranking = rank(engine.game);
+    const rival = soloHumanSeat !== null && playerCount === 2 ? seats[1 - soloHumanSeat] : null;
+    const nextRival = rival && rival !== 'human' ? RIVALS[RIVALS.indexOf(rival) + 1] : undefined;
     return (
       <main data-testid="win-screen">
         <h1>Game over</h1>
@@ -282,6 +291,9 @@ export function GameScreen({
             <dd data-testid="stat-duration">{Math.round(finalStats.durationMs / 1000)}s</dd>
           </dl>
         )}
+        {engine.snapshot.stats && <PersonalResults stats={engine.snapshot.stats} result={progressResult} />}
+        {onRematch && <button className="btn btn-primary" onClick={() => onRematch(seats)}>Rematch</button>}
+        {onRematch && nextRival && <button className="btn btn-secondary" onClick={() => onRematch(seats.map(seat => seat === 'human' ? seat : nextRival))}>Play next rival: {nextRival}</button>}
         <button className="btn btn-primary" onClick={onExit}>
           Back to menu
         </button>

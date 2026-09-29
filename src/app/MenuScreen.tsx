@@ -20,6 +20,7 @@ const PORTRAITS: Record<TierName, string> = {
 interface MenuScreenProps {
   readonly canResume: boolean;
   readonly showOnboardingCallout: boolean;
+  readonly onProgress: () => void;
   readonly onNewGame: () => void;
   readonly onResume: () => void;
   readonly onRules: () => void;
@@ -32,6 +33,7 @@ interface MenuScreenProps {
 export function MenuScreen({
   canResume,
   showOnboardingCallout,
+  onProgress,
   onNewGame,
   onResume,
   onRules,
@@ -65,6 +67,7 @@ export function MenuScreen({
             </button>
           </div>
           <div className="menu-secondary-actions">
+            <button onClick={onProgress}>Rival badges / Personal bests</button>
             <button onClick={onRules}>Rules</button>
             <button onClick={onSettings}>Settings</button>
             <button onClick={onTutorial}>Tutorial</button>

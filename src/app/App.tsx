@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { GameScreen, type SeatConfig } from '../ui/components/GameScreen';
 import { ConfigScreen, type GameConfigResult } from './ConfigScreen';
+import { ProgressScreen } from './ProgressScreen';
+import { commitProgress, processPendingResult, type ProgressCommit } from './progressStore';
+import { isGameOver } from '../engine/terminal';
 import { MenuScreen } from './MenuScreen';
 import { RulesScreen } from './RulesScreen';
 import { SettingsScreen } from './SettingsScreen';
@@ -19,7 +22,7 @@ interface GameConfig {
   readonly initialSnapshot?: GameSnapshot;
 }
 
-type Screen = 'menu' | 'config' | 'game' | 'rules' | 'settings' | 'tutorial';
+type Screen = 'menu' | 'config' | 'game' | 'rules' | 'settings' | 'tutorial' | 'progress';
 
 /** Test-only debug scenarios, reached only via an explicit URL query param — see debugScenarios.ts. */
 function debugScenarioFromUrl(): GameConfig | null {
@@ -57,12 +60,15 @@ export function App() {
   const debugScenario = debugScenarioFromUrl();
   const [screen, setScreen] = useState<Screen>(debugScenario ? 'game' : 'menu');
   const [gameConfig, setGameConfig] = useState<GameConfig | null>(debugScenario);
+  const [gameKey, setGameKey] = useState(0);
+  const [result, setResult] = useState<ProgressCommit | null>(null);
   const [canResume, setCanResume] = useState(false);
   const [pendingConfig, setPendingConfig] = useState<GameConfigResult | null>(null);
   const [showOnboardingCallout, setShowOnboardingCallout] = useState(false);
   const { settings, update: updateSettings } = useSettings();
 
   useEffect(() => {
+    processPendingResult();
     setCanResume(hasSavedGame());
     setShowOnboardingCallout(!hasSeenOnboarding());
   }, [screen]);
@@ -72,7 +78,10 @@ export function App() {
   }, [settings.theme]);
 
   function startNewGame(config: GameConfigResult) {
+    processPendingResult();
     clearSavedGame();
+    setResult(null);
+    setGameKey(key => key + 1);
     markOnboardingSeen();
     setGameConfig(config);
     setScreen('game');
@@ -95,6 +104,8 @@ export function App() {
   function resumeGame() {
     const saved = loadGame();
     if (!saved) return;
+    setResult(null);
+    setGameKey(key => key + 1);
     markOnboardingSeen();
     setGameConfig({ playerCount: saved.playerCount, seats: saved.seats, initialGameState: saved.gameState, initialSnapshot: saved.snapshot });
     setScreen('game');
@@ -104,6 +115,10 @@ export function App() {
     if (!gameConfig) return;
     saveGame({ playerCount: gameConfig.playerCount, seats: gameConfig.seats,
       gameState: snapshot.game, snapshot, savedAt: Date.now() });
+    if (isGameOver(snapshot.game) && snapshot.stats) {
+      setResult(commitProgress({ version: 2, playerCount: gameConfig.playerCount, seats: gameConfig.seats,
+        gameState: snapshot.game, snapshot: { ...snapshot, stats: snapshot.stats }, savedAt: Date.now() }));
+    }
   }
 
   if (pendingConfig) {
@@ -123,6 +138,9 @@ export function App() {
   if (screen === 'game' && gameConfig) {
     return (
       <GameScreen
+        key={gameKey}
+        progressResult={result}
+        onRematch={seats => startNewGame({ playerCount: gameConfig.playerCount, seats })}
         playerCount={gameConfig.playerCount}
         seats={gameConfig.seats}
         initialGameState={gameConfig.initialGameState}
@@ -136,6 +154,8 @@ export function App() {
       />
     );
   }
+
+  if (screen === 'progress') return <ProgressScreen onBack={() => setScreen('menu')} />;
 
   if (screen === 'config') {
     return <ConfigScreen onStart={requestNewGame} onBack={() => setScreen('menu')} />;
@@ -164,6 +184,7 @@ export function App() {
     <MenuScreen
       canResume={canResume}
       showOnboardingCallout={showOnboardingCallout}
+      onProgress={() => setScreen('progress')}
       onNewGame={() => setScreen('config')}
       onResume={resumeGame}
       onRules={() => setScreen('rules')}
