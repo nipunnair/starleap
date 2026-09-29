@@ -56,7 +56,7 @@ function validStats(value: unknown, save: SavedGame): value is SessionStats {
       !natural(value.lastEventSequence) || typeof value.undoUsed !== 'boolean' ||
       typeof value.historyComplete !== 'boolean') return false;
   const c = value.context;
-  if (!text(c.sessionId) || !['standard', 'debug', 'puzzle', 'tutorial'].includes(c.mode as string) ||
+  if ((c.startedAt !== undefined && !natural(c.startedAt)) || !text(c.sessionId) || !['standard', 'debug', 'puzzle', 'tutorial'].includes(c.mode as string) ||
       c.playerCount !== save.playerCount || c.cordonNeutralCorners !== !!save.gameState.cordonNeutralCorners ||
       !Array.isArray(c.controllers) || JSON.stringify(c.controllers) !== JSON.stringify(save.seats) ||
       !object(c.versions) || !['rules', 'ai', 'records'].every(k => text((c.versions as Record<string, unknown>)[k]))) return false;

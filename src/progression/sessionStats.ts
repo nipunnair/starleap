@@ -21,6 +21,8 @@ export const RECORD_VERSIONS: RecordVersions = {
 
 export interface SessionContext {
   readonly sessionId: string;
+  /** Fixed at creation, never refreshed by save/resume. Legacy sessions omit this. */
+  readonly startedAt?: number;
   readonly mode: SessionMode;
   readonly playerCount: PlayerCount;
   readonly controllers: readonly SessionController[];

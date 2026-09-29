@@ -79,7 +79,7 @@ export function GameScreen({
     if (initialSnapshot) return initialSnapshot;
     const game = initialGameState ?? createInitialState(playerCount, { cordonNeutralCorners });
     return { game, previousGame: null, canUndo: false, stats: createSessionStats({
-      sessionId: crypto.randomUUID(), mode: initialGameState ? 'debug' : 'standard',
+      sessionId: crypto.randomUUID(), startedAt: Date.now(), mode: initialGameState ? 'debug' : 'standard',
       playerCount, controllers: seats, cordonNeutralCorners: !!game.cordonNeutralCorners,
       versions: RECORD_VERSIONS,
     }) };

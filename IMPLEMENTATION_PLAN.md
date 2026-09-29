@@ -506,7 +506,7 @@ records are clearly local. No functional changes to multiplayer rules or AI sear
       outcome before clearing the active match. Test reload during AI/animation, interrupted
       completion, malformed storage, and undo; no score side effects from animation-only callbacks.
       — `npx playwright test progress-resume.spec.ts save-resume.spec.ts undo.spec.ts`
-- [ ] P14.3 Implement versioned local progress store: best win move count, best completed-match
+- [x] P14.3 Implement versioned local progress store: best win move count, best completed-match
       human chain, and four first-win badges. Use comparison keys above and idempotent outcome
       receipts; bound retained history and prevent stale saved outcomes from duplicating awards.
       Test repeated load/commit, ties, losses, ineligible sessions, AI changes and storage failure.

@@ -744,3 +744,18 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   records/receipts and acknowledgment. Starting a match must not clear pending results. This is
   best-effort device-local storage, not a server-certified score. The existing duration display
   remains wall time for the current mounted screen; move/chain statistics now survive resume.
+
+
+- **P14.3 records/receipts:** write personal bests, four permanent tier badges and outcome receipt
+  atomically in one validated progress key. Strict improvement only; loss chain records and
+  undo-enabled first wins are eligible, while undo excludes efficiency. Version comparison keys
+  separate tuning/rules/seat contexts; badges survive tuning changes. Retain 128 receipts and
+  reject unreceipted sessions whose immutable start time is at/before the retired watermark.
+  This prevents stale replay after compaction without an unbounded ID ledger; very old unfinished
+  games (or clocks moved backward) can remain playable but receive stale status for awards.
+  Pre-start-time sessions use zero. Keep up to 128 comparison buckets and return capacity rather
+  than silently forgetting bests. Corrupt/unknown progress is preserved, not overwritten.
+  Receipt durability acknowledges the pending outcome; retain its board for result recovery.
+  P14.4 integrates processing/status presentation with results/collection; no fabricated saved
+  award is returned on storage failure. This store assumes the existing single active game flow;
+  it does not claim cross-tab transactional merging or cross-device synchronization.

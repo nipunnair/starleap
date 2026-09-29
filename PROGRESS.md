@@ -3,13 +3,22 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-P14.2 complete: statistics integrated with committed moves, undo, validated save/resume and pending results.
-Next: **P14.3 — versioned personal-record and rival-badge store with idempotent receipts.**
-15 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+P14.3 complete: versioned local records, permanent rival badges and bounded outcome receipts.
+Next: **P14.4 — wire result processing into the results/collection UI and show persistence status.**
+14 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.3:** pure records reducer and validated local progress store. Human win efficiency,
+  completed-match chain improvement (including losses), four permanent first-win badges,
+  versioned comparison keys and atomic record/receipt persistence. Ties never re-award.
+  128 receipts plus a session-start retirement watermark prevent evicted results replaying;
+  comparison capacity preserves existing bests and returns a visible-status-ready error.
+  19 focused tests; 186 full unit tests, typecheck/lint pass. Store exposes pending processing
+  and durable original award receipts; P14.4 must wire these to the UI. No live award UI yet.
+  The pass resumed after an execution gap with queued heartbeats; verified its own lock and
+  completed checks, then committed without starting another task.
 - **P14.2:** reducer commits board/counters together using one sequence per move intent;
   duplicate callbacks are ignored, undo restores both snapshots and persists sticky undo use.
   Initial games save before animation/AI; v2 validation rejects malformed boards/context/counters;
@@ -552,11 +561,13 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.3**: implement records and idempotent terminal consumption. `loadPendingResult()`
-  exposes the validated completed envelope; pending-result storage must only be acknowledged
-  after successful durable record/receipt storage. New games preserve the pending result.
-  Until consumption is added, Resume can reopen completed results when no active save exists.
-  Do not infer record eligibility from debug fixtures or incomplete legacy histories.
+- **P14.4**: use `processPendingResult`/`commitProgress` and `loadProgress` for results and
+  collection. A receipt atomically acknowledges an outcome; retain pending board for resume.
+  `duplicate` returns its original award receipt for reload presentation, not a new award.
+  Surface unavailable/corrupt/capacity statuses without blocking play or claiming saved awards.
+  Session `startedAt` is fixed at creation and persisted; never regenerate it on save/resume.
+  Receipt compaction rejects unreceipted sessions at/before the retirement watermark; explain
+  stale outcomes honestly. Existing legacy sessions use zero, never a newly invented timestamp.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -587,6 +598,6 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.2 complete; gate pending
+- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.3 complete; gate pending
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**

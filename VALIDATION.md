@@ -85,3 +85,18 @@ Unit additions cover v1 migration, invalid v2 fields/overlap/context, quota fail
 active save, and duplicate callbacks before/after undo. No human/manual visual check claimed;
 full gate, standalone build and release qualification remain pending. Final test logs:
 `artifacts/family-pilot/p142-unit.log`, `artifacts/family-pilot/p142-browser.log` (ignored).
+
+
+## P14.3 — 2026-09-29T06:05:01Z
+
+Tested code: this checkpoint commit, parent 8194329. All npm/npx via mise Node 24.15.0.
+- Targeted `npx vitest run src/progression/__tests__/records.test.ts src/app/__tests__/progressStore.test.ts`:
+  exit 0, 19 tests. Fixture extracted to avoid importing/registering another test suite.
+- `npm test`: exit 0, 186 tests / 30 files.
+- `npm run typecheck`, `npm run lint`, `git diff --check`: exit 0;
+  existing ConfigScreen warning only, boundaries pass.
+Tests cover ties/improvements/losses/undo, four badges, human seat 1, changed AI versions,
+legacy/nonstandard/multiplayer/abandoned/stalemated exclusion, receipt retirement/replay and
+capacity, reload/retry, corrupt/unknown storage, disabled storage and failed atomic writes.
+Logs: artifacts/family-pilot/p143-targeted.log and p143-unit.log (ignored).
+No browser/manual/build evidence claimed for this store task; UI integration is P14.4.
