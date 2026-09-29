@@ -501,7 +501,7 @@ records are clearly local. No functional changes to multiplayer rules or AI sear
       Test human seat 1, AI attribution, multiplayer exclusion, long chains counting as one move,
       legacy histories and duplicate events. —
       `npx vitest run src/progression/__tests__/sessionStats.test.ts`
-- [ ] P14.2 Integrate session statistics with commit/undo/save/resume and a validated versioned
+- [x] P14.2 Integrate session statistics with commit/undo/save/resume and a validated versioned
       save envelope. Preserve v1 board/config; mark history incomplete. Save pending terminal
       outcome before clearing the active match. Test reload during AI/animation, interrupted
       completion, malformed storage, and undo; no score side effects from animation-only callbacks.

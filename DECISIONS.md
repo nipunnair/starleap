@@ -731,3 +731,16 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   multiplayer, fixtures/tutorials/puzzles and abandoned games. Comparison keys include the
   cordoning option, rules/AI/record versions, tier and human start seat. Progression has no AI,
   React, clock, randomness or storage imports; session identity is supplied by the app layer.
+
+
+- **P14.2 atomic progress snapshot:** keep board, statistics, event high-water mark and one-level
+  undo together in the reducer and v2 save envelope. Allocate sequence at move intent, ignore
+  repeated callback commits, and persist from committed snapshot changes (including undo/initial
+  state), never from hop effects. Debug initial states get debug context; legacy v1 migration
+  preserves board/config and missing-cordon=false behavior while marking history incomplete.
+  Validate unknown storage before loading; private/quota failures remain nonfatal. Write a
+  separate pending terminal envelope before clearing the active save, preserving the old save
+  if the terminal write fails. Pending results can reopen after interruption; P14.3 owns durable
+  records/receipts and acknowledgment. Starting a match must not clear pending results. This is
+  best-effort device-local storage, not a server-certified score. The existing duration display
+  remains wall time for the current mounted screen; move/chain statistics now survive resume.

@@ -1,7 +1,7 @@
 # Family-pilot run checkpoints
 
 This branch is the live execution ledger. Main is not modified by the heartbeat.
-Base: 58305a3 plus coordination notice 4322047. Feature tasks remaining: 16; next P14.2.
+Base: 58305a3 plus coordination notice 4322047. Feature tasks remaining: 15; next P14.3.
 
 Each task adds UTC start/end, task ID, outcome, tested revision, verification evidence and next
 step in the same commit as implementation. A repeated task without a commit across two wakes
@@ -30,3 +30,15 @@ Targeted Vitest: 23 pass; full unit suite: 157 pass / 27 files; typecheck/lint/d
 (existing ConfigScreen lint warning only). Pure accounting/eligibility only, no UI feature yet.
 Remaining tasks: 16. Next P14.2. Main read-only HEAD: 4322047, unchanged since isolation.
 No blockers; owned lock released after local commit. No push or integration.
+
+
+## P14.2 — 2026-09-29T01:53:15Z
+
+Start: 2026-09-29T01:45:51Z. End: 2026-09-29T01:53:15Z. Outcome: COMPLETE.
+Tested revision: code in this checkpoint commit (parent a43e62c); no runtime changes after checks.
+167 unit tests / 28 files, typecheck, lint and 9 targeted browser tests pass; normal build passes.
+Initial strict-index compile errors fixed before browser verification; no remaining failed tests.
+One log redirect initially lacked its directory; rerun successfully captured the entire unit suite.
+Remaining tasks: 15. Next P14.3 (records/receipts and pending outcome consumption).
+Main read-only HEAD: 4322047, unchanged. No blockers; own lock released after local commit.
+No push, deployment or integration. Phase/release qualification remains pending.

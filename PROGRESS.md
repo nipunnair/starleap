@@ -3,13 +3,20 @@
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
 other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
-P14.1 complete: pure session statistics and record eligibility, not yet wired into gameplay.
-Next: **P14.2 — integrate statistics with commit/undo/save/resume and terminal persistence.**
-16 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
+P14.2 complete: statistics integrated with committed moves, undo, validated save/resume and pending results.
+Next: **P14.3 — versioned personal-record and rival-badge store with idempotent receipts.**
+15 implementation tasks remain. Phase 14 gate has not run; not ready for human review.
 Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
 one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
 
 ## Done
+- **P14.2:** reducer commits board/counters together using one sequence per move intent;
+  duplicate callbacks are ignored, undo restores both snapshots and persists sticky undo use.
+  Initial games save before animation/AI; v2 validation rejects malformed boards/context/counters;
+  v1 saves retain board/config/rules with incomplete history. Terminal results are persisted before
+  clearing active saves and recoverable after interruption. Debug fixtures remain excluded.
+  167 unit tests / 28 files, typecheck/lint, build and 9 targeted browser tests pass.
+  Pending-result consumption/receipts are deliberately next task; no records awarded yet.
 - **P14.1:** added pure `src/progression/sessionStats.ts`, per-seat move/longest-chain/long-hop
   accounting, copied version/session context, single-level undo snapshots with sticky undo flag,
   monotonic event sequencing and duplicate/stale-session rejection. Added completed-game record
@@ -545,10 +552,11 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
     13 phases in `IMPLEMENTATION_PLAN.md` are now done, no unchecked tasks remain.**
 
 ## Next
-- **P14.2**: wire the pure session API into the reducer and validated save envelope. Allocate
-  event sequence once per move intent; save its high-water mark with board/stats. Undo restores
-  counters but never resets lastEventSequence or undoUsed. Mark legacy/debug sessions correctly;
-  only invoke undoSessionMove when a real game undo is accepted.
+- **P14.3**: implement records and idempotent terminal consumption. `loadPendingResult()`
+  exposes the validated completed envelope; pending-result storage must only be acknowledged
+  after successful durable record/receipt storage. New games preserve the pending result.
+  Until consumption is added, Resume can reopen completed results when no active save exists.
+  Do not infer record eligibility from debug fixtures or incomplete legacy histories.
 - **Optional follow-up, not required:** re-run `npm run selfplay -- --players 2/3/4/6` and
   `npm run tournament` under the new `cordonNeutralCorners: true` default to confirm it doesn't
   materially shift AI-quality numbers (stalemate rates, tier win-rate monotonicity) — not expected
@@ -579,6 +587,6 @@ one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdi
 - Phase 12 (Corner cordoning): **GREEN** — P12.1-P12.5 all done
 - Phase 13 (Home screen & visual identity): **GREEN** — P13.1-P13.6 all done
 
-- Phase 14 (Personal progress): **IN PROGRESS** — P14.1 complete; gate pending
+- Phase 14 (Personal progress): **IN PROGRESS** — P14.1–P14.2 complete; gate pending
 - Phase 15 (Five shareable puzzles): **NOT STARTED**
 - Phase 16 (Release qualification): **NOT STARTED**

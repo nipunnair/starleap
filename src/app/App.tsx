@@ -9,12 +9,14 @@ import { buildSevenHopChainScenario, buildAlmostWonScenario, buildOnePlayerFinis
 import { saveGame, loadGame, clearSavedGame, hasSavedGame } from './persistence';
 import { hasSeenOnboarding, markOnboardingSeen } from './onboarding';
 import { useSettings } from './settingsStore';
+import type { GameSnapshot } from '../ui/hooks/useGameEngine';
 import type { GameState, PlayerCount } from '../engine/state';
 
 interface GameConfig {
   readonly playerCount: PlayerCount;
   readonly seats: readonly SeatConfig[];
   readonly initialGameState?: GameState;
+  readonly initialSnapshot?: GameSnapshot;
 }
 
 type Screen = 'menu' | 'config' | 'game' | 'rules' | 'settings' | 'tutorial';
@@ -94,17 +96,14 @@ export function App() {
     const saved = loadGame();
     if (!saved) return;
     markOnboardingSeen();
-    setGameConfig({ playerCount: saved.playerCount, seats: saved.seats, initialGameState: saved.gameState });
+    setGameConfig({ playerCount: saved.playerCount, seats: saved.seats, initialGameState: saved.gameState, initialSnapshot: saved.snapshot });
     setScreen('game');
   }
 
-  function handleStateChange(game: GameState, gameOver: boolean) {
+  function handleStateChange(snapshot: GameSnapshot) {
     if (!gameConfig) return;
-    if (gameOver) {
-      clearSavedGame();
-    } else {
-      saveGame({ playerCount: gameConfig.playerCount, seats: gameConfig.seats, gameState: game, savedAt: Date.now() });
-    }
+    saveGame({ playerCount: gameConfig.playerCount, seats: gameConfig.seats,
+      gameState: snapshot.game, snapshot, savedAt: Date.now() });
   }
 
   if (pendingConfig) {
@@ -127,6 +126,7 @@ export function App() {
         playerCount={gameConfig.playerCount}
         seats={gameConfig.seats}
         initialGameState={gameConfig.initialGameState}
+        initialSnapshot={gameConfig.initialSnapshot}
         onExit={() => setScreen('menu')}
         onStateChange={handleStateChange}
         reducedMotionOverride={settings.reducedMotion}

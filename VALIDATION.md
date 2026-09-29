@@ -66,3 +66,22 @@ attribution; multiplayer accounting/record exclusion; immutable snapshots; stick
 monotonic sequence; stale/duplicate/out-of-order events; serialization; legacy partial history;
 completed-loss vs win/efficiency eligibility; stalemate boundary; mode and comparison-key isolation.
 No browser/build gate required for this pure-module task; phase/release gates remain pending.
+
+
+## P14.2 — 2026-09-29T01:53:15Z
+
+Tested code: checkpoint commit, parent a43e62c. All npm/npx via mise Node 24.15.0.
+- `npm test`: exit 0, 167 tests / 28 files.
+- `npm run typecheck`: exit 0 (initial implementation's three strict-index errors corrected).
+- `npm run lint`: exit 0, existing ConfigScreen warning only; engine boundary passes.
+- `npx playwright test progress-resume.spec.ts save-resume.spec.ts undo.spec.ts`: exit 0,
+  9/9 Chromium tests, two workers, reserved strict port 4273; pre-test normal build passes.
+- `git diff --check`: exit 0.
+
+Browser checks cover exact saved board, counters/identity/sequence through reload and undo,
+reload during paused animation (no premature score), reload during AI thinking (one reply),
+terminal reload before results, debug exclusion, and malformed/version-mismatched storage.
+Unit additions cover v1 migration, invalid v2 fields/overlap/context, quota failure preserving
+active save, and duplicate callbacks before/after undo. No human/manual visual check claimed;
+full gate, standalone build and release qualification remain pending. Final test logs:
+`artifacts/family-pilot/p142-unit.log`, `artifacts/family-pilot/p142-browser.log` (ignored).

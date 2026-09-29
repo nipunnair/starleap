@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { useGameEngine } from '../hooks/useGameEngine';
+import { createSessionStats, RECORD_VERSIONS } from '../../progression/sessionStats';
+import { useGameEngine, type GameSnapshot } from '../hooks/useGameEngine';
 import { useAIWorker } from '../hooks/useAIWorker';
 import { useReducedMotion, type ReducedMotionOverride } from '../hooks/useReducedMotion';
-import { rank, hasWon, isGameOver } from '../../engine/terminal';
+import { rank, hasWon } from '../../engine/terminal';
 import { cornerOf } from '../../engine/board';
 import { key, project, type Cube } from '../../engine/coords';
-import { seatOf, type PlayerCount, type GameState } from '../../engine/state';
+import { createInitialState, seatOf, type PlayerCount, type GameState } from '../../engine/state';
 import { applyMove } from '../../engine/apply';
 import type { Move } from '../../engine/moves';
 import type { TierName } from '../../ai/tiers';
@@ -33,9 +34,9 @@ export interface GameScreenProps {
   readonly onExit: () => void;
   /** Test-only: see src/app/debugScenarios.ts. */
   readonly initialGameState?: GameState;
-  /** Called after every committed move (human or AI) so a parent can persist progress
-   * (ARCHITECTURE.md's save/resume) without GameScreen itself knowing about localStorage. */
-  readonly onStateChange?: (game: GameState, gameOver: boolean) => void;
+  /** Persist the initial state and each committed move/undo as one coherent snapshot. */
+  readonly onStateChange?: (snapshot: GameSnapshot) => void;
+  readonly initialSnapshot?: GameSnapshot;
   /** Phase 7 settings screen: 'system' (default) follows the OS, 'on'/'off' force it. */
   readonly reducedMotionOverride?: ReducedMotionOverride;
   readonly audioEnabled?: boolean;
@@ -68,12 +69,25 @@ export function GameScreen({
   onExit,
   initialGameState,
   onStateChange,
+  initialSnapshot,
   reducedMotionOverride = 'system',
   audioEnabled = true,
   showHints = true,
   cordonNeutralCorners = true,
 }: GameScreenProps) {
-  const engine = useGameEngine(playerCount, initialGameState, cordonNeutralCorners);
+  const [startingSnapshot] = useState<GameSnapshot>(() => {
+    if (initialSnapshot) return initialSnapshot;
+    const game = initialGameState ?? createInitialState(playerCount, { cordonNeutralCorners });
+    return { game, previousGame: null, canUndo: false, stats: createSessionStats({
+      sessionId: crypto.randomUUID(), mode: initialGameState ? 'debug' : 'standard',
+      playerCount, controllers: seats, cordonNeutralCorners: !!game.cordonNeutralCorners,
+      versions: RECORD_VERSIONS,
+    }) };
+  });
+  const engine = useGameEngine(playerCount, startingSnapshot.game, cordonNeutralCorners, startingSnapshot);
+  const saveCallback = useRef(onStateChange);
+  saveCallback.current = onStateChange;
+  useEffect(() => { saveCallback.current?.(engine.snapshot); }, [engine.snapshot]);
   const ai = useAIWorker();
   const reducedMotion = useReducedMotion(reducedMotionOverride);
   const toneSequencer = useMemo(
@@ -93,13 +107,16 @@ export function GameScreen({
   // The player who configured the game already holds the device for their own first turn — no
   // pass prompt needed until the active seat actually changes to someone else.
   const [dismissedPassScreenFor, setDismissedPassScreenFor] = useState<number | null>(engine.game.currentPlayer);
-  const [pendingMove, setPendingMove] = useState<{ move: Move; owner: number } | null>(null);
+  const [pendingMove, setPendingMove] = useState<{ move: Move; owner: number; sequence: number } | null>(null);
 
   // Post-game stats (P7.8): plies played, longest chain used, wall-clock duration.
   const gameStartedAtRef = useRef(Date.now());
-  const plyCountRef = useRef(0);
-  const longestChainHopsRef = useRef(0);
-  const [finalStats, setFinalStats] = useState<GameStats | null>(null);
+  const completedIntent = useRef(0);
+  const finalStats: GameStats = {
+    plyCount: engine.snapshot.stats?.seats.reduce((sum, seat) => sum + seat.moves, 0) ?? 0,
+    longestChainHops: Math.max(0, ...engine.snapshot.stats?.seats.map(seat => seat.longestChain) ?? []),
+    durationMs: Date.now() - gameStartedAtRef.current,
+  };
   const [moveAnnouncement, setMoveAnnouncement] = useState('');
   const [chainBadge, setChainBadge] = useState<string | null>(null);
 
@@ -147,7 +164,7 @@ export function GameScreen({
             window.setTimeout(() => {
               if (cancelled) return;
               setCharacterState('move');
-              setPendingMove({ move: result.move, owner: mover });
+              setPendingMove({ move: result.move, owner: mover, sequence: (engine.snapshot.stats?.lastEventSequence ?? 0) + 1 });
             }, FOUND_IT_DISPLAY_MS),
           );
         }, remaining),
@@ -169,7 +186,7 @@ export function GameScreen({
     // Mirrors the AI path (which sets 'move' itself right before its own setPendingMove, above)
     // so a human's own badge also shows the 'move' expression while their hop animates.
     setCharacterState('move');
-    setPendingMove({ move, owner });
+    setPendingMove({ move, owner, sequence: (engine.snapshot.stats?.lastEventSequence ?? 0) + 1 });
   }
 
   function handleCellClick(cellKey: string) {
@@ -199,28 +216,18 @@ export function GameScreen({
     }
   }
 
-  function handleMoveAnimationComplete(move: Move, owner: number) {
+  function handleMoveAnimationComplete(move: Move, owner: number, sequence: number) {
+    if (sequence <= completedIntent.current) return;
+    completedIntent.current = sequence;
     const nextState = applyMove(engine.game, move);
-    engine.applyMove(move, seats[owner] === 'human');
+    engine.applyMove(move, seats[owner] === 'human', sequence);
     setPendingMove(null);
     setMoveAnnouncement(describeMove(move, seats[owner] === 'human' ? `Player ${owner}` : (seats[owner] as string)));
 
-    plyCountRef.current += 1;
     const hopCount = move.type === 'jump' ? move.hops.length : 0;
-    if (hopCount > longestChainHopsRef.current) longestChainHopsRef.current = hopCount;
     if (hopCount >= 2) {
       setChainBadge(`${playerLabel(owner)}: ${hopCount}-hop chain!`);
       setTimeout(() => setChainBadge(null), CHAIN_BADGE_DISPLAY_MS);
-    }
-
-    const gameOver = isGameOver(nextState);
-    onStateChange?.(nextState, gameOver);
-    if (gameOver) {
-      setFinalStats({
-        plyCount: plyCountRef.current,
-        longestChainHops: longestChainHopsRef.current,
-        durationMs: Date.now() - gameStartedAtRef.current,
-      });
     }
 
     const won = hasWon(nextState, owner);
@@ -340,7 +347,7 @@ export function GameScreen({
                   reducedMotion,
                   toneSequencer,
                   onHopLanding: (cell) => handleHopLanding(cell, pendingMove.owner),
-                  onComplete: () => handleMoveAnimationComplete(pendingMove.move, pendingMove.owner),
+                  onComplete: () => handleMoveAnimationComplete(pendingMove.move, pendingMove.owner, pendingMove.sequence),
                 }
               : null
           }
