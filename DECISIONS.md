@@ -799,3 +799,8 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
   attempt; restart creates a fresh attempt. Validate every supplied hop path rather than
   comparing with reference or the engine's destination-deduplicated animation path. No optimality
   claim: reference budgets are attainable, and Build the Route explicitly needs a setup move.
+
+
+- **Expired-cutoff stop (2026-10-05):** honor the original September 29 deadline rather than
+  treating delayed scheduler wakes as renewed authorization. Pause heartbeat, preserve completed
+  work and publish NOT_READY with exact remaining tasks. Do not check off P16.4 for this report.

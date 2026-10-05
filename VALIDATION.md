@@ -175,3 +175,11 @@ legal references, false/unknown goals and versions, forged moves, illegal restin
 alternative two-move completion, target -1/equal/+1 boundaries, undo/restart and setup necessity.
 Logs: artifacts/family-pilot/p151-targeted.log and p151-unit.log. Pure-module task; no browser
 or UI qualification claimed. Phase 15 gate awaits picker, play, storage and sharing.
+
+
+## Cutoff audit — 2026-10-05T02:32:49Z — NOT_READY
+
+Read-only audit: correct isolated path/branch, clean starting tree, no active pass lock, HEAD
+6f9410e, main 4322047; divergence main...pilot 0/8 before this docs commit. Ten unchecked tasks
+P15.2–P15.7 and P16.1–P16.4. Phase 14 evidence and P15.1 unit checks are historical; no final
+release evidence exists. No runtime changes or test reruns today. Docs diff check passes.

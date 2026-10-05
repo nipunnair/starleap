@@ -2,12 +2,13 @@
 
 ## Status
 **Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
-other agents; no automatic integration. Phases 1–13 complete. **Family pilot IN PROGRESS.**
+other agents; no automatic integration. Phases 1–13 complete. **Family pilot NOT_READY — STOPPED AT CUTOFF.**
 Phase 14 GREEN. P15.1 complete: pure puzzle adapter and five engine-verified positions.
 Next: **P15.2 — puzzle picker and reusable play screen.**
 10 implementation tasks remain. Puzzle UI/sharing and release qualification remain; not ready for review.
-Overnight target: 2026-09-29 08:00 America/Los_Angeles. Heartbeat remains active every 15 minutes;
-one task per pass with token lock, pinned Node 24.15.0, explicit isolated workdir and local commits.
+Authorized cutoff expired: 2026-09-29 08:00 America/Los_Angeles. Automation PAUSED on
+2026-10-05 cutoff check; no new implementation started. Resume requires user direction.
+See REVIEW_READY.md for all 10 remaining tasks, prior evidence and integration limits.
 
 ## Done
 - **P15.1:** typed/versioned five-puzzle catalog and pure one-mover adapter. Normal engine
