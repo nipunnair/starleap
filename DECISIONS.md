@@ -804,3 +804,13 @@ Judgment calls made during the autonomous build, one line each, with rationale. 
 - **Expired-cutoff stop (2026-10-05):** honor the original September 29 deadline rather than
   treating delayed scheduler wakes as renewed authorization. Pause heartbeat, preserve completed
   work and publish NOT_READY with exact remaining tasks. Do not check off P16.4 for this report.
+
+## Resumed implementation — 2026-10-09T02:53:58.764416+00:00
+
+Puzzle saves use the existing single active-save key with an explicit kind discriminator.
+A bounded, validated action log reconstructs board/counters/undo rather than trusting redundant
+serialized counters. Five monotonic award entries are idempotent without growing receipt history.
+Schema/content version 1 is explicit; unknown versions are rejected and unreadable awards preserved.
+file:// shares use the public GitHub Pages base, never the local filesystem path.
+P15.2–P15.5 landed as one connected implementation batch during the user-authorized completion
+session; all individual acceptance checks remain required. No heartbeat overlap.

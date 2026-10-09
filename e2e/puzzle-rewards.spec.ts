@@ -1,0 +1,3 @@
+import {test,expect} from '@playwright/test';
+import {openPuzzle,solve} from './puzzle-helpers';
+test('completion replay retains best and one medal after reload',async({page})=>{await openPuzzle(page);await solve(page);const raw=await page.evaluate(()=>localStorage.getItem('starleap.puzzle-awards.v1'));await page.reload();await expect(page.getByTestId('puzzle-complete')).toBeVisible();expect(await page.evaluate(()=>localStorage.getItem('starleap.puzzle-awards.v1'))).toBe(raw);await page.getByRole('button',{name:'Back to puzzles'}).click();await expect(page.getByTestId('puzzle-picker')).toContainText('Best 1 moves · Efficiency star');});

@@ -183,3 +183,11 @@ Read-only audit: correct isolated path/branch, clean starting tree, no active pa
 6f9410e, main 4322047; divergence main...pilot 0/8 before this docs commit. Ten unchecked tasks
 P15.2–P15.7 and P16.1–P16.4. Phase 14 evidence and P15.1 unit checks are historical; no final
 release evidence exists. No runtime changes or test reruns today. Docs diff check passes.
+
+## Resumed implementation — 2026-10-09T02:53:58.764416+00:00
+
+P15.2–P15.5: 209/209 units (32 files), typecheck exit 0, lint/boundaries exit 0
+(one pre-existing ConfigScreen refresh warning), 17/17 puzzle browser checks exit 0.
+Logs: artifacts/family-pilot/resume/starleap-pilot-{unit,puzzles}.log.
+Initial test assertion distinguished JSON-normalized negative zero; assertion now compares
+serialized round-trip values. All five engine-legal reference paths completed in real UI.

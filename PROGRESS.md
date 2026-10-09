@@ -1,16 +1,17 @@
 # PROGRESS
 
 ## Status
-**Live execution ledger:** isolated `codex/starleap-family-pilot` worktree. Shared main is for
-other agents; no automatic integration. Phases 1–13 complete. **Family pilot NOT_READY — STOPPED AT CUTOFF.**
-Phase 14 GREEN. P15.1 complete: pure puzzle adapter and five engine-verified positions.
-Next: **P15.2 — puzzle picker and reusable play screen.**
-10 implementation tasks remain. Puzzle UI/sharing and release qualification remain; not ready for review.
-Authorized cutoff expired: 2026-09-29 08:00 America/Los_Angeles. Automation PAUSED on
-2026-10-05 cutoff check; no new implementation started. Resume requires user direction.
-See REVIEW_READY.md for all 10 remaining tasks, prior evidence and integration limits.
+Family pilot ACTIVE, resumed on explicit user instruction to implement the rest.
+P14 GREEN; P15.1–P15.5 complete. Next P15.6 tutorial chain and home objective.
+Six tasks remain. Automation remains paused while this owned interactive pass runs.
+Not yet qualified for review; no push/deployment/integration.
 
 ## Done
+- **P15.2–P15.5:** puzzle picker/play, all five positions, animation/counters/undo/retry,
+  versioned replayable saves and monotonic medals/bests, safe deep links and user-triggered
+  native/copy/selectable sharing. 209 unit tests and 17 browser tests pass; typecheck/lint green.
+  Fresh second context solved shared link; denial/cancel and storage failure exercised.
+
 - **P15.1:** typed/versioned five-puzzle catalog and pure one-mover adapter. Normal engine
   legality, stationary pivots, explicit marked-cell goals, separate moves/hops, single-level
   sticky undo and completion/efficiency awards. All reference solutions verified (targets

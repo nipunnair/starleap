@@ -542,24 +542,24 @@ opening the link gets the same versioned starting position with no login or solu
       false goals, illegal resting cells, alternate valid solutions, and all budget boundaries;
       never reject a valid solution because it differs from the reference. —
       `npx vitest run src/progression/__tests__/puzzles.test.ts`
-- [ ] P15.2 Build a simple puzzle picker and reusable play screen with objective, marked peg/
+- [x] P15.2 Build a simple puzzle picker and reusable play screen with objective, marked peg/
       destination, move counter/target, retry, undo, completion, and return controls. Reuse Board,
       hints and animations; bypass AI turns only in the puzzle adapter. Accept completion beyond
       target, offer retry positively, and keep puzzle actions clear on phones and keyboards. —
       `npx playwright test puzzle-play.spec.ts puzzle-picker.spec.ts`
-- [ ] P15.3 Persist puzzle attempts and awards in versioned storage using the existing active-
+- [x] P15.3 Persist puzzle attempts and awards in versioned storage using the existing active-
       save/discard flow. Store content version, board, move count, undo history/flag and pending
       result identity. Medal once per puzzle/version; efficiency star at target without undo.
       Retain best on replay; reject unknown versions safely without corrupting other progress.
       Test interruption, reload, completion duplication, undo/restart and quota/corrupt data. —
       `npm test && npx playwright test puzzle-resume.spec.ts puzzle-rewards.spec.ts`
-- [ ] P15.4 Add validated fragment routing for bundled puzzle ID+version and spoiler-free
+- [x] P15.4 Add validated fragment routing for bundled puzzle ID+version and spoiler-free
       result text with puzzle name, move count/target, and practice/undo status. Hosted base-path
       aware; unknown/malformed links show a friendly fallback. Deep links require confirmation
       before replacing an active save. Test refresh, browser navigation and fresh-context links.
       Document file:// public-base behavior and do not encode local paths or solutions. —
       `npm test && npx playwright test puzzle-links.spec.ts`
-- [ ] P15.5 Add user-triggered “Challenge a friend” with native sharing where supported, copy
+- [x] P15.5 Add user-triggered “Challenge a friend” with native sharing where supported, copy
       text/link otherwise, and selectable-text fallback on denial/unavailability. Show honest
       success/cancel/error status. Generated result is unverified friendly comparison, not a
       certified rank. Stub share/clipboard in E2E; test a second isolated browser opens the

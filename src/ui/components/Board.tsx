@@ -31,6 +31,7 @@ export interface BoardProps {
   /** Settings screen toggle (default on). Gates only the destination highlight styling and the
    * path preview — click routing, keyboard focus, and the SR announcer don't depend on it. */
   readonly showHints?: boolean;
+  readonly goalCell?: Cube;
 }
 
 /**
@@ -55,6 +56,7 @@ export function Board({
   onDestinationHover,
   animation,
   showHints = true,
+  goalCell,
 }: BoardProps) {
   const legalDestinationsByKey = new Map<string, Move>(legalMoves.map((m) => [key(m.to), m]));
   const pegByCellKey = new Map(game.pegs.map((p) => [key(p.cell), p]));
@@ -155,6 +157,8 @@ export function Board({
         );
       })}
 
+      {goalCell && <text data-testid="puzzle-goal" x={project(goalCell, CELL_SPACING).px} y={project(goalCell, CELL_SPACING).py}
+        textAnchor="middle" dominantBaseline="central" fill="#ffd166" fontSize={20} pointerEvents="none" aria-hidden="true">★</text>}
       {previewMove && interactive && showHints && <PathPreview move={previewMove} />}
 
       {game.pegs.map((peg) => {

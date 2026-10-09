@@ -1,3 +1,9 @@
+## Resumed execution — user instruction October 8, 2026
+The user authorized completing all remaining work now, with token discipline. The old cutoff
+and stop-after-one-task rules below are superseded for this active resumed session. Continue
+sequentially through verified tasks to full qualification. Keep isolation, ownership, local
+commits, no push/deploy, and evidence requirements. Automation remains paused to avoid overlap.
+
 # Overnight family-pilot implementation
 
 **Build independently, verify completely, then hand over for human validation.**

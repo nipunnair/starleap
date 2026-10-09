@@ -1,3 +1,7 @@
+import { PuzzleScreen } from './PuzzleScreen';
+import { PuzzlePicker } from './PuzzlePicker';
+import { hasActiveSave, loadPuzzle, newPuzzleSave, type LoadedPuzzle } from './puzzleStore';
+import { parsePuzzleLink } from './puzzleSharing';
 import { useEffect, useState } from 'react';
 import { GameScreen, type SeatConfig } from '../ui/components/GameScreen';
 import { ConfigScreen, type GameConfigResult } from './ConfigScreen';
@@ -22,7 +26,7 @@ interface GameConfig {
   readonly initialSnapshot?: GameSnapshot;
 }
 
-type Screen = 'menu' | 'config' | 'game' | 'rules' | 'settings' | 'tutorial' | 'progress';
+type Screen = 'menu' | 'config' | 'game' | 'rules' | 'settings' | 'tutorial' | 'progress' | 'puzzles' | 'puzzle';
 
 /** Test-only debug scenarios, reached only via an explicit URL query param — see debugScenarios.ts. */
 function debugScenarioFromUrl(): GameConfig | null {
@@ -60,6 +64,9 @@ export function App() {
   const debugScenario = debugScenarioFromUrl();
   const [screen, setScreen] = useState<Screen>(debugScenario ? 'game' : 'menu');
   const [gameConfig, setGameConfig] = useState<GameConfig | null>(debugScenario);
+  const [puzzleModel, setPuzzleModel] = useState<LoadedPuzzle | null>(null);
+  const [pendingPuzzle, setPendingPuzzle] = useState<string | null>(null);
+  const [linkError, setLinkError] = useState(false);
   const [gameKey, setGameKey] = useState(0);
   const [result, setResult] = useState<ProgressCommit | null>(null);
   const [canResume, setCanResume] = useState(false);
@@ -69,7 +76,7 @@ export function App() {
 
   useEffect(() => {
     processPendingResult();
-    setCanResume(hasSavedGame());
+    setCanResume(hasSavedGame() || !!loadPuzzle());
     setShowOnboardingCallout(!hasSeenOnboarding());
   }, [screen]);
 
@@ -79,6 +86,7 @@ export function App() {
 
   function startNewGame(config: GameConfigResult) {
     processPendingResult();
+    history.replaceState(null, '', location.pathname + location.search);
     clearSavedGame();
     setResult(null);
     setGameKey(key => key + 1);
@@ -87,8 +95,31 @@ export function App() {
     setScreen('game');
   }
 
+  function startPuzzle(id: string) {
+    history.replaceState(null, '', location.pathname + location.search + `#puzzle=${id}&v=1`);
+    clearSavedGame(); setPuzzleModel(newPuzzleSave(id)); setGameKey(key => key + 1); setScreen('puzzle');
+  }
+  function requestPuzzle(id: string) {
+    if (hasActiveSave()) setPendingPuzzle(id); else startPuzzle(id);
+  }
+  useEffect(() => {
+    function route() {
+      const route = parsePuzzleLink(window.location.hash);
+      setLinkError(route === 'invalid');
+      if (route === 'invalid') { setPendingPuzzle(null); setScreen('puzzles'); return; }
+      if (!route) { setPendingPuzzle(null); setScreen(current => current === 'puzzle' ? 'puzzles' : current); return; }
+      const existing = loadPuzzle();
+      if (existing?.save.puzzleId === route.id) { setPuzzleModel(existing); setGameKey(key => key + 1); setScreen('puzzle'); }
+      else requestPuzzle(route.id);
+    }
+    route(); window.addEventListener('hashchange', route);
+    return () => window.removeEventListener('hashchange', route);
+    // Route reads current durable saves, not captured React state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function requestNewGame(config: GameConfigResult) {
-    if (canResume) {
+    if (canResume || hasActiveSave()) {
       setPendingConfig(config);
     } else {
       startNewGame(config);
@@ -102,6 +133,8 @@ export function App() {
   }
 
   function resumeGame() {
+    const puzzle = loadPuzzle();
+    if (puzzle) { setPuzzleModel(puzzle); setGameKey(key => key + 1); setScreen('puzzle'); return; }
     const saved = loadGame();
     if (!saved) return;
     setResult(null);
@@ -120,6 +153,12 @@ export function App() {
         gameState: snapshot.game, snapshot: { ...snapshot, stats: snapshot.stats }, savedAt: Date.now() }));
     }
   }
+
+  if (pendingPuzzle) return <main data-testid="confirm-discard-screen"><p>Starting this puzzle will replace your saved game or puzzle. Continue?</p>
+    <button onClick={() => { startPuzzle(pendingPuzzle); setPendingPuzzle(null); }}>Continue</button>
+    <button onClick={() => { setPendingPuzzle(null); history.replaceState(null, '', location.pathname + location.search); }}>Cancel</button></main>;
+  if (screen === 'puzzle' && puzzleModel) return <PuzzleScreen key={gameKey} initial={puzzleModel} settings={settings} onBack={() => setScreen('puzzles')} />;
+  if (screen === 'puzzles') return <>{linkError && <p role="status">This puzzle link is unknown or needs a newer build. Choose a puzzle below.</p>}<PuzzlePicker onChoose={requestPuzzle} onBack={() => setScreen('menu')} /></>;
 
   if (pendingConfig) {
     return (
@@ -184,6 +223,7 @@ export function App() {
     <MenuScreen
       canResume={canResume}
       showOnboardingCallout={showOnboardingCallout}
+      onPuzzles={() => setScreen('puzzles')}
       onProgress={() => setScreen('progress')}
       onNewGame={() => setScreen('config')}
       onResume={resumeGame}
