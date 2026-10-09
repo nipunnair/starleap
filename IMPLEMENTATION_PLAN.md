@@ -569,7 +569,7 @@ opening the link gets the same versioned starting position with no login or solu
       Require the stated objective, not any legal move, to advance all stages. Add a concise
       explanation that an entire chain is one move. Preserve skip/finish and onboarding behavior.
       — `npx playwright test tutorial.spec.ts tutorial-chain.spec.ts`
-- [ ] P15.7 Run the full puzzle flow across all five fixtures, sharing, resume, hints on/off,
+- [x] P15.7 Run the full puzzle flow across all five fixtures, sharing, resume, hints on/off,
       keyboard, reduced motion, and 360px layout. Inspect screenshots and add evidence to
       VALIDATION. Confirm puzzle mode has not leaked into ordinary game turn/win semantics. —
       `npx playwright test puzzle-play.spec.ts puzzle-resume.spec.ts puzzle-rewards.spec.ts puzzle-sharing.spec.ts keyboard-nav.spec.ts responsive-360.spec.ts reduced-motion-full.spec.ts axe-audit.spec.ts`

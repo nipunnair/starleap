@@ -195,3 +195,7 @@ serialized round-trip values. All five engine-legal reference paths completed in
 ## Tutorial — 2026-10-09T02:55:16.209361+00:00
 
 P15.6: 209 unit tests, typecheck/lint and all 3 tutorial E2Es pass. Every stage tested against an incorrect legal move. Logs under artifacts/family-pilot/resume/tutorial-*.log.
+
+## Phase 15 gate — 2026-10-09T02:56:50.304814+00:00
+
+P15.7 GREEN: 209 units, typecheck/lint exit 0; 32/32 regression browser tests. Keyboard-only solution with hints off and reduced motion at 360/1280px, axe on completion/picker/confirmation, no page errors/overflow. Screenshots under resume/puzzle-*.png inspected; mobile text readable, controls separated, board intact. Normal keyboard/responsive/axe regressions pass.

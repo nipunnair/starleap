@@ -818,3 +818,7 @@ session; all individual acceptance checks remain required. No heartbeat overlap.
 ## Tutorial — 2026-10-09T02:55:16.209361+00:00
 
 Tutorial rejects legal non-objective moves with a helpful message, preserving the lesson position. Four stages explicitly require step, span-two long jump, true two-hop chain and target-corner landing.
+
+## Phase 15 gate — 2026-10-09T02:56:50.304814+00:00
+
+Reused existing button styles for puzzle controls; stacked selectable share text and card spacing avoid cramped phone layout. No new UI framework.

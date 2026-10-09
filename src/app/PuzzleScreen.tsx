@@ -46,15 +46,15 @@ export function PuzzleScreen({ initial, settings, onBack }: { initial: LoadedPuz
       animation={pending ? { move: pending, owner: 0, reducedMotion, toneSequencer: tones, onHopLanding: () => {}, onComplete: () => commit(pending) } : null} />
     {complete && <section data-testid="puzzle-complete" aria-live="polite"><h2>Puzzle complete!</h2>
       <p>{puzzleAward(puzzle, model.attempt) === 'efficiency' ? 'Completion medal + efficiency star!' : 'Completion medal! Try again for an efficiency star at the target without undo.'}</p>
-      <button onClick={async () => setSharing(await shareChallenge(text))}>Challenge a friend</button>
+      <button className="btn btn-primary" onClick={async () => setSharing(await shareChallenge(text))}>Challenge a friend</button>
       <p role="status">{sharing}</p>
-      <label>Challenge text<textarea readOnly value={text} onFocus={event => event.target.select()} /></label>
+      <label className="puzzle-share-label">Challenge text<textarea readOnly value={text} onFocus={event => event.target.select()} /></label>
       <p>Your friend may need the newer published build. Records stay on this device.</p>
     </section>}
     <div className="puzzle-actions">
-      <button disabled={!!pending || !model.attempt.previous} onClick={() => { setPreview(null); setModel(current => ({ save: { ...current.save, actions: [...current.save.actions, { type: 'undo' }] }, attempt: undoPuzzle(current.attempt) })); }}>Undo</button>
-      <button disabled={!!pending} onClick={() => { setModel(newPuzzleSave(puzzle.id)); setSelected(PUZZLE_PEG_ID); setPreview(null); setSharing(''); }}>Retry</button>
-      <button onClick={onBack}>Back to puzzles</button>
+      <button className="btn btn-secondary" disabled={!!pending || !model.attempt.previous} onClick={() => { setPreview(null); setModel(current => ({ save: { ...current.save, actions: [...current.save.actions, { type: 'undo' }] }, attempt: undoPuzzle(current.attempt) })); }}>Undo</button>
+      <button className="btn btn-secondary" disabled={!!pending} onClick={() => { setModel(newPuzzleSave(puzzle.id)); setSelected(PUZZLE_PEG_ID); setPreview(null); setSharing(''); }}>Retry</button>
+      <button className="btn btn-secondary" onClick={onBack}>Back to puzzles</button>
     </div>
   </main>;
 }
