@@ -2,8 +2,8 @@
 
 ## Status
 Family pilot ACTIVE, resumed on explicit user instruction to implement the rest.
-P14 GREEN; P15.1–P15.5 complete. Next P15.6 tutorial chain and home objective.
-Six tasks remain. Automation remains paused while this owned interactive pass runs.
+P14 GREEN; P15.1–P15.6 complete. Next P15.7 puzzle regression/visual gate.
+Five tasks remain. Automation remains paused while this owned interactive pass runs.
 Not yet qualified for review; no push/deployment/integration.
 
 ## Done

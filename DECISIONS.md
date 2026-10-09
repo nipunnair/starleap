@@ -814,3 +814,7 @@ Schema/content version 1 is explicit; unknown versions are rejected and unreadab
 file:// shares use the public GitHub Pages base, never the local filesystem path.
 P15.2–P15.5 landed as one connected implementation batch during the user-authorized completion
 session; all individual acceptance checks remain required. No heartbeat overlap.
+
+## Tutorial — 2026-10-09T02:55:16.209361+00:00
+
+Tutorial rejects legal non-objective moves with a helpful message, preserving the lesson position. Four stages explicitly require step, span-two long jump, true two-hop chain and target-corner landing.

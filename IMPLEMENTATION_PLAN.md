@@ -565,7 +565,7 @@ opening the link gets the same versioned starting position with no login or solu
       certified rank. Stub share/clipboard in E2E; test a second isolated browser opens the
       generated link and solves the same puzzle. Never send to a real contact during tests. —
       `npx playwright test puzzle-sharing.spec.ts puzzle-links.spec.ts`
-- [ ] P15.6 Extend tutorial to teach a true two-hop chain and the target-corner objective.
+- [x] P15.6 Extend tutorial to teach a true two-hop chain and the target-corner objective.
       Require the stated objective, not any legal move, to advance all stages. Add a concise
       explanation that an entire chain is one move. Preserve skip/finish and onboarding behavior.
       — `npx playwright test tutorial.spec.ts tutorial-chain.spec.ts`

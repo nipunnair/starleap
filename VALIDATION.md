@@ -191,3 +191,7 @@ P15.2–P15.5: 209/209 units (32 files), typecheck exit 0, lint/boundaries exit 
 Logs: artifacts/family-pilot/resume/starleap-pilot-{unit,puzzles}.log.
 Initial test assertion distinguished JSON-normalized negative zero; assertion now compares
 serialized round-trip values. All five engine-legal reference paths completed in real UI.
+
+## Tutorial — 2026-10-09T02:55:16.209361+00:00
+
+P15.6: 209 unit tests, typecheck/lint and all 3 tutorial E2Es pass. Every stage tested against an incorrect legal move. Logs under artifacts/family-pilot/resume/tutorial-*.log.

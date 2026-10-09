@@ -113,3 +113,7 @@ docs diff check passes. Commit locally, release own cutoff lock. No push/deploy/
 Outcome P15.2–P15.5 COMPLETE. 209 units + 17 targeted E2E pass; typecheck/lint green.
 Remaining: P15.6, P15.7, P16.1–P16.4. Next: tutorial strict objectives. Active owned pass,
 automation paused; old cutoff superseded by user's explicit completion instruction.
+
+## Tutorial — 2026-10-09T02:55:16.209361+00:00
+
+P15.6 COMPLETE. 209 units + 3 tutorial E2Es, typecheck/lint exit 0. Five tasks remain; next P15.7.
