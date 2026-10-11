@@ -5,6 +5,8 @@ for(const width of [360,1280]) test(`puzzle keyboard, hints off, reduced motion 
  await page.setViewportSize({width,height:900});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>localStorage.setItem('starleap.settings.v1',JSON.stringify({showMoveHints:false,reducedMotion:'on'})));
  await openPuzzle(page);await expect(page.locator('circle[stroke="#50c88c"]')).toHaveCount(0);
+ const activeAudit=await new AxeBuilder({page}).analyze();expect(activeAudit.violations.filter(v=>v.impact==='serious'||v.impact==='critical')).toEqual([]);
+ await page.screenshot({path:`artifacts/family-pilot/resume/puzzle-active-${width}.png`,fullPage:true});
  await page.getByRole('group',{name:/STARLEAP board/}).focus();
  for(let i=0;i<4;i++)await page.keyboard.press('ArrowRight');await page.keyboard.press('Enter');
  await expect(page.getByTestId('puzzle-complete')).toBeVisible();

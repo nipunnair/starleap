@@ -100,16 +100,27 @@ export function App() {
     clearSavedGame(); setPuzzleModel(newPuzzleSave(id)); setGameKey(key => key + 1); setScreen('puzzle');
   }
   function requestPuzzle(id: string) {
-    if (hasActiveSave()) setPendingPuzzle(id); else startPuzzle(id);
+    if (hasActiveSave()) {
+      // Confirmation temporarily unmounts play; retain its latest durable position for Cancel.
+      const puzzle = loadPuzzle();
+      if (puzzle) setPuzzleModel(puzzle);
+      else {
+        const saved = loadGame();
+        if (saved) setGameConfig({ playerCount: saved.playerCount, seats: saved.seats,
+          initialGameState: saved.gameState, initialSnapshot: saved.snapshot });
+      }
+      setPendingPuzzle(id);
+    } else startPuzzle(id);
   }
   useEffect(() => {
     function route() {
       const route = parsePuzzleLink(window.location.hash);
+      setPendingConfig(null);
       setLinkError(route === 'invalid');
       if (route === 'invalid') { setPendingPuzzle(null); setScreen('puzzles'); return; }
       if (!route) { setPendingPuzzle(null); setScreen(current => current === 'puzzle' ? 'puzzles' : current); return; }
       const existing = loadPuzzle();
-      if (existing?.save.puzzleId === route.id) { setPuzzleModel(existing); setGameKey(key => key + 1); setScreen('puzzle'); }
+      if (existing?.save.puzzleId === route.id) { setPendingPuzzle(null); setPuzzleModel(existing); setGameKey(key => key + 1); setScreen('puzzle'); }
       else requestPuzzle(route.id);
     }
     route(); window.addEventListener('hashchange', route);

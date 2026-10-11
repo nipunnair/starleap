@@ -1,52 +1,76 @@
-# STARLEAP family pilot — NOT_READY
+# STARLEAP family pilot — qualification in progress
 
-Cutoff report recorded 2026-10-05T02:32:49Z. The authorized cutoff was
-2026-09-29 08:00 America/Los_Angeles (15:00 UTC). Automation is PAUSED.
-No new implementation task started after this cutoff check. Resumption requires new user direction.
+Feature implementation is complete in the isolated `codex/starleap-family-pilot` branch.
+Final whole-suite checks and review sign-off are running; this document does not yet claim
+READY_FOR_REVIEW. The original cutoff report remains available in commit a7a083e.
 
-## Completed and verified
+## Included
 
-Phase 14: personal-best celebrations, four rival badges, local collection, save/resume/undo,
-rematch/next rival, home counts and target guidance. Phase 14 gate passed 26 browser tests,
-including accessibility and four legal winning-commit badge paths, with screenshots inspected.
-P15.1: five puzzle definitions and pure rules adapter; 15 targeted tests passed.
-Latest tested code: 6f9410e. Latest unit evidence: 201 tests / 31 files, typecheck/lint pass;
-one existing ConfigScreen Fast Refresh warning. These are historical results, not rerun today.
-See VALIDATION.md for per-task timestamps and limits. No full final release gate has passed.
+- Personal bests for eligible solo games, including chain improvements on completed losses.
+- Four first-victory rival badges: Nova, Vega, Rigel, Sirius; rematch/next-rival controls.
+- Home counts and target-corner labels; a four-stage tutorial with required objectives.
+- Five playable puzzles: First Chain (1 move), Long Leap (1), Turn the Corner (1),
+  Build the Route (2), Home Stretch (2). Targets reward efficiency; exceeding them still succeeds.
+- Puzzle medals, efficiency stars without undo, retained bests, retry and saved attempts.
+- Versioned spoiler-free challenges with native share, copy and selectable-text fallback.
 
-## Exact remaining work (10 unchecked tasks)
+No backend, account, telemetry, campaign, rotating daily puzzle or public leaderboard is required.
+GitHub Pages remains sufficient. The live site has not been changed.
 
-1. P15.2 — puzzle picker/play UI, objective marker, move counter, retry, undo and completion.
-2. P15.3 — puzzle save/resume, versioned awards, duplicate-result and storage-failure handling.
-3. P15.4 — validated versioned puzzle links, navigation, saved-game replacement confirmation.
-4. P15.5 — native sharing/copy/selectable fallback and second-browser challenge flow.
-5. P15.6 — tutorial chain and target objectives, strict advancement checks.
-6. P15.7 — full puzzle regression, responsive/keyboard/reduced-motion inspection.
-7. P16.1 — offline PWA/file build and GitHub Pages base-path integration coverage.
-8. P16.2 — final full unit/E2E/axe/Lighthouse qualification and both builds.
-9. P16.3 — final code review and actual browser/worker-AI match inspection.
-10. P16.4 — completed review package, handoff/backlog updates and final readiness audit.
+## Local review
 
-This cutoff report does not complete P16.4. The next implementation task remains P15.2.
-Puzzle names are First Chain, Long Leap, Turn the Corner, Build the Route, Home Stretch;
-their definitions exist, but they are not yet playable or shareable through the UI.
+Run in the isolated worktree:
 
-## Isolation and integration
+```sh
+cd /Users/nipunnair/code/starleap-family-pilot
+mise exec node@24.15.0 -- npm run build
+mise exec node@24.15.0 -- npm run preview -- --host 127.0.0.1 --port 4275 --strictPort
+```
 
-Branch codex/starleap-family-pilot in /Users/nipunnair/code/starleap-family-pilot.
-Main is 4322047; at inspection it had zero unique commits and the pilot had eight unique
-commits through 6f9410e. This report adds a documentation-only pilot commit. No main edits,
-merge/rebase/cherry-pick, push or deployment. Integration and combined regression remain
-separate, human-controlled work even after eventual isolated-branch readiness.
+Open http://127.0.0.1:4275/. If that reserved port is occupied, do not terminate its owner.
+Close your own earlier preview first. Existing PWA users may need another refresh after its
+updated service worker activates.
 
-## Execution gap and limitations
+For a portable offline copy:
 
-Last completed checkpoint was 2026-09-29T07:24:00Z. Later heartbeat messages did not produce
-additional commits. On this wake the tree was clean and no pass lock was held. There is no
-remaining owned task to finish, and no evidence supporting an active long-running test.
-The underlying execution delay is not established by repository evidence; do not claim it was
-continuous progress. Stop on the expired cutoff rather than retrying the implementation queue.
+```sh
+mise exec node@24.15.0 -- npm run build:singlefile
+```
 
-Records are browser/device-local, not synced or certified. Resumed duration remains time since
-screen mount; it is not an award metric. No deployment-ready or final human-validation-ready
-claim is made. Build independently, verify completely, then hand over for human validation.
+Open `/Users/nipunnair/code/starleap-family-pilot/starleap.html` directly in a browser. Build
+outputs are ignored generated artifacts. For future Pages publication, the existing build
+supports `npm run build -- --base=/starleap/`; publication and integration are separate work.
+
+## Family test (10–15 minutes)
+
+1. Follow the tutorial, including a long jump, two-hop chain and home landing.
+2. Open Puzzles, finish First Chain, and observe the medal and efficiency star. Retry using
+   two separate hops, then Undo and finish again; completion remains encouraging.
+3. Try each remaining puzzle. Reload mid-attempt and confirm the saved position returns.
+4. Use Challenge a friend. On the same locally served build, open its link in another browser
+   profile. The friend starts the same puzzle with fresh progress and no solution encoded.
+5. Play a regular match, inspect personal results and the rival collection, then try rematch.
+6. Note whether family members voluntarily retry, chase a star/badge, share, or request more.
+   Those observations decide whether a campaign, more content or a backend is worthwhile.
+
+## Storage and sharing limits
+
+Records belong to this browser/origin/device; there is no sync or certified ranking. Clearing
+browser storage loses them. One active game OR puzzle is saved; replacement asks first.
+Storage denial never blocks play but shows a puzzle save warning. Undo excludes an efficiency
+star for that attempt. Puzzle bests/medals survive retry. Legacy match history is conservatively
+ineligible for records. Time shown after match resume measures the current screen mount and is
+not an award metric. Multi-tab concurrent play is outside the single-active-session pilot.
+
+`file://` challenge links use https://nipunnair.github.io/starleap/ and never disclose local
+paths. Public links require the enhanced build to be published before family can use them there.
+A loopback preview URL works only on its own computer. Tests stub sharing and send nothing to
+real contacts. Browser qualification targets Chromium; family testing should include the actual
+phones/browsers they use.
+
+## Evidence and integration
+
+See VALIDATION.md and ignored `artifacts/family-pilot/resume/` for commands, logs and screenshots.
+Final code revision, full qualification totals and main divergence will be recorded on completion.
+No push, deploy, merge, rebase or cherry-pick has been performed. Human product acceptance and
+any later integration/retest against main remain separate from isolated-branch readiness.

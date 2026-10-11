@@ -199,3 +199,16 @@ P15.6: 209 unit tests, typecheck/lint and all 3 tutorial E2Es pass. Every stage 
 ## Phase 15 gate — 2026-10-09T02:56:50.304814+00:00
 
 P15.7 GREEN: 209 units, typecheck/lint exit 0; 32/32 regression browser tests. Keyboard-only solution with hints off and reduced motion at 360/1280px, axe on completion/picker/confirmation, no page errors/overflow. Screenshots under resume/puzzle-*.png inspected; mobile text readable, controls separated, board intact. Normal keyboard/responsive/axe regressions pass.
+
+## Interactive browser inspection — 2026-10-09
+
+Owned preview on strict port 4275; app browser initially used its prior cached build, then
+reload activated the new service worker build. Confirmed saved-game replacement, played the
+First Chain star destination, observed Moves 1 / Hops 2 and medal + efficiency star, used Undo,
+then reloaded and observed restored Moves 0 / Hops 0 with Undo disabled. Browser error log
+was empty. Closed our tab and stopped only our preview session afterward. Mobile/desktop
+screenshots and keyboard/axe evidence are in artifacts/family-pilot/resume/puzzle-*.png.
+
+## Qualification checkpoint — 2026-10-11T01:37:36.194101+00:00
+
+P16.1: normal/singlefile builds exit 0; all 5 integration checks pass (8.4m), including full Sirius offline game with zero HTTP requests, PWA resume, preserved records and Pages fresh-context sharing. Offline gate tested 6f78995 runtime; later navigation hardening is covered by 210 units, typecheck/lint and 10 targeted browser checks (including Pages). Final whole-suite rerun follows on committed code.

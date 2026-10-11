@@ -26,6 +26,8 @@ export async function waitForMoveRoundTrip(page: Page, timeout = 10_000): Promis
  */
 export async function playUntilGameOver(page: Page, maxMoves = 200): Promise<void> {
   for (let movesMade = 0; movesMade < maxMoves; movesMade++) {
+    // Deliberate gate observability: a long real-AI match should show progress, not look stalled.
+    if (movesMade > 0 && movesMade % 20 === 0) console.info(`Full-game gate: ${movesMade} human moves committed`);
     const handle = await page.waitForFunction(
       (label) => {
         if (document.querySelector('[data-testid="win-screen"]')) return 'done';

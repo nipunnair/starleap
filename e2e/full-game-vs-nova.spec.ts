@@ -20,5 +20,6 @@ test.describe('Full phase gate (IMPLEMENTATION_PLAN.md P4.9)', () => {
 
     await expect(page.getByTestId('win-screen')).toBeVisible();
     expect(consoleErrors).toEqual([]);
+    await page.screenshot({ path: 'artifacts/family-pilot/resume/actual-worker-match.png', fullPage: true });
   });
 });

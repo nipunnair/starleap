@@ -37,6 +37,7 @@ export function newPuzzleSave(id: string): LoadedPuzzle {
 export function readPuzzleAwards(): Record<string, PuzzleRecord> {
   const raw = localStorage.getItem(AWARDS);
   if (!raw) return {};
+  if (raw.length > 500000) throw new Error('Oversized awards');
   const parsed = JSON.parse(raw);
   if (!parsed || parsed.version !== 1 || typeof parsed.records !== 'object' || !parsed.records || Array.isArray(parsed.records)) throw new Error('Unreadable awards');
   for (const [id, value] of Object.entries(parsed.records)) {

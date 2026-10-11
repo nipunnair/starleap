@@ -580,7 +580,7 @@ GATE: all implementation tasks and checks pass on the final code revision; no un
 both deployable outputs are built and exercised; human receives reproducible review instructions
 and limitations. “Ready” means ready for local review, not published and not human-approved.
 
-- [ ] P16.1 Add integration coverage for offline PWA and file:// builds: solve/resume a puzzle,
+- [x] P16.1 Add integration coverage for offline PWA and file:// builds: solve/resume a puzzle,
       preserve records/badges, and test share fallback without network calls. Verify the Pages
       `/starleap/` base with a built preview and a fresh-context shared URL (no server rewrite).
       Assert no added runtime API/analytics dependency; retain the existing full Sirius offline

@@ -1,0 +1,34 @@
+import {test,expect} from '@playwright/test';
+import {execFileSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {moveTo} from './puzzle-helpers';
+import {outcome} from '../src/progression/__tests__/recordFixture';
+import {emptyProgress,recordOutcome} from '../src/progression/records';
+const fixture=outcome('offline-fixture');
+const progress=recordOutcome(emptyProgress(),fixture.snapshot.stats,fixture.gameState).progress;
+test('PWA puzzle resumes and shares offline without losing records',async({page,context})=>{
+ await page.goto('/');await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+ await page.evaluate(p=>localStorage.setItem('starleap.progress.v1',JSON.stringify(p)),progress);
+ await page.goto('/#puzzle=first-chain&v=1');await moveTo(page,'2,-2,0',1);
+ await context.setOffline(true);await page.reload();await expect(page.getByTestId('puzzle-counter')).toContainText('Moves 1');
+ await moveTo(page,'4,-4,0',2);await expect(page.getByTestId('puzzle-complete')).toBeVisible();
+ await page.evaluate(()=>{Object.defineProperty(navigator,'share',{value:undefined,configurable:true});Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true});});
+ await page.getByRole('button',{name:'Challenge a friend'}).click();await expect(page.getByText('Select and copy the challenge below.',{exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('starleap.progress.v1')!))).toEqual(progress);
+ await page.reload();await expect(page.getByTestId('puzzle-complete')).toBeVisible();
+ await page.getByRole('button',{name:'Back to puzzles'}).click();await page.getByRole('button',{name:'Back to menu'}).click();
+ await page.getByRole('button',{name:'Rival badges / Personal bests',exact:true}).click();await expect(page.getByTestId('badge-Nova')).toContainText('Earned');
+});
+test('file puzzle reload, rewards and public sharing need zero HTTP requests',async({page})=>{
+ test.setTimeout(60000);
+ execFileSync('npm',['exec','--','vite','build','--mode','singlefile','--outDir','artifacts/family-pilot/offline-build'],{cwd:process.cwd(),stdio:'pipe'});
+ const requests:string[]=[];page.on('request',r=>{if(/^https?:/.test(r.url()))requests.push(r.url());});
+ await page.goto(pathToFileURL(resolve('artifacts/family-pilot/offline-build/index.html')).href+'#puzzle=first-chain&v=1');
+ await page.evaluate(p=>localStorage.setItem('starleap.progress.v1',JSON.stringify(p)),progress);
+ await moveTo(page,'2,-2,0',1);await page.reload();await expect(page.getByTestId('puzzle-counter')).toContainText('Moves 1');await moveTo(page,'4,-4,0',2);
+ await page.evaluate(()=>{Object.defineProperty(navigator,'share',{value:undefined,configurable:true});Object.defineProperty(navigator,'clipboard',{value:undefined,configurable:true});});
+ await page.getByRole('button',{name:'Challenge a friend'}).click();await expect(page.getByRole('textbox')).toHaveValue(/https:\/\/nipunnair.github.io\/starleap\/#puzzle=first-chain&v=1/);
+ expect(await page.getByRole('textbox').inputValue()).not.toContain('file:');await page.reload();await expect(page.getByTestId('puzzle-complete')).toBeVisible();
+ expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('starleap.progress.v1')!))).toEqual(progress);expect(requests).toEqual([]);
+});

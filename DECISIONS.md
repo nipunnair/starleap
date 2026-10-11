@@ -822,3 +822,14 @@ Tutorial rejects legal non-objective moves with a helpful message, preserving th
 ## Phase 15 gate — 2026-10-09T02:56:50.304814+00:00
 
 Reused existing button styles for puzzle controls; stacked selectable share text and card spacing avoid cramped phone layout. No new UI framework.
+
+## Final review hardening — 2026-10-09
+
+The engineering code-review pass found two related route lifecycle defects: a pending
+replacement survived Back to the saved puzzle, and cancelling a deep link could remount
+play from its original props. Restore the latest durable game/puzzle snapshot before showing
+confirmation, clear pending confirmation on same-puzzle routing, and clear stale new-game
+confirmation on hash navigation. Tests cover a real human/AI round-trip before cancellation.
+Puzzle replay now explicitly rejects unknown move discriminators, and award reads have a
+size bound matching other stores. Interrupted animation is tested before any move/award commit.
+Review evidence and final green qualification will be recorded before readiness is declared.

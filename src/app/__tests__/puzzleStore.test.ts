@@ -36,3 +36,7 @@ it('validates fragments and preserves hosted bases while removing private file p
  expect(puzzleLink(p,'https://example.org/starleap/?secret=yes')).toBe('https://example.org/starleap/#puzzle=first-chain&v=1');
  const text=challengeText(p,solved().attempt,'file:///private/user/starleap.html'); expect(text).toContain('https://nipunnair.github.io/starleap/#'); expect(text).not.toContain('private'); expect(text).not.toContain('4,-4');
 });
+it('rejects unknown move types even when their geometry is legal', () => {
+ const model=solved();const raw=JSON.parse(JSON.stringify(model.save));raw.actions[0].move.type='teleport';
+ expect(()=>replayPuzzle(raw)).toThrow();
+});

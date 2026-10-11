@@ -2,8 +2,9 @@
 
 ## Status
 Family pilot ACTIVE, resumed on explicit user instruction to implement the rest.
-P14 GREEN; Phase 15 GREEN. Next P16.1 offline/Pages integration.
-Four tasks remain. Automation remains paused while this owned interactive pass runs.
+P14 GREEN; Phases 14–15 GREEN. P16.1 offline/Pages integration passed; review navigation fixes passed.
+Next P16.2 final full qualification, followed by final review sign-off and handoff.
+Three tasks remain. Automation remains paused while this owned interactive pass runs.
 Not yet qualified for review; no push/deployment/integration.
 
 ## Done

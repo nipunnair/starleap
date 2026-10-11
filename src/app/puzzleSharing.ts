@@ -12,7 +12,7 @@ export function puzzleLink(puzzle: Puzzle, href: string): string {
   return base.href;
 }
 export function challengeText(puzzle: Puzzle, attempt: PuzzleAttempt, href: string): string {
-  return `${puzzle.title}: ${attempt.moves} moves, target ${puzzle.targetMoves}. ${attempt.undoUsed ? 'Practice with undo' : 'No undo'}. Friendly, unverified challenge. Can you reach the marker? ${puzzleLink(puzzle, href)}`;
+  return `${puzzle.title}: ${attempt.moves} ${attempt.moves === 1 ? 'move' : 'moves'}, target ${puzzle.targetMoves}. ${attempt.undoUsed ? 'Practice with undo' : 'No undo'}. Friendly, unverified challenge. Can you reach the marker? ${puzzleLink(puzzle, href)}`;
 }
 export async function shareChallenge(text: string): Promise<string> {
   try {

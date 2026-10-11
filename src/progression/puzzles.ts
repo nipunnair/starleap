@@ -70,6 +70,7 @@ export function puzzleMoves(puzzle: Puzzle, attempt: PuzzleAttempt): Move[] {
 }
 /** Accept any legal hop route, including one deduplicated by the engine's destination list. */
 function legalMove(game: GameState, move: Move): boolean {
+  if (!move || (move.type !== 'step' && move.type !== 'jump')) return false;
   const peg = game.pegs.find(p => p.id === PUZZLE_PEG_ID);
   if (!peg || move.pegId !== peg.id || !equals(move.from, peg.cell) || !isLegalRestingCell(game, peg, move.to)) return false;
   const occupied = buildOccupancy(game);
