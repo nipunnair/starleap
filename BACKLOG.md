@@ -7,7 +7,10 @@ Tests and agent-driven browser review establish correctness; family play establi
 The executable queue is IMPLEMENTATION_PLAN.md only. This backlog contains no unchecked tasks
 so that a loop cannot accidentally interpret an idea as permission to implement it.
 
-## Committed family pilot
+## Implemented family pilot
+
+FP-1–FP-7 are implemented and qualified. READY_FOR_REVIEW; family product acceptance is next.
+See REVIEW_READY.md for the tested revision and evidence. Deferred ideas below remain unapproved.
 
 | ID | Outcome | Tasks | Acceptance |
 |---|---|---|---|

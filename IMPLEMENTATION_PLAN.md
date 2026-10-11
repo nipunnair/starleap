@@ -586,20 +586,20 @@ and limitations. “Ready” means ready for local review, not published and not
       Assert no added runtime API/analytics dependency; retain the existing full Sirius offline
       match gate. Test data/fixtures must never contaminate genuine progress. —
       `npm run build && npm run build:singlefile && npx playwright test pwa-offline.spec.ts singlefile-offline.spec.ts pilot-offline.spec.ts pages-puzzle-links.spec.ts`
-- [ ] P16.2 Run final full qualification: unit/property tests, typecheck, lint/boundaries, both
+- [x] P16.2 Run final full qualification: unit/property tests, typecheck, lint/boundaries, both
       builds, all Playwright specs, axe on every new screen and Lighthouse ≥90 performance and
       accessibility. Record exact commands, exit codes, counts, timestamps and tested code commit
       in VALIDATION; retain logs/screenshots under ignored `artifacts/family-pilot/`. Fix regressions
       and rerun affected tests plus the final gate after code changes. —
       `npm test && npm run typecheck && npm run lint && npm run build && npm run build:singlefile && npx playwright test && npm run lighthouse`
-- [ ] P16.3 Perform final code review focused on award eligibility, save migration, undo,
+- [x] P16.3 Perform final code review focused on award eligibility, save migration, undo,
       untrusted links, duplicate events, accessibility and missing tests. Drive real browser flows
       at 360px and desktop, inspect screenshots, and check console errors. Exercise one actual
       worker-AI match through completion (not just a forced win fixture); automated legal-move
       driving is allowed. Check all four badge paths with controlled fixtures separately. Record
       findings/fixes and retest evidence. Zero open correctness blockers before checking off. —
       `npm test && npm run typecheck && npm run lint && npx playwright test`
-- [ ] P16.4 Produce `REVIEW_READY.md`: readiness status, tested code revision/final commit range,
+- [x] P16.4 Produce `REVIEW_READY.md`: readiness status, tested code revision/final commit range,
       feature summary, exact local preview and single-file instructions, evidence links, storage
       limitations, five-puzzle list, sharing-before-deploy caveat, known nonblocking issues, and
       a short family test script. Update HANDOFF/PROGRESS/BACKLOG. Mark READY_FOR_REVIEW only if

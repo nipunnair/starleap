@@ -9,13 +9,14 @@ non-obvious judgment call made during the build is there, in chronological order
 
 Family pilot planning supersedes the earlier campaign/daily proposal. See BACKLOG.md for all
 ideas, IMPLEMENTATION_PLAN.md for the only executable queue, and OVERNIGHT_RUNBOOK.md for the
-build → validate → human-review contract. The new work is not built yet. Final handoff will be
-REVIEW_READY.md after qualification, or an explicit NOT_READY report if blocked. No automatic
+build → validate → human-review contract. The family-pilot features are built in the isolated
+`codex/starleap-family-pilot` worktree. REVIEW_READY.md is the authoritative qualification and
+review entry point; VALIDATION.md contains the evidence. No automatic
 push/deploy; the live GitHub Pages site remains unchanged until human approval/publication.
 
 ## What's built
 
-All twelve planned phases are complete and green:
+The original game and family-pilot implementation include:
 
 - **Engine** (`src/engine/`): full rules — cube-coordinate board, arbitrary-span jump chains,
   residency rule (by default, unclaimed corners in <6P games are waypoints only — see
@@ -33,10 +34,12 @@ All twelve planned phases are complete and green:
   (playable via `file://` with zero network requests, including the AI worker), a Dockerfile,
   and a GitHub Pages deploy workflow. See `README.md` for how to build/run each.
 
-Test coverage: 126 unit tests (vitest, including fast-check property tests for the board math and
-Zobrist hashing) and 60 Playwright E2E tests, all green. `npm run lighthouse` scores 100/100 on
-both performance and accessibility; `npx @axe-core/playwright` finds zero critical/serious
-violations on any screen.
+Family-pilot additions include eligible personal bests, four rival badges, next-rival/rematch,
+home progress, five saved/shareable puzzles with medals and efficiency stars, and a strict
+four-stage tutorial. Current coverage is 210 unit/property tests and 114 browser checks;
+all passed on e8ecc26. Lighthouse scored 98 performance / 100 accessibility.
+See REVIEW_READY.md for the review-ready status, tested revision and local test script. Historical
+counts below describe the original release only.
 
 ## What's deferred (not blockers — see `BLOCKED.md`, which is empty)
 

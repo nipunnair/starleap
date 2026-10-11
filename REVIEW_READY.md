@@ -1,8 +1,17 @@
-# STARLEAP family pilot — qualification in progress
+# STARLEAP family pilot — READY_FOR_REVIEW
 
-Feature implementation is complete in the isolated `codex/starleap-family-pilot` branch.
-Final whole-suite checks and review sign-off are running; this document does not yet claim
-READY_FOR_REVIEW. The original cutoff report remains available in commit a7a083e.
+All authorized implementation and qualification tasks are complete. Ready for your local
+review and family testing; not published or human-approved.
+
+Tested code: `e8ecc2620ba6245fa7c0e1c89bcf136055f84f62` on `codex/starleap-family-pilot`.
+Final commit range: `4322047..HEAD` (14 local commits including this documentation-only handoff).
+No runtime/test changes follow the qualified code revision. Completed 2026-10-11T01:54:14.954366+00:00.
+
+**Evidence:** 210/210 unit/property tests, 114/114 browser tests (14.8 minutes), typecheck,
+lint/boundaries, normal and standalone builds all exit 0. Axe found no serious/critical
+violations on new screens. Lighthouse: **98 performance / 100 accessibility**. Final review
+has no open correctness blockers. The existing ConfigScreen Fast Refresh lint warning remains
+nonblocking. Details and exact commands are in VALIDATION.md.
 
 ## Included
 
@@ -19,7 +28,8 @@ GitHub Pages remains sufficient. The live site has not been changed.
 
 ## Local review
 
-Run in the isolated worktree:
+An owned preview is running at http://127.0.0.1:4275/ for this handoff. To recreate it later,
+run in the isolated worktree:
 
 ```sh
 cd /Users/nipunnair/code/starleap-family-pilot
@@ -71,6 +81,8 @@ phones/browsers they use.
 ## Evidence and integration
 
 See VALIDATION.md and ignored `artifacts/family-pilot/resume/` for commands, logs and screenshots.
-Final code revision, full qualification totals and main divergence will be recorded on completion.
+Main was 4322047 with zero main-only commits and 13 pilot-only commits before this final
+documentation commit (14 afterward). Integration still requires human-controlled review and
+a regression run against the eventual combined main branch.
 No push, deploy, merge, rebase or cherry-pick has been performed. Human product acceptance and
 any later integration/retest against main remain separate from isolated-branch readiness.

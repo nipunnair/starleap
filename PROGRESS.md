@@ -1,13 +1,25 @@
 # PROGRESS
 
 ## Status
-Family pilot ACTIVE, resumed on explicit user instruction to implement the rest.
-P14 GREEN; Phases 14–15 GREEN. P16.1 offline/Pages integration passed; review navigation fixes passed.
-Next P16.2 final full qualification, followed by final review sign-off and handoff.
-Three tasks remain. Automation remains paused while this owned interactive pass runs.
-Not yet qualified for review; no push/deployment/integration.
+**READY_FOR_REVIEW — all authorized family-pilot tasks P14–P16 complete.**
+Build independently, verify completely, then hand over for human validation.
+Final code: `e8ecc2620ba6245fa7c0e1c89bcf136055f84f62`. Documentation-only handoff follows this revision.
+210 unit/property tests and 114 browser tests passed. Typecheck, lint/boundaries, both builds,
+axe gates and Lighthouse (98 performance / 100 accessibility) passed. No open blockers.
+Automation PAUSED. No push/deploy or main integration; family product acceptance is next.
+Read REVIEW_READY.md for preview instructions, evidence and limits.
+Main remains 4322047 with zero unique commits relative to this branch at handoff.
 
 ## Done
+- **P16.2–P16.4:** full final qualification, code review, real worker-AI match and final browser
+  inspection complete. All 114 E2Es passed in 14.8 minutes, including full offline Sirius
+  match. Reviewed mobile/desktop puzzle/results/collection screenshots; no serious/critical
+  axe issues. Review package and backlog updated, all tasks checked, no correctness blockers.
+- **P16.1:** offline PWA and standalone puzzle resume/rewards, file sharing fallback with zero
+  HTTP calls, and real Pages-base fresh-context links verified. Normal records retained.
+- **P15.6–P15.7:** strict step/long-jump/chain/home tutorial; all-five puzzle regression,
+  keyboard with hints off, reduced motion, 360/1280px layout and accessibility verified.
+
 - **P15.2–P15.5:** puzzle picker/play, all five positions, animation/counters/undo/retry,
   versioned replayable saves and monotonic medals/bests, safe deep links and user-triggered
   native/copy/selectable sharing. 209 unit tests and 17 browser tests pass; typecheck/lint green.

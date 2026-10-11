@@ -212,3 +212,52 @@ screenshots and keyboard/axe evidence are in artifacts/family-pilot/resume/puzzl
 ## Qualification checkpoint — 2026-10-11T01:37:36.194101+00:00
 
 P16.1: normal/singlefile builds exit 0; all 5 integration checks pass (8.4m), including full Sirius offline game with zero HTTP requests, PWA resume, preserved records and Pages fresh-context sharing. Offline gate tested 6f78995 runtime; later navigation hardening is covered by 210 units, typecheck/lint and 10 targeted browser checks (including Pages). Final whole-suite rerun follows on committed code.
+
+## Final qualification — 2026-10-11T01:54:14.954366+00:00
+
+Tested code `e8ecc2620ba6245fa7c0e1c89bcf136055f84f62`; complete command chain exit **0**.
+Started 2026-10-11T01:37:36Z (unit log local time 18:37:36 America/Los_Angeles).
+Ended by 2026-10-11T01:54:14.954366+00:00. All commands run in the isolated worktree via
+`mise exec node@24.15.0 --`, with two Playwright workers and one heavy suite at a time.
+
+| Command after mise prefix | Result | Evidence under artifacts/family-pilot/resume/ |
+|---|---|---|
+| npm test | exit 0; 210 tests / 32 files | final-unit.log |
+| npm run typecheck | exit 0 | final-typecheck.log |
+| npm run lint | exit 0; boundaries pass, one existing refresh warning | final-lint.log |
+| npm run build | exit 0 | final-build.log |
+| npm run build:singlefile | exit 0 | final-singlefile.log |
+| npx playwright test | exit 0; 114/114, no retries; 14.8m | final-e2e.log |
+| npm run lighthouse | exit 0; performance 98, accessibility 100 | final-lighthouse.log |
+
+Browser gate includes all five puzzle solutions, native/copy/cancel/error sharing and fresh
+second context, normal-game and puzzle save replacement, Back/Forward, interrupted animation,
+reload/undo/quota/reward idempotency, strict tutorial objectives, all four actual winning-commit
+badge paths using controlled isolated fixtures, axe on every new screen, keyboard/reduced motion,
+360/1280px layouts, both offline builds and Pages base-path links. No fixture contaminates the
+public game. Full standalone Sirius match completed in 8.2m with zero HTTP requests.
+
+### Final review and agent browser evidence (P16.3)
+
+Reviewed records eligibility (standard solo 2P, unique winner, separate comparison versions,
+sticky undo efficiency exclusion, completed-loss chain awards), legacy migration, atomic pending
+records/receipt writes, duplicate callbacks, malformed/unknown versions, bounded replay/award
+reads, routing/save replacement, user-triggered sharing and accessibility. The two route lifecycle
+findings are fixed and their regressions pass. Unknown move types rejected. No open correctness
+blockers; no new backend, dependency, telemetry, campaign or daily rotation.
+
+Actual human-vs-Nova UI/worker match completed in 3.1m without console errors at the 150-round
+safeguard (not a natural human win); inspected `actual-worker-match.png`. Controlled win fixtures
+separately establish all badge paths. Inspected final puzzle active/completion/picker screenshots
+at 360/1280 and `../p146-results-360.png`, `../p146-collection-1280.png`: text/controls readable,
+no overflow. Final app-browser play on strict preview port 4275 reached Moves 1 / Hops 2,
+medal + star, and correct singular share text; error log empty. Its loaded
+`/assets/index-Bai4r1Ft.js` matches the final build log. Owned preview retained for human review.
+
+### Readiness audit (P16.4)
+
+All executable tasks checked; BLOCKED.md contains no blockers. REVIEW_READY, HANDOFF, PROGRESS,
+BACKLOG and runbook are consistent. Only documentation changes follow the tested code commit.
+`git diff --check` passes. Main 4322047 has 0 unique commits; pilot has 13 before final docs
+commit, 14 after. No integration/push/deploy. Automation status read from its saved configuration:
+PAUSED. Later main integration and combined retesting remain separate. READY_FOR_REVIEW.

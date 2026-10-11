@@ -125,3 +125,12 @@ P15.7 COMPLETE. 209 units, 32 browser checks, typecheck/lint green. Four tasks r
 ## Qualification checkpoint — 2026-10-11T01:37:36.194101+00:00
 
 P16.1 COMPLETE; review hardening COMPLETE. 5 offline/Pages E2Es including actual Sirius game passed. Latest 210 unit tests and 10 regression browser tests pass; typecheck/lint green. Remaining P16.2–P16.4; next final full qualification. Owned lock retained, automation paused. No push/deploy/main integration.
+
+## Final handoff — 2026-10-11T01:54:14.954366+00:00
+
+P16.2–P16.4 COMPLETE, READY_FOR_REVIEW. Code e8ecc26: 210 units, 114 browser tests,
+typecheck/lint/boundaries, both builds all exit 0; Lighthouse 98/100. Full real Nova and offline
+Sirius matches completed; screenshots and final browser inspected, no correctness blockers.
+Remaining implementation tasks: 0. Next: human family validation; integration/retest separate.
+Main 4322047 unchanged. Automation PAUSED. Final docs-only commit, then release only own lock
+pilot-resume-20261008-complete. Preview session retained on 4275 for review. No push/deploy.

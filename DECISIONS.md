@@ -833,3 +833,9 @@ confirmation on hash navigation. Tests cover a real human/AI round-trip before c
 Puzzle replay now explicitly rejects unknown move discriminators, and award reads have a
 size bound matching other stores. Interrupted animation is tested before any move/award commit.
 Review evidence and final green qualification will be recorded before readiness is declared.
+
+## Review handoff — 2026-10-11T01:54:14.954366+00:00
+
+All authorized work is qualified on e8ecc26. Freeze runtime and tests; final commit is documentation only.
+Keep GitHub Pages hosting and browser-local progress. Human validation measures enjoyment and
+real-device behavior; any integration/publication is separate and remains unperformed.
