@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { equals, key } from '../../engine/coords';
 import { cornerOf } from '../../engine/board';
-import { PUZZLES, startPuzzle, puzzleMoves, applyPuzzleMove, puzzleComplete, puzzleAward, undoPuzzle, findPuzzle } from '../puzzles';
+import { PUZZLES, LESSONS, startPuzzle, puzzleMoves, applyPuzzleMove, puzzleComplete, puzzleAward, undoPuzzle, findPuzzle } from '../puzzles';
 
-describe('five versioned puzzles', () => {
+describe('versioned puzzles (5 lessons + challenge tiers)', () => {
   it.each(PUZZLES)('$title has an engine-legal reference within its target', puzzle => {
     let a = startPuzzle(puzzle);
     expect(puzzleComplete(puzzle, a)).toBe(false);
-    expect(puzzle.targetMoves).toBeGreaterThanOrEqual(1); expect(puzzle.targetMoves).toBeLessThanOrEqual(4);
+    expect(puzzle.targetMoves).toBeGreaterThanOrEqual(1); expect(puzzle.targetMoves).toBeLessThanOrEqual(puzzle.tier ? 12 : 4);
     const pivots = a.game.pegs.slice(1);
     for (const destination of puzzle.reference) {
       const move = puzzleMoves(puzzle, a).find(m => equals(m.to, destination));
@@ -23,7 +23,8 @@ describe('five versioned puzzles', () => {
     if (puzzle.id === 'home-stretch') expect(cornerOf(puzzle.goal)).toBe(a.game.seats[0]!.targetCorner);
   });
   it('IDs are unique and unknown IDs/versions do not resolve', () => {
-    expect(new Set(PUZZLES.map(p => p.id)).size).toBe(5);
+    expect(new Set(PUZZLES.map(p => p.id)).size).toBe(PUZZLES.length);
+    expect(LESSONS).toHaveLength(5);
     expect(findPuzzle('unknown')).toBeUndefined(); expect(findPuzzle('first-chain', 2)).toBeUndefined();
   });
   it('a distant pivot creates an equal-span long hop', () => {

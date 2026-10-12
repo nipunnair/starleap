@@ -839,3 +839,13 @@ Review evidence and final green qualification will be recorded before readiness 
 All authorized work is qualified on e8ecc26. Freeze runtime and tests; final commit is documentation only.
 Keep GitHub Pages hosting and browser-local progress. Human validation measures enjoyment and
 real-device behavior; any integration/publication is separate and remains unperformed.
+
+## Phase 17 — puzzle difficulty (2026-10-11)
+Family feedback: pilot puzzles read as a tutorial. Root cause: ≤2 pivots, 1–2 move optimum,
+visible legal-destination highlights. Decision: keep the five as "Warm-ups" (ids unchanged, so
+shared links still work); add exact-solver-verified challenge tiers. Generation is seeded
+hill-climbing on pivot placement scored by optimum length, greedy-vs-optimal gap, optimal-route
+count and walking-steps; accepted layouts must have ≥3 first-move choices (a hit-rate filter was
+dropped — starts often have 1–2 legal first moves, making it meaningless). Single movable peg is
+kept so adapter, UI, saves and share links are unchanged. Generated puzzles have NOT yet been
+hand-played; P17.7 is the quality gate before this ships.

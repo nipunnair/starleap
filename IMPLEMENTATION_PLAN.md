@@ -609,3 +609,27 @@ and limitations. “Ready” means ready for local review, not published and not
       `git diff --check` plus audit of task/gate/evidence completeness (document the audit result).
 
 Stop after P16.4. Deferred ideas live in BACKLOG.md and must not be promoted automatically.
+
+---
+
+## Phase 17 — Real puzzles (feature/hard-puzzles)
+
+Why: family feedback after the pilot — "not even worth calling a puzzle, more like a tutorial."
+Cause: 1–2 pivots, 1–2 move solutions, destinations highlighted. See DECISIONS.md.
+
+GATE: every puzzle's stated target equals the exact BFS optimum; challenge tiers have optimum
+≥5/6/7, ≤3 optimal routes, greedy line strictly worse, ≥3 first-move choices.
+
+- [x] P17.1 Exact solver `src/progression/puzzleSolver.ts` (BFS over mover cells using real engine
+      rules; optimum, route count, greedy baseline). — `npx vitest run src/progression`
+- [x] P17.2 Generator `scripts/puzzle-gen.ts` (seeded, hill-climbing, quality filters). —
+      `npm run puzzle-gen -- --seed 1 --count 3 --min 5`
+- [x] P17.3 18 challenge puzzles (6 easy / 6 medium / 6 hard) in `puzzlesChallenge.ts`; original
+      five become "Warm-ups". — `npx vitest run src/progression`
+- [x] P17.4 Tiered picker with per-tier completion counts. — `npx playwright test puzzle-picker`
+- [ ] P17.5 Hint-free mode: hide legal-destination highlights (optional per attempt; separate star).
+- [ ] P17.6 Moveable-pivot puzzles (second class of puzzle; needs adapter + solver over joint state).
+- [ ] P17.7 Hand-curate: play every challenge puzzle, cut weak ones, add titles/lessons; target 30+.
+- [ ] P17.8 Deterministic daily puzzle from the pool (date-seeded, no backend).
+- [ ] P17.9 Full regression: unit, typecheck, lint, both builds, all Playwright, axe, Lighthouse.
+

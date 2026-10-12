@@ -1,0 +1,25 @@
+=== iteration 1 — Thu Sep 17 21:17:55 PDT 2026 ===
+Committed locally (not pushed, per AGENTS.md). 
+
+**Task completed:** P13.1 — extracted `src/app/MenuScreen.tsx` as a pure presentational component from `App.tsx`'s inline menu JSX, preserving all test IDs and button labels. Gate (`npx playwright test menu.spec.ts` plus typecheck/lint) passed on the first attempt. `IMPLEMENTATION_PLAN.md` and `PROGRESS.md` are updated; next unchecked task is **P13.2** (menu visual hierarchy CSS pass), left for the next pass per the one-task-per-run rule.
+=== iteration 2 — Thu Sep 17 21:19:23 PDT 2026 ===
+Done. Completed P13.2 (menu visual hierarchy CSS pass): grouped `MenuScreen` buttons into a dominant primary CTA group (New game/Resume/quick-starts) and a muted secondary group (Rules/Settings/Tutorial), styling-only. Gate (`playwright test menu.spec.ts responsive-360.spec.ts` + typecheck/lint) passed, task checked off, PROGRESS.md updated, committed locally as `2edf49f` (not pushed).
+=== iteration 3 — Thu Sep 17 21:20:47 PDT 2026 ===
+Done — P13.3 (starfield hero) implemented and committed locally, not pushed.
+
+Summary: added `src/app/StarfieldHero.tsx` (deterministic 40-star inline SVG with a CSS twinkle keyframe), wired it behind the `MenuScreen` header via a new `.menu-hero` wrapper, and added the corresponding CSS. Reduced-motion is already covered by the existing blanket `animation-duration` override in `global.css`, so no new override was needed. Gate (`reduced-motion-full.spec.ts`) passed, plus full unit suite, lint, and typecheck. Along the way I confirmed (via `git stash`) a pre-existing `axe-audit` color-contrast failure on `.menu-cta--primary` from P13.2 — left untouched since fixing it belongs to P13.6's gate task, and noted it in PROGRESS.md so it isn't missed. Next unchecked task is P13.4 (AI character showcase row).
+=== iteration 4 — Thu Sep 17 21:23:35 PDT 2026 ===
+Done. P13.4 (AI character showcase row on the menu screen) is complete: `menu.spec.ts` passes, typecheck/lint are clean, and the change is committed locally as `73bee10` (code + `IMPLEMENTATION_PLAN.md` checkbox + `PROGRESS.md` update, matching this repo's one-task-one-commit convention). Not pushed, per AGENTS.md. Next unchecked task is P13.5 (board theme reskin) — not started, per instructions.
+=== iteration 5 — Thu Sep 17 21:25:36 PDT 2026 ===
+Committed locally (not pushed, per AGENTS.md's rules).
+
+**Completed P13.5** — distinct board theme reskin. Nakshatra and Chhalaang themes now get a per-theme 6-color peg palette and an SVG-pattern cell texture (dotted starfield vs. diagonal checker), applied as CSS overrides on new `.starleap-peg`/`.starleap-cell` classes so the literal `fill`/`stroke` attributes default-theme e2e tests assert on stay untouched. Gate (`npx playwright test settings.spec.ts`) passed, plus full unit suite/lint/typecheck/build all green, and I manually confirmed the reskin actually renders via a throwaway Playwright check. Task checked off in `IMPLEMENTATION_PLAN.md`, `PROGRESS.md` and `DECISIONS.md` updated, committed as `9a48095`.
+
+Next unchecked task is P13.6 (full phase gate) — not started, per instructions to do exactly one task per pass.
+=== iteration 6 — Thu Sep 17 21:30:21 PDT 2026 ===
+Committed locally (not pushed), as instructed.
+
+**P13.6 (full phase gate) done.** Fixed the carried-forward axe contrast failure on `.menu-cta--primary` (darkened `#4f8ff7` → `#3568c9`, now ~5.28:1 vs. the 4.5:1 AA bar). Confirmed: axe zero critical/serious violations on the menu screen, Lighthouse 100/100 (performance + accessibility), and the full gate command (`npm test && npm run lint && npm run typecheck && npm run build && npx playwright test`) — 130 unit tests, lint, typecheck, build, and all 68 Playwright specs all green. Updated `HANDOFF.md`'s future-scope table/bullets for the two completed items, checked off P13.6, and updated `PROGRESS.md`.
+
+All 13 phases in `IMPLEMENTATION_PLAN.md` are now complete — no unchecked tasks remain, so there's nothing further to pick up per AGENTS.md's guardrail.
+done at iteration 6 — no unchecked tasks remain

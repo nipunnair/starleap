@@ -2,11 +2,14 @@
 import { applyMove } from '../engine/apply';
 import { equals, key, type Cube } from '../engine/coords';
 import { buildOccupancy, generateLegalMoves, generateSteps, isLegalRestingCell, legalHopsFrom, MAX_CHAIN_HOPS, type Move } from '../engine/moves';
+import { CHALLENGE_PUZZLES } from './puzzlesChallenge';
 import { createInitialState, type GameState } from '../engine/state';
 
 export interface Puzzle {
   readonly id: string;
   readonly version: 1;
+  /** Absent = a guided lesson. Challenge tiers have exact-BFS-proven optima. */
+  readonly tier?: 'easy' | 'medium' | 'hard';
   readonly title: string;
   readonly lesson: string;
   readonly start: Cube;
@@ -18,7 +21,7 @@ export interface Puzzle {
 }
 export const PUZZLE_PEG_ID = 'puzzle-mover';
 const cell = (x: number, y: number): Cube => ({ x, y, z: -x - y });
-export const PUZZLES: readonly Puzzle[] = [
+export const LESSONS: readonly Puzzle[] = [
   { id: 'first-chain', version: 1, title: 'First Chain', lesson: 'Reach the marker. Two hops can count as one move.',
     start: cell(0, 0), pivots: [cell(1, -1), cell(3, -3)], goal: cell(4, -4), targetMoves: 1, reference: [cell(4, -4)] },
   { id: 'long-leap', version: 1, title: 'Long Leap', lesson: 'Leap over a distant pivot with equal empty space on both sides.',
@@ -30,6 +33,7 @@ export const PUZZLES: readonly Puzzle[] = [
   { id: 'home-stretch', version: 1, title: 'Home Stretch', lesson: 'Reach the marked cell in your home corner.',
     start: cell(-2, 1), pivots: [cell(-4, 2)], goal: cell(-5, 3), targetMoves: 2, reference: [cell(-3, 1), cell(-5, 3)] },
 ];
+export const PUZZLES: readonly Puzzle[] = [...LESSONS, ...CHALLENGE_PUZZLES];
 export function findPuzzle(id: string, version = 1): Puzzle | undefined {
   return PUZZLES.find(puzzle => puzzle.id === id && puzzle.version === version);
 }

@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "selfplay": "tsx scripts/selfplay-cli.ts",
     "tournament": "tsx scripts/tournament-cli.ts",
+    "puzzle-gen": "tsx scripts/puzzle-gen.ts",
     "e2e": "playwright test",
     "lighthouse": "tsx scripts/lighthouse-cli.ts"
   },
